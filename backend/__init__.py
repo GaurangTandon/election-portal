@@ -9,11 +9,11 @@ authorizations = {
 }
 
 api = Api(
-    title="Felicity Events",
+    title="Election Portal",
     version="1.0",
-    description="All user frontend and backend",
+    description="Complete Frontend and Backend",
     authorizations=authorizations,
-    # doc="/docs" SET THIS later
+    # doc="/docs" 
 )
 
 api.add_namespace(ns1, path="/backend")

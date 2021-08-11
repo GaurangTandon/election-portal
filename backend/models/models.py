@@ -5,25 +5,46 @@ from os import isatty, rmdir
 from flask_restx import fields
 from backend.models.orm import db
 
+class Votes(db.Model):
+    __tableman__ = "votes"
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
+    election_id = db.Column(db.Integer, db.ForeignKey("election.id"), primary_key=True)
+    vote_time = db.Column(db.DateTime, nullable=False)
 
-Votes =  db.Table(
-    "votes",
-    db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
-    db.Column("election_id", db.Integer, db.ForeignKey("poll.id"), primary_key=True),
-    db.Column("vote_time", db.DateTime, nullable=False)
-)
+    def __repr__(self):
+        return f"Vote {self.user_id} {self.election_id} {self.vote_time}"
+    
+    def __json__():
+        return {
+            "user_id": fields.Integer,
+            "election_id": fields.Integer,
+            "vote_time": fields.DateTime
+        }
 
-Candidates = db.Table(
-    "candidates",
-    db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=False),
-    db.Column("election_id", db.Integer, db.ForeignKey("poll.id"), primary_key=False),
-    db.Column("manifesto", db.String(1024)),
-    db.Column("prev_manifesto", db.String(1024), default=None),
-    db.Column("approval_status", db.Boolean, default=False),
-    db.Column("pref1_counter", db.Integer, default=0),
-    db.Column("pref2_counter", db.Integer, default=0),
-    db.Column("pref3_counter", db.Integer, default=0)
-)
+class Candidates(db.Model):
+    __tablename__ = "candidates"
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
+    election_id = db.Column(db.Integer, db.ForeignKey("election.id"), primary_key=True)
+    manifesto = db.Column(db.String(1024)) #size defined as 1024 for now
+    prev_manifesto = db.Column(db.String(1024), default=0)
+    approval_status = db.Column(db.Boolean, default=False)
+    pref1_counter = db.Column(db.Integer, default=0)
+    pref2_counter = db.Column(db.Integer, default=0)
+    pref3_counter = db.Column(db.Integer, default=0)
+
+    def __repr__(self):
+        return f"Candidate {self.user_id} {self.election_id} {self.pref1_counter} {self.pref2_counter} {self.pref3_counter}"
+
+    @staticmethod
+    def __json__():
+        return {
+            "user_id": fields.Integer,
+            "election_id": fields.Integer,
+            "manifesto": fields.String,
+            "prev_manifesto": fields.String,
+            "approval_status": fields.String,
+        }
+
 
 class User(db.Model):
     __tablename__ = "user"
@@ -42,6 +63,7 @@ class User(db.Model):
     @staticmethod
     def __json__():
         return {
+            "id": fields.Integer,
             "name": fields.String,
             "email": fields.String,
             "batch" : fields.String,
@@ -67,17 +89,17 @@ class Election(db.Model):
     voting_start_date = db.Column(db.DateTime, nullable=False)
     voting_end_date = db.Column(db.DateTime, nullable=False)
 
-    votes = db.relationship("Vote",
-        secondary=Votes,
-        backref=db.backref("election", lazy=True), 
-        lazy=True
-    )
+    # votes = db.relationship("Vote",
+    #     secondary=Votes,
+    #     backref=db.backref("election", lazy=True), 
+    #     lazy=True
+    # )
 
-    candidates = db.relationship("Candidate",
-        secondary=Candidates,
-        backref=db.backref("election", lazy=True),
-        lazy="subquery"
-    )
+    # candidates = db.relationship("Candidate",
+    #     secondary=Candidates,
+    #     backref=db.backref("election", lazy=True),
+    #     lazy="subquery"
+    # )
 
     def __repr__(self):
         return f"Election {self.id} {self.title}"
@@ -94,6 +116,7 @@ class Election(db.Model):
 
         # flask restx input parameters
         _json = {
+            "id": fields.Integer,
             "title": fields.String,
             "instruction" : fields.String,
             "notice" : fields.String,
