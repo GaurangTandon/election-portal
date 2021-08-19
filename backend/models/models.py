@@ -2,7 +2,8 @@ from __future__ import generator_stop
 import enum
 from os import isatty, rmdir
 
-from flask_restx import fields
+from flask_restx import fields, marshal
+from sqlalchemy.orm import relationship
 from backend.models.orm import db
 
 class Votes(db.Model):
@@ -27,7 +28,8 @@ class Candidates(db.Model):
     election_id = db.Column(db.Integer, db.ForeignKey("election.id"), primary_key=True)
     manifesto = db.Column(db.String(1024)) #size defined as 1024 for now
     prev_manifesto = db.Column(db.String(1024), default=0)
-    approval_status = db.Column(db.Boolean, default=False)
+    approval_status = db.Column(db.Boolean, default=None)
+    photo = db.Column(db.String(1024), default="default.jpg")
     pref1_counter = db.Column(db.Integer, default=0)
     pref2_counter = db.Column(db.Integer, default=0)
     pref3_counter = db.Column(db.Integer, default=0)
@@ -37,14 +39,17 @@ class Candidates(db.Model):
 
     @staticmethod
     def __json__():
+        class UserConverter(fields.Raw):
+            def format(self, value):
+                user = User.query.filter_by(id=value).first()
+                return {"name" : user.name, "email" : user.email}
         return {
-            "user_id": fields.Integer,
+            "user": UserConverter(attribute="user_id"),
             "election_id": fields.Integer,
             "manifesto": fields.String,
-            "prev_manifesto": fields.String,
+            "photo" : fields.String,
             "approval_status": fields.String,
         }
-
 
 class User(db.Model):
     __tablename__ = "user"
@@ -53,6 +58,7 @@ class User(db.Model):
     name = db.Column(db.String(64), nullable=False)
     email = db.Column(db.String(64), nullable=False)
     batch = db.Column(db.String(8), nullable=False)
+    programme = db.Column(db.String(64), nullable=False)
     gender = db.Column(db.String(8), nullable=False)
     isAdmin = db.Column(db.Boolean, default=False)
 
@@ -67,6 +73,7 @@ class User(db.Model):
             "name": fields.String,
             "email": fields.String,
             "batch" : fields.String,
+            "programme" : fields.String,
             "gender" : fields.String,
             "isAdmin" : fields.Boolean           
         }
@@ -79,7 +86,7 @@ class Election(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(64), nullable=False)
-    instructions = db.Column(db.String(512), default="")
+    description = db.Column(db.String(512), default="")
     notice = db.Column(db.String(64), default=None)
     open_positions = db.Column(db.Integer, nullable=False)
     allowed_groups = db.Column(db.String(32), default=None)
@@ -89,17 +96,8 @@ class Election(db.Model):
     voting_start_date = db.Column(db.DateTime, nullable=False)
     voting_end_date = db.Column(db.DateTime, nullable=False)
 
-    # votes = db.relationship("Vote",
-    #     secondary=Votes,
-    #     backref=db.backref("election", lazy=True), 
-    #     lazy=True
-    # )
-
-    # candidates = db.relationship("Candidate",
-    #     secondary=Candidates,
-    #     backref=db.backref("election", lazy=True),
-    #     lazy="subquery"
-    # )
+    candidates = relationship(Candidates, backref="election", lazy="subquery")
+    votes = relationship(Votes, backref="election", lazy=True)
 
     def __repr__(self):
         return f"Election {self.id} {self.title}"
@@ -118,7 +116,7 @@ class Election(db.Model):
         _json = {
             "id": fields.Integer,
             "title": fields.String,
-            "instruction" : fields.String,
+            "description" : fields.String,
             "notice" : fields.String,
             "open_positions" : fields.Integer,
             "allowed_groups" : fields.String,
@@ -127,8 +125,9 @@ class Election(db.Model):
             "nomination_end_date" : fields.DateTime,
             "voting_start_date" : fields.DateTime,
             "voting_end_date" : fields.DateTime,
+            "candidates" : fields.List(fields.Nested(Candidates.__json__()))
         }
-
         return _json
+
 
 
