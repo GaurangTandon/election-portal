@@ -2,7 +2,7 @@ from functools import wraps
 import datetime
 
 import jwt
-from backend.models.models import User
+from backend.models.models import User, BlacklistedTokens
 from flask import g, request, redirect, url_for
 from flask_restx import abort
 import backend
@@ -43,11 +43,15 @@ def auth_required(f):
     def _auth_required(*args, **kwargs):
         access_token = request.headers.get('Authorization')
         if access_token is None:
-            return redirect(url_for('login'))
+            return {"msg" : "Login required", "url" : url_for('login')}, 401
+
+        blt = BlacklistedTokens.query.filter_by(token=access_token).first()
+        if blt:
+            return {"msg" : "Token expired", "url" : url_for('login')}, 401
         try:
             g.user = decode_auth_token(access_token)
         except jwt.ExpiredSignatureError or jwt.InvalidTokenError:
-            return redirect(url_for('login'))
+            return {"msg" : "Token expired", "url" : url_for('login')}, 401
         return f(*args, **kwargs)
 
     return _auth_required
@@ -61,6 +65,10 @@ def admin_only(f):
         access_token = request.headers.get('Authorization')
         if access_token is None:
             return {"msg" : "Login required", "url" : url_for('login')}, 401
+
+        blt = BlacklistedTokens.query.filter_by(token=access_token).first()
+        if blt:
+            return {"msg" : "Token expired", "url" : url_for('login')}, 401
         try:
             g.user = decode_auth_token(access_token)
         except jwt.ExpiredSignatureError or jwt.InvalidTokenError:

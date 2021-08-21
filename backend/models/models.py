@@ -76,6 +76,22 @@ class User(db.Model):
             "gender" : fields.String,          
         }
 
+class Constituency(db.Model):
+    __tablename__ = "constituency"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64))
+    election = db.Column(db.Integer, db.ForeignKey("election.id"))
+    candidate_regex = db.Column(db.String(64), nullable=False)
+    voter_regex = db.Column(db.String(64), nullable=False)
+
+    @staticmethod
+    def __json__():
+        return {
+            "name": fields.String,
+            "candidate_regex": fields.String,
+            "voter_regex": fields.String,
+        }
 class ElectionMethods(enum.Enum):
     test = 0
 
@@ -97,6 +113,8 @@ class Election(db.Model):
     candidates = relationship(Candidates, backref="election", lazy="subquery")
     votes = relationship(Votes, backref="election", lazy=True)
 
+    constituency = relationship(Constituency, lazy="subquery")
+
     def __repr__(self):
         return f"Election {self.id} {self.title}"
 
@@ -109,7 +127,6 @@ class Election(db.Model):
 
             def format(self, value):
                 return ElectionMethods(value).name
-
         # flask restx input parameters
         _json = {
             "id": fields.Integer,
@@ -123,9 +140,17 @@ class Election(db.Model):
             "nomination_end_date" : fields.DateTime,
             "voting_start_date" : fields.DateTime,
             "voting_end_date" : fields.DateTime,
-            "candidates" : fields.List(fields.Nested(Candidates.__json__()))
+            "candidates" : fields.List(fields.Nested(Candidates.__json__())),
+            "constituencies" : fields.List(fields.Nested("Constituency.__json__"))
         }
         return _json
 
 
 
+
+class BlacklistedTokens(db.Model):
+    __tablename__ = "blacklisted_tokens"
+
+    id = db.Column(db.Integer, primary_key=True)
+    token = db.Column(db.String(128), nullable=False)
+    blacklisted_on = db.Column(db.DateTime, nullable=False)

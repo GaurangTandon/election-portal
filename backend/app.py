@@ -1,10 +1,13 @@
+import datetime
 import os
-from flask import Flask, request, redirect, render_template
-from backend import api
-from backend.models.orm import db
-from backend.models.models import User
-from backend.middlewares import auth
+
 from cas import CASClient
+from flask import Flask, redirect, render_template, request
+
+from backend import api
+from backend.middlewares import auth
+from backend.models.models import BlacklistedTokens, User
+from backend.models.orm import db
 
 app = Flask(__name__, static_url_path="/static")
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
@@ -44,6 +47,18 @@ def login():
         auth_token = auth.encode_auth_token(email)
         return render_template("redirect.html",token=auth_token)
 
+
+@app.route("/logout")
+@auth.auth_required
+def logout():
+    access_token = request.headers.get("Authorization")
+    blt = BlacklistedTokens(
+        token=access_token,
+        blacklisted_on=datetime.datetime.now()
+    )
+    db.session.add(blt)
+    db.session.commit()
+    return "Logout successful", 200
 
     
 
