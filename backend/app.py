@@ -8,6 +8,7 @@ from backend import api
 from backend.middlewares import auth
 from backend.models.models import BlacklistedTokens, User
 from backend.models.orm import db
+from backend.middlewares.ratelimit import limiter
 
 app = Flask(__name__, static_url_path="/static")
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
@@ -15,6 +16,8 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
 )
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "top_secret_key")
+
+limiter.init_app(app)
 api.init_app(app)
 db.init_app(app)
 db.create_all(app=app)
