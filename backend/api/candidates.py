@@ -64,8 +64,9 @@ class Nominate(Resource):
         args = parser.parse_args()
         filename = None
         if args["photo"]:
-            filename = secure_filename(args["photo"].filename)
-            args["photo"].save(os.path.join(UPLOAD_FOLDER, "1" + filename))
+            name, extension = os.path.splitext(secure_filename(args["photo"].filename))
+            filename = "{}{}".format(user_id, extension)
+            args["photo"].save(os.path.join(UPLOAD_FOLDER,filename))
         
         candidate = Candidates(
             user_id = 1,
