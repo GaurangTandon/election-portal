@@ -6,7 +6,6 @@ from backend.api.votes import api as ns3
 
 authorizations = {
     "apikey": {"type": "apiKey", "in": "header", "name": "Authorization"},
-    "organizer": {"type": "apiKey", "in": "header", "name": "Authorization"},
 }
 
 api = Api(

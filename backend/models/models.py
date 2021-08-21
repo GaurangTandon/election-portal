@@ -1,13 +1,12 @@
-from __future__ import generator_stop
 import enum
-from os import isatty, rmdir
 
+from backend.models.orm import db
 from flask_restx import fields, marshal
 from sqlalchemy.orm import relationship
-from backend.models.orm import db
+
 
 class Votes(db.Model):
-    __tableman__ = "votes"
+    __tablename__ = "votes"
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
     election_id = db.Column(db.Integer, db.ForeignKey("election.id"), primary_key=True)
     vote_time = db.Column(db.DateTime, nullable=False)
@@ -57,10 +56,10 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=False)
     email = db.Column(db.String(64), nullable=False)
+    roll_number = db.Column(db.Integer, nullable=False)
     batch = db.Column(db.String(8), nullable=False)
     programme = db.Column(db.String(64), nullable=False)
     gender = db.Column(db.String(8), nullable=False)
-    isAdmin = db.Column(db.Boolean, default=False)
 
 
     def __repr__(self):
@@ -74,8 +73,7 @@ class User(db.Model):
             "email": fields.String,
             "batch" : fields.String,
             "programme" : fields.String,
-            "gender" : fields.String,
-            "isAdmin" : fields.Boolean           
+            "gender" : fields.String,          
         }
 
 class ElectionMethods(enum.Enum):

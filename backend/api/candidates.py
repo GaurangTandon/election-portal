@@ -34,12 +34,14 @@ def check_nomination_eligibility(user,election):
 @api.route("/<int:election_id>/candidate/<int:user_id>")
 class Nominate(Resource):
     @api.expect(parser)
+    @auth_required
     def post(self,election_id,user_id):
 
-        # check if current user = user_id
-        
-        user = User.query.filter_by(id = 1).first()
+        user = User.query.filter_by(email=g.user).first()
         assert user
+
+        if (user_id != user.id):
+            abort(400, "Not authorized")
         
         election = Election.query.filter_by(id=election_id).first()
         if not election:
@@ -77,12 +79,14 @@ class Nominate(Resource):
         return 200
 
     @api.expect(parser)
+    @auth_required
     def put(self,election_id, user_id):
 
-        # check if current user = user_id
-
-        user = User.query.filter_by(user_id = 1).first()
+        user = User.query.filter_by(email=g.user).first()
         assert user
+
+        if (user_id != user.id):
+            abort(400, "Not authorized")
         
         election = Election.query.filter_by(id=election_id).first()
         if not election:
@@ -112,12 +116,16 @@ class Nominate(Resource):
 
         return 200
 
+    @auth_required
     def delete(self,election_id, user_id):
 
         # check if current user = user_id
 
-        user = User.query.filter_by(user_id = 1).first()
+        user = User.query.filter_by(email=g.user).first()
         assert user
+
+        if (user_id != user.id):
+            abort(400, "Not authorized")
 
         election = Election.query.filter_by(id=election_id).first()
         if not election:
@@ -140,7 +148,7 @@ class Nominate(Resource):
 @api.route("/<int:election_id>/candidate/<int:user_id>/status_update")
 class CandidateApprovals(Resource):
 
-    # admin only
+    @admin_only
     def post(self, election_id, user_id):
         election = Election.query.get_or_404(election_id)
         candidate = Candidates.query.filter_by(election_id=election_id, user_id=user_id).first()
@@ -159,7 +167,7 @@ class CandidateApprovals(Resource):
 
         return 200
 
-    # admin only
+    @admin_only
     def delete(self, election_id, user_id):
         election = Election.query.get_or_404(election_id)
         candidate = Candidates.query.filter_by(election_id=election_id, user_id=user_id).first()
@@ -180,7 +188,6 @@ class CandidateApprovals(Resource):
 
 @api.route("/<int:election_id>/results")
 class ElectionResults(Resource):
-    # admin only
     def get(self,election_id):
         candidates = Election.query.get_or_404(election_id).candidates
 

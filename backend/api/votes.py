@@ -32,9 +32,10 @@ def check_voting_eligibility(user,election):
 @api.route("/<int:election_id>/vote")
 class Vote(Resource):
     @api.expect(parser)
+    @auth_required
     def post(self, election_id):
 
-        user = User.query.filter_by(id = 1).first()
+        user = User.query.filter_by(email=g.user).first()
         assert user
         
         election = Election.query.filter_by(id=election_id).first()
@@ -55,9 +56,9 @@ class Vote(Resource):
         if vote:
             abort(400, "You have already voted in this election")
 
-        # candidate = Candidates.query.filter_by(election_id=election_id,user_id=1)
-        # if candidate:
-        #     abort(400, "You are a candidate in this election")
+        candidate = Candidates.query.filter_by(election_id=election_id,user_id=user.id).first()
+        if candidate:
+            abort(400, "You are a candidate in this election")
 
         args = parser.parse_args()
 

@@ -24,12 +24,12 @@ parser.add_argument("voting_end_date", type=datetime_from_iso8601, help="End dat
 @api.route("/election/create")
 class ElectionCreate(Resource):
     @api.expect(parser)
+    @admin_only
     def post(self):
         args = parser.parse_args()
         if not (
-            args["nominanation_start_date"] < args["nomination_end_date"]
-            and args["voting_start_date"] < args["voting_end_date"]
-            and args ["nomination_start_date"] < args["voting_start_date"]
+            args["nomination_start_date"] < args["nomination_end_date"]
+            < args["voting_start_date"] < args["voting_end_date"]
         ):
             abort(400, "Invalid dates")
         election = Election(
@@ -57,15 +57,14 @@ class ElectionDetails(Resource):
     def get(self, election_id):
         return Election.query.get_or_404(election_id)
 
-    # admin only
+    @admin_only
     @api.expect(parser)
     def put(self, election_id):
         election = Election.query.get_or_404(election_id)
         args = parser.parse_args()
         if not (
-            args["nominanation_start_date"] < args["nomination_end_date"]
-            and args["voting_start_date"] < args["voting_end_date"]
-            and args ["nomination_start_date"] < args["voting_start_date"]
+            args["nomination_start_date"] < args["nomination_end_date"]
+            < args["voting_start_date"] < args["voting_end_date"]
         ):
             abort(400, "Invalid dates")
         election.title = args["name"]
@@ -78,7 +77,7 @@ class ElectionDetails(Resource):
         db.session.commit()
         return 200
 
-    # admin only
+    @admin_only
     def delete(self, election_id):
         election = Election.query.get_or_404(election_id)
         db.session.delete(election)
