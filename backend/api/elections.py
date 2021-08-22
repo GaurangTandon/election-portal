@@ -6,7 +6,7 @@ from flask_restx.inputs import datetime_from_iso8601
 from flask import request, g
 
 
-from backend.middlewares.auth import auth_required, admin_only
+from backend.middlewares.auth import auth_required, cec_only
 from backend.models.models import Election, ElectionMethods, Candidates, User
 from backend.models.orm import db
 
@@ -60,7 +60,7 @@ parser.add_argument(
 class ElectionCreate(Resource):
     @api.expect(parser)
     @api.doc(security="apikey")
-    @admin_only
+    @cec_only
     def post(self):
         args = parser.parse_args()
         if not (

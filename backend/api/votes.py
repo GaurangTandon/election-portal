@@ -10,7 +10,7 @@ from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
 
-from backend.middlewares.auth import auth_required, admin_only
+from backend.middlewares.auth import auth_required
 from backend.models.models import Election, ElectionMethods, Candidates, User, Votes
 from backend.models.orm import db
 
