@@ -207,7 +207,7 @@ class Nominate(Resource):
 
 @api.route("/<int:election_id>/candidate/<int:user_id>/status_update")
 class CandidateApprovals(Resource):
-    @admin_only
+    @cec_only
     @api.doc(security="apikey")
     def post(self, election_id, user_id):
         election = Election.query.get_or_404(election_id)
@@ -229,7 +229,7 @@ class CandidateApprovals(Resource):
 
         return 200
 
-    @admin_only
+    @cec_only
     @api.doc(security="apikey")
     def delete(self, election_id, user_id):
         election = Election.query.get_or_404(election_id)

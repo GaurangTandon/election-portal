@@ -55,7 +55,7 @@ def auth_required(f):
     return _auth_required
 
 
-def admin_only(f):
+def cec_only(f):
     """
     decorator to restrict access onlt to admins
     """
