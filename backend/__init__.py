@@ -1,6 +1,6 @@
 from flask_restx import Api
 
-from backend.api.elections import api as ns1 
+from backend.api.elections import api as ns1
 from backend.api.candidates import api as ns2
 from backend.api.votes import api as ns3
 
@@ -13,7 +13,7 @@ api = Api(
     version="1.0",
     description="Complete Frontend and Backend",
     authorizations=authorizations,
-    # doc="/docs" 
+    # doc="/docs"
 )
 
 api.add_namespace(ns1, path="/backend")
