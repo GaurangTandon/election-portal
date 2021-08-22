@@ -96,7 +96,7 @@ class ElectionDetails(Resource):
     def get(self, election_id):
         return Election.query.get_or_404(election_id)
 
-    @admin_only
+    @cec_only
     @api.doc(security="apikey")
     @api.expect(parser)
     def put(self, election_id):
@@ -118,7 +118,7 @@ class ElectionDetails(Resource):
         db.session.commit()
         return 200
 
-    @admin_only
+    @cec_only
     @api.doc(security="apikey")
     def delete(self, election_id):
         election = Election.query.get_or_404(election_id)
