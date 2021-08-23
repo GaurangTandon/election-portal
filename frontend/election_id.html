@@ -1,0 +1,275 @@
+<!DOCTYPE html5>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+  <title>Election Portal</title>
+</head>
+
+<body style="background-image: url(../img/background2.png); background-repeat: repeat;">
+  <nav class="navbar navbar-expand-sm navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand mb-0 h1" href="../html/index.html">
+        <i class="bi bi-people" style="font-size: 1em;"></i>
+        Election Portal IIITH
+    </a>
+    <div class="btn-group">
+      <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="bi bi-gear-wide-connected"></i>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end" style="width: 270px;">
+        <li><p class="dropdown-item-text"><b>Username: </b>John Doe</p></li>
+        <li><p class="dropdown-item-text" style="margin-top: -20px;"><b>Roll Number: </b>2020111013</p></li>
+        <hr class="dropdown-divider">
+        <li><a class="dropdown-item" href="#">Logout</a></li>
+      </ul>
+    </div>
+    </div>
+  </nav>
+  <div class="container" style="padding-bottom: 10px;">
+    <div class="card" style="margin-top: 10px;">
+      <div class="card-body" style="text-align: center;">
+        <h1>Member of Parliament Election 2021</h1>
+      </div>
+    </div>
+    <div class="card" style="margin-top: 2px;">
+      <div class="card-body" style="text-align: center;">
+        <h3>Deeeeeeeeeees sdfjnsfgkjnsdfgkjnfd jkngeskjgnskdjn kwejnrglewkjngsekljngr kwjenrgkljergkjlewn
+          welkrgnwelkjrgnwelkjrgn wekrjnergkljnesrlgkjn werlkgjnerkgjnelkrgjn ekrgjnselrkgjnselkjgn welrgnewlkgjnewrlkgn
+        </h3>
+      </div>
+    </div>
+    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#exampleModal" style="position: fixed; right: 10; bottom: 10; z-index: 1;">
+      <i class="bi bi-hand-index"></i>
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+        <div class="modal-dialog" >
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title" id="exampleModalLabel">
+                Member of Parliament Election 2021
+              </h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body">
+              <h5>Choose your preferences</h5>
+              <div id="error" style="color: red; display: none;">
+                <h6><i class="bi bi-exclamation-circle"></i> Kindly check your preference order</h6>
+              </div>
+              <form id="PreferenceForm" class="needs-validation" novalidate>
+                <div class="input-group mb-3">
+                  <span class="input-group-text" id="basic-addon1">1</span>
+                  <select class="form-select" aria-label="Default select example" onchange="check(this)">
+                    <option selected></option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                  </select>
+                </div>
+                
+                <div class="input-group mb-3">
+                  <span class="input-group-text" id="basic-addon1">2</span>
+                  <select class="form-select" aria-label="Default select example" onchange="check(this)">
+                    <option selected></option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                  </select>
+                </div>
+                <div class="input-group mb-3">
+                  <span class="input-group-text" id="basic-addon1">3</span>
+                  <select class="form-select" aria-label="Default select example" onchange="check(this)">
+                    <option selected></option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                  </select>
+                </div>
+                <div class="input-group mb-3">
+                  <span class="input-group-text" id="basic-addon1">4</span>
+                  <select class="form-select" aria-label="Default select example" onchange="check(this)">
+                    <option selected></option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                  </select>
+                </div>
+                
+              </form>
+              
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" onclick="clearall()">Clear All</button>
+              <!-- <button type="submit" class="btn btn-primary" onclick="submit()">Proceed</button> -->
+              <a class="btn btn-primary" id="submitButton" type="submit" href="#" role="button" onclick="submit()">Proceed</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row row-cols-1 d-flex row-cols-md-3 g-4" style="margin-top: 0px;">
+      <div class="col">
+        <div class="card card-body flex-fill" style="min-height: 500px;">
+          <img src="../img/person1.jpg" class="card-img-top" alt="Card image cap">
+          <div class="card-body">
+            <h4 class="card-title"><b>Prerak Srivastava</b></h4>
+            <p class="card-text"><b>Candidate Batch: </b>UG2020</p>
+            <p class="card-text"><b>Candidate Roll Number: </b>2020111013</p>
+            <!-- <button type="button" class="btn btn-primary">Manifesto</button> -->
+            <a class="btn btn-primary" href="../html/candidate_id.html" role="button">View Manifesto</a>
+            <p></p>
+            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card card-body flex-fill" style="min-height: 500px;">
+          <img src="../img/person5.jpg" class="card-img-top" alt="Card image cap">
+          <div class="card-body">
+            <h5 class="card-title">Candidate Name</h5>
+            <p class="card-text">Candidate Batch</p>
+            <p class="card-text">Candidate Roll Number</p>
+            <!-- <button type="button" class="btn btn-primary">Manifesto</button> -->
+            <a class="btn btn-primary" href="../html/candidate_id.html" role="button">View Manifesto</a>
+            <p></p>
+            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card card-body flex-fill" style="min-height: 500px;">
+          <img src="../img/person3.png" class="card-img-top" alt="Card image cap">
+          <div class="card-body">
+            <h5 class="card-title">Candidate Name</h5>
+            <p class="card-text">Candidate Batch</p>
+            <p class="card-text">Candidate Roll Number</p>
+            <button type="button" class="btn btn-primary">Manifesto</button>
+            <p></p>
+            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col">
+        <div class="card card-body flex-fill" style="min-height: 500px;">
+          <img src="../img/person2.jpg" class="card-img-top" alt="Card image cap">
+          <div class="card-body">
+            <h5 class="card-title">Candidate Name</h5>
+            <p class="card-text">Candidate Batch</p>
+            <p class="card-text">Candidate Roll Number</p>
+            <button type="button" class="btn btn-primary">Manifesto</button>
+            <p></p>
+            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+          </div>
+        </div>
+        
+      </div>
+
+    </div>
+
+
+
+    <script>
+      
+
+      var count = (document.getElementById("PreferenceForm")).length
+      var form = document.getElementById("PreferenceForm")
+      // console.log(preferences = window.localStorage.getItem('preferences'))
+
+      // const preferences = []
+      // console.log(preferences = JSON.parse(window.localStorage.getItem('preferences')))
+      // try
+      // {
+      //   console.log(const preferences = JSON.parse(window.localStorage.getItem('preferences')))
+      // }
+      // catch
+      // {
+      //   const preferences = []
+      // }
+
+      // console.log(count)
+      
+      let preferences = []
+
+      // if (window.localStorage.getItem('preferences') != null)
+      // {
+      //   preferences = JSON.parse(window.localStorage.getItem('preferences'))
+      // }
+
+      function clearall()
+      {
+        document.getElementById("PreferenceForm").reset()
+        document.getElementById("error").style.display = "none";
+      }
+
+      function check(x)
+      {
+        for(let i = 0; i < count; i++)
+        {
+          if ( form[i].value == x.value && form[i] != x)
+          {
+            form[i].value = ""
+          } 
+        }
+      }
+
+      function submit()
+      {
+        for(let i = 0; i < count; i++)
+        {
+          preferences[i] = form[i].value
+        }
+        // console.log(preferences)
+
+        if(preferences[0] == "")
+        {
+          console.log("empty")
+          document.getElementById("error").style.display = "block";
+          return false
+        }
+
+        for(let i = 0; i < count; i++)
+        {
+          if(preferences[i] == "")
+          {
+            for(let j = i+1; j < count; j++)
+            {
+              if(preferences[j] != "")
+              {
+                // return false
+                console.log("wrong order")
+                document.getElementById("error").style.display = "block";
+                return false
+              }
+            }
+            // return preferences
+            console.log(preferences)
+            window.localStorage.setItem('preferences',JSON.stringify(preferences))
+            document.getElementById("submitButton").href = "#"
+            return
+          }
+        }
+        // return preferences
+        console.log(preferences)
+        window.localStorage.setItem('preferences',JSON.stringify(preferences))
+        document.getElementById("submitButton").href = "#"
+      }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous">
+    </script>
+  </div>
+</body>
+
+</html>
