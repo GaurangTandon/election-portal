@@ -12,7 +12,7 @@
     <title>Election Portal</title>
 </head>
 
-<body style="background-image: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url(../img/background2.png); background-repeat: repeat;">
+<body>
     <nav class="navbar navbar-expand-sm navbar-dark bg-primary">
         <div class="container-fluid">
             <a class="navbar-brand mb-0 h1" href="../html/index.html">
@@ -23,7 +23,7 @@
               <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="bi bi-gear-wide-connected"></i>
               </button>
-              <ul class="dropdown-menu dropdown-menu-end" style="width: 270px;">
+              <ul class="dropdown-menu dropdown-menu-end" id="settings-dropdown">
                 <li><p class="dropdown-item-text"><b>Username: </b>John Doe</p></li>
                 <li><p class="dropdown-item-text" style="margin-top: -20px;"><b>Roll Number: </b>2020111013</p></li>
                 <hr class="dropdown-divider">
@@ -33,7 +33,7 @@
         </div>
     </nav>
     <div class="container">
-      <div class="card" style="margin-top: 10px;">
+      <div class="card" id="main-card">
         <h1 class="card-header">Ongoing Elections</h1>
         <div class="card-body">
           <div class="card">
@@ -47,8 +47,7 @@
               <h6><b>Voting End Date: </b> 10/07/2002</h6>
               <a class="btn btn-primary" href="../html/election_id.html" role="button">View Candidates</a>
             </div>
-          </div>
-          <div class="card">
+          </div>         <div class="card">
             <div class="card-body">
               <h4 class="card-title">Members of Parliament Election 2021</h4>
               <p class="card-body">Election Description Election Description Election Description Election Description Election Description Election Description Election Description
@@ -63,7 +62,7 @@
           </div>
         </div>
       </div>
-      <div class="card" style="margin-top: 10px;">
+      <div class="card" id="main-card">
         <h1 class="card-header">Upcoming Elections</h1>
         <div class="card-body">
           <div class="card">
@@ -86,7 +85,7 @@
           </div>
         </div>
       </div>
-      <div class="card" style="margin-top: 10px;">
+      <div class="card" id="main-card">
         <h1 class="card-header">Past Elections</h1>
         <div class="card-body">
           <div class="card">
