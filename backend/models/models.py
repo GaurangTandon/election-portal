@@ -27,10 +27,10 @@ class Candidates(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
     election_id = db.Column(db.Integer, db.ForeignKey("election.id"), primary_key=True)
     manifesto = db.Column(db.String(1024))  # size defined as 1024 for now
-    prev_manifesto = db.Column(db.String(1024), default=0)
+    prev_manifesto = db.Column(db.String(1024), default=None)
     approval_status = db.Column(db.Boolean, default=None)
     photo = db.Column(db.String(1024), default="default.jpg")
-    # votes = db.Column(db.ARRAY(db.Integer), default=[])
+    votes = db.Column(db.ARRAY(db.Integer), default=[])
 
     def __repr__(self):
         return f"Candidate {self.user_id} {self.election_id} {self.pref1_counter} {self.pref2_counter} {self.pref3_counter}"
@@ -103,7 +103,8 @@ class Constituency(db.Model):
 
 
 class ElectionMethods(enum.Enum):
-    test = 0
+    MP = 0
+    FC = 1
 
 
 class Election(db.Model):
@@ -113,16 +114,15 @@ class Election(db.Model):
     title = db.Column(db.String(64), nullable=False)
     description = db.Column(db.String(512), default="")
     notice = db.Column(db.String(64), default=None)
-    election_method = db.Column(db.Enum(ElectionMethods), default=ElectionMethods.test)
+    election_method = db.Column(db.Enum(ElectionMethods), default=ElectionMethods.MP)
     nomination_start_date = db.Column(db.DateTime, nullable=False)
     nomination_end_date = db.Column(db.DateTime, nullable=False)
     voting_start_date = db.Column(db.DateTime, nullable=False)
     voting_end_date = db.Column(db.DateTime, nullable=False)
 
-    candidates = relationship(Candidates, backref="election", lazy="subquery")
+    candidates = relationship(Candidates, backref="election", lazy="dynamic")
     votes = relationship(Votes, backref="election", lazy=True)
-
-    constituencies = relationship(Constituency, lazy="subquery")
+    constituencies = relationship(Constituency, lazy=True)
 
     def __repr__(self):
         return f"Election {self.id} {self.title}"
@@ -152,6 +152,9 @@ class Election(db.Model):
             "constituencies": fields.List(fields.Nested("Constituency.__json__")),
         }
         return _json
+
+    def get_candidate(self, user_id):
+        return self.candidates.filter_by(user_id=user_id).first()
 
 
 class BlacklistedTokens(db.Model):

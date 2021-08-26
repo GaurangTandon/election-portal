@@ -11,44 +11,48 @@ from werkzeug.utils import secure_filename
 
 
 from backend.middlewares.auth import auth_required
-from backend.models.models import Election, ElectionMethods, Candidates, User, Votes
+from backend.models.models import (
+    Constituency,
+    Election,
+    ElectionMethods,
+    Candidates,
+    User,
+    Votes,
+)
 from backend.models.orm import db
 
 
 api = Namespace("votes", description="Votes related operations")
 parser = reqparse.RequestParser()
 parser.add_argument(
-    "pref1",
+    "votes",
     type=int,
-    help="user id of pref 1 candidate",
+    help="List of candidates voted for",
+    action="append",
     location="form",
     required=True,
 )
-parser.add_argument(
-    "pref2", type=int, help="user id of pref 2 candidate", location="form"
-)
-parser.add_argument(
-    "pref3", type=int, help="user id of pref 3 candidate", location="form"
-)
 
 
-def check_voting_eligibility(user, election):
+def get_constituencies(user: User, election: Election) -> list:
     """
-    checks if user is eligible to stand for candidate
+    checks if user is eligible to vote for candidate
     """
+
+    valid_constituencies = []
+
     constituencies = election.constituencies
     if user.email == "ec@iiit.ac.in":
-        return False
+        return valid_constituencies
 
     if not constituencies:
-        return True
+        raise ValueError("No constituency")
 
-    return any(
-        [
-            re.search(constituency.voter_regex, user.__constituency__())
-            for constituency in constituencies
-        ]
-    )
+    for constituency in constituencies:
+        if re.search(constituency.voter_regex, user.__constituency__()):
+            valid_constituencies.append(constituency)
+
+    return valid_constituencies
 
 
 @api.route("/<int:election_id>/vote")
@@ -69,46 +73,11 @@ class Vote(Resource):
         voting_start_date = election.voting_start_date
         voting_end_date = election.voting_end_date
 
-        if not (
-            current_datetime >= voting_start_date
-            and current_datetime <= voting_end_date
-        ):
+        if not (voting_start_date <= current_datetime <= voting_end_date):
             abort(400, "Voting is currently closed")
 
-        if not check_voting_eligibility(user, election):
-            abort(400, "You cannot vote in this election")
-
-        vote = Votes.query.filter_by(election_id=election_id, user_id=1).first()
+        vote = Votes.query.filter_by(election_id=election_id, user_id=user.id).first()
         if vote:
             abort(400, "You have already voted in this election")
 
-        candidate = Candidates.query.filter_by(
-            election_id=election_id, user_id=user.id
-        ).first()
-        if candidate:
-            abort(400, "You are a candidate in this election")
-
-        args = parser.parse_args()
-
-        cand1 = Candidates.query.filter_by(
-            election_id=election_id, user_id=args["pref1"]
-        ).first()
-        cand1.pref1_counter += 1
-
-        if args["pref2"]:
-            cand2 = Candidates.query.filter_by(
-                election_id=election_id, user_id=args["pref2"]
-            ).first()
-            cand2.pref2_counter += 1
-
-        if args["pref3"]:
-            cand3 = Candidates.query.filter_by(
-                election_id=election_id, user_id=args["pref3"]
-            ).first()
-            cand3.pref3_counter += 1
-
-        vote = Votes(election_id=election_id, user_id=1, vote_time=current_datetime)
-        db.session.add(vote)
-        db.session.commit()
-
-        return 200
+        ...

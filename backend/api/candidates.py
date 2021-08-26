@@ -30,7 +30,7 @@ parser.add_argument(
 parser.add_argument("photo", type=FileStorage, help="Candidate photo", location="files")
 
 
-def check_nomination_eligibility(user, election):
+def check_nomination_eligibility(user: User, election: Election) -> bool:
     """
     checks if user is eligible to stand for candidate
     """
@@ -83,9 +83,7 @@ class Nominate(Resource):
         if not self.changes_allowed(election):
             abort(400, "Nominations are currently closed")
 
-        candidate = Candidates.query.filter_by(
-            election_id=election_id, user_id=1
-        ).first()
+        candidate = election.get_candidate(user_id=user_id)
         if candidate:
             abort(400, "Already a candidate")
 
@@ -93,6 +91,7 @@ class Nominate(Resource):
             abort(400, "You are not eligible to be a candidate")
 
         args = parser.parse_args()
+        filename = None
         if args["photo"]:
             _, extension = os.path.splitext(args["photo"].filename)
             filename = "{}{}".format(user_id, extension)
@@ -127,9 +126,7 @@ class Nominate(Resource):
         if not self.changes_allowed(election):
             abort(400, "You cannot update after nominations are closed")
 
-        candidate = Candidates.query.filter_by(
-            election_id=election_id, user_id=user.id
-        ).first()
+        candidate = election.get_candidate(user_id)
         if not candidate:
             abort(400, "You are not a candidate for this election")
 
@@ -167,9 +164,7 @@ class Nominate(Resource):
         if not self.withdraw_allowed(election):
             abort(400, "Voting has already started")
 
-        candidate = Candidates.query.filter_by(
-            election_id=election_id, user_id=user.id
-        ).first()
+        candidate = election.get_candidate(user_id)
 
         if not candidate:
             abort(400, "You are not a candidate for this election")
@@ -219,10 +214,10 @@ class CandidateApprovals(Resource):
             abort(404, "Candidate not found")
 
         current_datetime = datetime.now()
-        voting_start_date = election.voting_start_date
+        nomination_end_date = election.nomination_end_date
 
-        if not (current_datetime <= voting_start_date):
-            abort(400, "Voting has already started")
+        if not (current_datetime <= nomination_end_date):
+            abort(400, "Nominations are closed")
 
         candidate.approved = True
         db.session.commit()
@@ -241,10 +236,10 @@ class CandidateApprovals(Resource):
             abort(404, "Candidate not found")
 
         current_datetime = datetime.now()
-        voting_start_date = election.voting_start_date
+        nomination_end_date = election.nomination_end_date
 
-        if not (current_datetime <= voting_start_date):
-            abort(400, "Voting has already started")
+        if not (current_datetime <= nomination_end_date):
+            abort(400, "Nominations are closed")
 
         candidate.approved = False
         db.session.commit()

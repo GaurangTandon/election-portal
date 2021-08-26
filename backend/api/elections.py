@@ -24,9 +24,6 @@ parser.add_argument(
     required=True,
 )
 parser.add_argument(
-    "open_positions", type=int, help="Open positions", location="form", required=True
-)
-parser.add_argument(
     "nomination_start_date",
     type=datetime_from_iso8601,
     help="Start date of the nominations",
