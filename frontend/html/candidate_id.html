@@ -56,6 +56,86 @@
           <h3><b>Candidate Name: </b>Prerak Srivastava</h3>
         </div>
     </div>
+    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#exampleModal" id="vote-button" onclick="getpref()">
+      <h4><i class="bi bi-hand-index"></i></h4>
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+        <div class="modal-dialog" >
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title" id="exampleModalLabel">
+                Member of Parliament Election 2021
+              </h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body">
+              <h5>Choose your preferences</h5>
+              <div id="error">
+                <h6><i class="bi bi-exclamation-circle"></i> Kindly check your preference order</h6>
+              </div>
+              <form id="PreferenceForm" class="needs-validation" novalidate>
+                <div class="input-group mb-3">
+                  <span class="input-group-text" id="basic-addon1">1</span>
+                  <select class="form-select" aria-label="Default select example" onchange="check(this)">
+                    <option selected></option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                  </select>
+                </div>
+                
+                <div class="input-group mb-3">
+                  <span class="input-group-text" id="basic-addon1">2</span>
+                  <select class="form-select" aria-label="Default select example" onchange="check(this)">
+                    <option selected></option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                  </select>
+                </div>
+                <div class="input-group mb-3">
+                  <span class="input-group-text" id="basic-addon1">3</span>
+                  <select class="form-select" aria-label="Default select example" onchange="check(this)">
+                    <option selected></option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                  </select>
+                </div>
+                <div class="input-group mb-3">
+                  <span class="input-group-text" id="basic-addon1">4</span>
+                  <select class="form-select" aria-label="Default select example" onchange="check(this)">
+                    <option selected></option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                  </select>
+                </div>
+                
+              </form>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                  By checking this box, I understand that the vote I cast will be <b>final</b> and <b>cannot be changed later</b>.
+                </label>
+              </div>
+              <div id="checkbox-error">
+                <h6><i class="bi bi-exclamation-circle"></i> Kindly check the box</h6>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" id="clearButton" class="btn btn-danger" onclick="clearall()">Clear All</button>
+              <a class="btn btn-primary" id="submitButton" type="submit" href="#" role="button" onclick="submit()">Cast Vote</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="row row-cols-1 d-flex row-cols-md-2 g-4" id="card-group">
 
         <div class="col">
@@ -110,6 +190,7 @@
             <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
         </div>
     </div>
+    <script src="../js/preferenceform.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>

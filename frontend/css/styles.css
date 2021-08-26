@@ -35,6 +35,11 @@ body{
     display: none;
 }
 
+#checkbox-error{
+    color: red; 
+    display: none;
+}
+
 #candidate-card{
     min-height: 500px;
 }
