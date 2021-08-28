@@ -19,7 +19,7 @@ from flask_restx.inputs import datetime_from_iso8601
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
 
-UPLOAD_FOLDER = "media/candidates"
+UPLOAD_FOLDER = "static/candidates"
 
 api = Namespace("candidates", description="Election portals Election generic frontend")
 

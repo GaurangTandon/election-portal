@@ -32,6 +32,8 @@ class Candidates(db.Model):
     photo = db.Column(db.String(1024), default="default.jpg")
     votes = db.Column(db.ARRAY(db.Integer), default=[])
 
+    user = relationship("User", lazy="subquery")
+
     def __repr__(self):
         return f"Candidate {self.user_id} {self.election_id} {self.pref1_counter} {self.pref2_counter} {self.pref3_counter}"
 
@@ -43,7 +45,7 @@ class Candidates(db.Model):
                 return {"name": user.name, "email": user.email}
 
         return {
-            "user": UserConverter(attribute="user_id"),
+            "user": fields.Nested(User.__json__()),
             "election_id": fields.Integer,
             "manifesto": fields.String,
             "photo": fields.String,

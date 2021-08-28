@@ -7,7 +7,7 @@ from backend.models.models import User, BlacklistedTokens
 from backend.models.orm import db
 from backend.middlewares import auth
 
-auth_routes = Blueprint('auth_routes', __name__)
+auth_routes = Blueprint("auth_routes", __name__)
 
 cas_client = CASClient(
     version=3,

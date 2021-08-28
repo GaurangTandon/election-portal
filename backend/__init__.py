@@ -13,7 +13,7 @@ api = Api(
     version="1.0",
     description="Complete Frontend and Backend",
     authorizations=authorizations,
-    # doc="/docs"
+    doc="/docs",
 )
 
 api.add_namespace(ns1, path="/backend")

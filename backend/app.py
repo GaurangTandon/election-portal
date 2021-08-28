@@ -6,11 +6,11 @@ from flask import Flask, redirect, render_template, request
 
 from backend import api
 from backend.middlewares import auth
-from backend.models.models import BlacklistedTokens, User
+from backend.models.models import Election
 from backend.models.orm import db
 from backend.middlewares.ratelimit import limiter
-from backend.api.auth import auth_routes
-
+from backend.views.auth import auth_routes
+from backend.views.elections import election_routes
 
 
 app = Flask(__name__, static_url_path="/static")
@@ -21,11 +21,14 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "top_secret_key")
 
 app.register_blueprint(auth_routes)
+app.register_blueprint(election_routes)
 
 limiter.init_app(app)
 api.init_app(app)
 db.init_app(app)
 db.create_all(app=app)
+
+
 
 
 if __name__ == "__main__":
