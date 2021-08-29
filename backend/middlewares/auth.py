@@ -3,7 +3,7 @@ import datetime
 
 import jwt
 from backend.models.models import User, BlacklistedTokens
-from flask import g, request, redirect, url_for
+from flask import g, request, redirect, url_for, session
 from flask_restx import abort
 import backend
 
@@ -41,15 +41,18 @@ def auth_required(f):
     def _auth_required(*args, **kwargs):
         access_token = request.headers.get("Authorization")
         if access_token is None:
-            return {"msg": "Login required", "url": url_for("login")}, 401
+            try:
+                access_token = session["apikey"]
+            except KeyError:
+                return redirect(url_for("auth_routes.login"))
 
         blt = BlacklistedTokens.query.filter_by(token=access_token).first()
         if blt:
-            return {"msg": "Token expired", "url": url_for("login")}, 401
+            return {"msg": "Token expired", "url": url_for("auth_routes.login")}, 401
         try:
-            g.user = decode_auth_token(access_token)
+            g.user = User.query.filter_by(email = decode_auth_token(access_token)).first()
         except jwt.ExpiredSignatureError or jwt.InvalidTokenError:
-            return {"msg": "Token expired", "url": url_for("login")}, 401
+            return {"msg": "Token expired", "url": url_for("auth_routes.login")}, 401
         return f(*args, **kwargs)
 
     return _auth_required
@@ -64,15 +67,18 @@ def cec_only(f):
     def _admin_only(*args, **kwargs):
         access_token = request.headers.get("Authorization")
         if access_token is None:
-            return {"msg": "Login required", "url": url_for("login")}, 401
+            if session["apikey"]:
+                access_token = session["apikey"]
+            else:
+                return {"msg": "Login required", "url": url_for("auth_routes.login")}, 401
 
         blt = BlacklistedTokens.query.filter_by(token=access_token).first()
         if blt:
-            return {"msg": "Token expired", "url": url_for("login")}, 401
+            return {"msg": "Token expired", "url": url_for("auth_routes.login")}, 401
         try:
-            g.user = decode_auth_token(access_token)
+            g.user = User.query.filter_by(email = decode_auth_token(access_token)).first()
         except jwt.ExpiredSignatureError or jwt.InvalidTokenError:
-            return {"msg": "Token expired", "url": url_for("login")}, 401
+            return {"msg": "Token expired", "url": url_for("auth_routes.login")}, 401
 
         if g.user != "ec@iiit.ac.in":
             return abort(403, "Forbidden")

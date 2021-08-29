@@ -1,5 +1,5 @@
 from cas import CASClient
-from flask import redirect, request, render_template, Blueprint
+from flask import redirect, request, render_template, Blueprint, session
 import datetime
 
 from backend.utils.ldap_query import get_ldap_data
@@ -44,6 +44,7 @@ def login():
             db.session.commit()
 
         auth_token = auth.encode_auth_token(email)
+        session["apikey"] =auth_token
         return render_template("redirect.html", token=auth_token)
 
 
@@ -51,6 +52,8 @@ def login():
 @auth.auth_required
 def logout():
     access_token = request.headers.get("Authorization")
+    if not access_token:
+        access_token = session["apikey"]
     blt = BlacklistedTokens(token=access_token, blacklisted_on=datetime.datetime.now())
     db.session.add(blt)
     db.session.commit()

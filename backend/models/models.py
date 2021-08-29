@@ -60,7 +60,7 @@ class User(db.Model):
     name = db.Column(db.String(64), nullable=False)
     email = db.Column(db.String(64), nullable=False)
     roll_number = db.Column(db.Integer, nullable=False)
-    batch = db.Column(db.String(8), nullable=False)
+    batch = db.Column(db.String(16), nullable=False)
     programme = db.Column(db.String(64), nullable=False)
     gender = db.Column(db.String(8), nullable=False)
 
@@ -91,7 +91,9 @@ class Constituency(db.Model):
     open_positions = db.Column(db.Integer, nullable=False)
     preferences = db.Column(db.Integer, nullable=False)
     candidate_regex = db.Column(db.String(64), nullable=False)
+    candidate_description = db.Column(db.String(64), nullable=False)
     voter_regex = db.Column(db.String(64), nullable=False)
+    voter_description = db.Column(db.String(64), nullable=False)
 
     @staticmethod
     def __json__():
@@ -100,7 +102,9 @@ class Constituency(db.Model):
             "open_positions": fields.Integer,
             "preferences": fields.Integer,
             "candidate_regex": fields.String,
+            "candidate_description" : fields.String,
             "voter_regex": fields.String,
+            "voter_description" :fields.String
         }
 
 

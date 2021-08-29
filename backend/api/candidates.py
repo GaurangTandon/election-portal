@@ -70,7 +70,7 @@ class Nominate(Resource):
     @auth_required
     def post(self, election_id, user_id):
 
-        user = User.query.filter_by(email=g.user).first()
+        user = g.user
         assert user
 
         if user_id != user.id:
@@ -113,7 +113,7 @@ class Nominate(Resource):
     @auth_required
     def put(self, election_id, user_id):
 
-        user = User.query.filter_by(email=g.user).first()
+        user = g.user
         assert user
 
         if user_id != user.id:
@@ -151,7 +151,7 @@ class Nominate(Resource):
 
         # check if current user = user_id
 
-        user = User.query.filter_by(email=g.user).first()
+        user = g.user
         assert user
 
         if user_id != user.id:

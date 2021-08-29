@@ -62,7 +62,7 @@ class Vote(Resource):
     @auth_required
     def post(self, election_id):
 
-        user = User.query.filter_by(email=g.user).first()
+        user = g.user
         assert user
 
         election = Election.query.filter_by(id=election_id).first()

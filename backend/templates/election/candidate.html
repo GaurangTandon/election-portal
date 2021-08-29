@@ -146,9 +146,9 @@
         <div class="col">
             <div class="card card-body flex-fill">
               <div class="card-body">
-                <h4 class="card-text"><b>Batch: </b>{{ upper(candidate.user.batch) }}</h4>
+                <h4 class="card-text"><b>Batch: </b>{{ candidate.user.batch | upper }}</h4>
                 <h4 class="card-text"><b>Roll Number: </b>{{ candidate.user.roll_number }}</h4>
-                <h4 class="card-text"><b>Course: </b>{{ candidate.user.programme }}</h4>
+                <h4 class="card-text"><b>Course: </b>{{ candidate.user.programme | upper }}</h4>
                 <h4 class="card-text"><b>Email ID: </b>{{ candidate.user.email }}</h4>
               </div>
             </div>
@@ -156,7 +156,7 @@
       </div>
     <div class="card" id="main-card">
         <div class="card-body">
-            <h4 class="card-title"><b>Manifesto </b>{% if auth %}<a class="btn btn-primary" href="../html/candidate_id_edit.html" role="button">Edit</a>{% endif %}</h4>
+            <h4 class="card-title"><b>Manifesto </b>{% if owner %}<a class="btn btn-primary" href="../html/candidate_id_edit.html" role="button">Edit</a>{% endif %}</h4>
             <p class="card-text">{{ candidate.manifesto }}</p>
             <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
         </div>
