@@ -167,5 +167,5 @@ class BlacklistedTokens(db.Model):
     __tablename__ = "blacklisted_tokens"
 
     id = db.Column(db.Integer, primary_key=True)
-    token = db.Column(db.String(128), nullable=False)
+    token = db.Column(db.String(1024), nullable=False)
     blacklisted_on = db.Column(db.DateTime, nullable=False)

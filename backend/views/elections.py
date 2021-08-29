@@ -9,11 +9,8 @@ from backend.models.models import Candidates, Election
 election_routes = Blueprint("elections", __name__)
 
 @election_routes.route("/")
-@auth_required
-def home():
-    print(Election.query.filter(
-            Election.nomination_start_date < datetime.datetime.now()
-        ).all())     
+# @auth_required
+def home():    
     return render_template(
         "index.html",
         ongoing_election_list=Election.query.filter(

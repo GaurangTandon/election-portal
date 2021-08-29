@@ -8,7 +8,7 @@ from flask_restx import abort
 import backend
 
 
-def encode_auth_token(email):
+def encode_auth_token(email) -> str:
     """
     encodes the auth token
     """
@@ -22,7 +22,7 @@ def encode_auth_token(email):
     )
 
 
-def decode_auth_token(auth_token):
+def decode_auth_token(auth_token) -> str:
     """
     decodes the auth token
     """

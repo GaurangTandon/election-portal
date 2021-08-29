@@ -20,6 +20,7 @@
         Election Portal IIITH
       </a>
       <div class="btn-group">
+        {% if g.user %}
         <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
           <i class="bi bi-gear-wide-connected"></i>
         </button>
@@ -31,8 +32,13 @@
             <p class="dropdown-item-text" style="margin-top: -20px;"><b>Roll Number: </b>{{ g.user.roll_number }}</p>
           </li>
           <hr class="dropdown-divider">
-          <li><a class="dropdown-item" href="#">Logout</a></li>
+          <li><a class="dropdown-item" href="{{ url_for('auth_routes.logout') }}">Logout</a></li>
         </ul>
+        {% else %}
+        <a type="button" class="btn btn-success" href="{{ url_for('auth_routes.login') }}">
+          Login
+        </a>
+        {% endif %}
       </div>
     </div>
   </nav>

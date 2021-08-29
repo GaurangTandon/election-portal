@@ -57,4 +57,4 @@ def logout():
     blt = BlacklistedTokens(token=access_token, blacklisted_on=datetime.datetime.now())
     db.session.add(blt)
     db.session.commit()
-    return "Logout successful", 200
+    return redirect('/')
