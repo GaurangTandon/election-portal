@@ -54,6 +54,7 @@ def logout():
     access_token = request.headers.get("Authorization")
     if not access_token:
         access_token = session["apikey"]
+        session.pop("apikey")
     blt = BlacklistedTokens(token=access_token, blacklisted_on=datetime.datetime.now())
     db.session.add(blt)
     db.session.commit()

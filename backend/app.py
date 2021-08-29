@@ -46,7 +46,7 @@ def before_request():
         blt = BlacklistedTokens.query.filter_by(token=access_token).first()
     if blt:
         g.user = None
-    else:
+    elif access_token:
         try:
             g.user = User.query.filter_by(email = auth.decode_auth_token(bytes(access_token, "utf-8"))).first()
         except jwt.ExpiredSignatureError or jwt.InvalidTokenError:
