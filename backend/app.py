@@ -41,13 +41,14 @@ def before_request():
             access_token = session["apikey"]
         except KeyError:
             g.user = None
-
-    blt = BlacklistedTokens.query.filter_by(token=access_token).first()
+    blt = None
+    if access_token is not None:
+        blt = BlacklistedTokens.query.filter_by(token=access_token).first()
     if blt:
         g.user = None
     else:
         try:
-            g.user = User.query.filter_by(email = auth.decode_auth_token(access_token)).first()
+            g.user = User.query.filter_by(email = auth.decode_auth_token(bytes(access_token, "utf-8"))).first()
         except jwt.ExpiredSignatureError or jwt.InvalidTokenError:
             g.user = None
 
