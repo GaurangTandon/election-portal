@@ -102,9 +102,9 @@ class Constituency(db.Model):
             "open_positions": fields.Integer,
             "preferences": fields.Integer,
             "candidate_regex": fields.String,
-            "candidate_description" : fields.String,
+            "candidate_description": fields.String,
             "voter_regex": fields.String,
-            "voter_description" :fields.String
+            "voter_description": fields.String,
         }
 
 

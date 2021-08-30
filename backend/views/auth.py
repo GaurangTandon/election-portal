@@ -44,7 +44,7 @@ def login():
             db.session.commit()
 
         auth_token = auth.encode_auth_token(email)
-        session["apikey"] =auth_token
+        session["apikey"] = auth_token
         return render_template("redirect.html", token=auth_token)
 
 
@@ -58,4 +58,4 @@ def logout():
     blt = BlacklistedTokens(token=access_token, blacklisted_on=datetime.datetime.now())
     db.session.add(blt)
     db.session.commit()
-    return redirect('/')
+    return redirect("/")

@@ -50,7 +50,7 @@ def auth_required(f):
         if blt:
             return {"msg": "Token expired", "url": url_for("auth_routes.login")}, 401
         try:
-            g.user = User.query.filter_by(email = decode_auth_token(access_token)).first()
+            g.user = User.query.filter_by(email=decode_auth_token(access_token)).first()
         except jwt.ExpiredSignatureError or jwt.InvalidTokenError:
             return {"msg": "Token expired", "url": url_for("auth_routes.login")}, 401
         return f(*args, **kwargs)
@@ -70,13 +70,16 @@ def cec_only(f):
             if session["apikey"]:
                 access_token = session["apikey"]
             else:
-                return {"msg": "Login required", "url": url_for("auth_routes.login")}, 401
+                return {
+                    "msg": "Login required",
+                    "url": url_for("auth_routes.login"),
+                }, 401
 
         blt = BlacklistedTokens.query.filter_by(token=access_token).first()
         if blt:
             return {"msg": "Token expired", "url": url_for("auth_routes.login")}, 401
         try:
-            g.user = User.query.filter_by(email = decode_auth_token(access_token)).first()
+            g.user = User.query.filter_by(email=decode_auth_token(access_token)).first()
         except jwt.ExpiredSignatureError or jwt.InvalidTokenError:
             return {"msg": "Token expired", "url": url_for("auth_routes.login")}, 401
 

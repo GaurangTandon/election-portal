@@ -48,12 +48,11 @@ def before_request():
         g.user = None
     elif access_token:
         try:
-            g.user = User.query.filter_by(email = auth.decode_auth_token(bytes(access_token, "utf-8"))).first()
+            g.user = User.query.filter_by(
+                email=auth.decode_auth_token(bytes(access_token, "utf-8"))
+            ).first()
         except jwt.ExpiredSignatureError or jwt.InvalidTokenError:
             g.user = None
-
-
-
 
 
 if __name__ == "__main__":
