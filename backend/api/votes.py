@@ -95,9 +95,11 @@ class Vote(Resource):
             for candidate_id in votes:
                 candidate = Candidates.query.get_or_404(candidate_id)
                 if len(candidate.votes) == 0:
-                    candidate.votes.append(1)
+                    candidate.votes = [1]
                 else:
-                    candidate.votes[0] += 1
+                    candidate_votes = list(candidate.votes)
+                    candidate_votes[0] += 1
+                    candidate.votes = candidate_votes
 
         elif election.election_method == ElectionMethods.STV:
             for i, candidate_id in enumerate(votes):
