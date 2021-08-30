@@ -34,25 +34,22 @@ parser.add_argument(
 )
 
 
-def get_constituencies(user: User, election: Election) -> list:
+def get_constituency(user: User, election: Election) -> Constituency:
     """
     checks if user is eligible to vote for candidate
     """
-
-    valid_constituencies = []
-
     constituencies = election.constituencies
     if user.email == "ec@iiit.ac.in":
-        return valid_constituencies
+        return None
 
     if not constituencies:
         raise ValueError("No constituency")
 
     for constituency in constituencies:
         if re.search(constituency.voter_regex, user.__constituency__()):
-            valid_constituencies.append(constituency)
+            return constituency
 
-    return valid_constituencies
+    return None
 
 
 @api.route("/<int:election_id>/vote")
@@ -80,4 +77,38 @@ class Vote(Resource):
         if vote:
             abort(400, "You have already voted in this election")
 
-        ...
+        constituency = get_constituency(user, election)
+        if not constituency:
+            abort(400, "You are not eligible to vote in this election")
+
+        args = parser.parse_args()
+        votes = args.get("votes")
+        if not votes:
+            abort(400, "Please provide a list of candidates")
+
+        if election.election_method == ElectionMethods.IRV:
+            if len(votes) != constituency.preferences:
+                abort(
+                    400, "You need to vote for %d candidates" % constituency.preferences
+                )
+
+            for candidate_id in votes:
+                candidate = Candidates.query.get_or_404(candidate_id)
+                if len(candidate.votes) == 0:
+                    candidate.votes.append(1)
+                else:
+                    candidate.votes[0] += 1
+
+        elif election.election_method == ElectionMethods.STV:
+            for i, candidate_id in enumerate(votes):
+                candidate = election.get_candidate(candidate_id)
+                if len(candidate.votes) == 0:
+                    candidate.votes = [0 for _ in range(constituency.preferences)]
+                candidate_votes = list(candidate.votes)
+                candidate_votes[i] += 1
+                candidate.votes = candidate_votes
+
+        vote = Votes(election_id=election_id, user_id=user.id, vote_time=datetime.now())
+        db.session.add(vote)
+        db.session.commit()
+        return 200

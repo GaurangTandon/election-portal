@@ -87,7 +87,7 @@ class Constituency(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64))
-    election = db.Column(db.Integer, db.ForeignKey("election.id"))
+    election_id = db.Column(db.Integer, db.ForeignKey("election.id"))
     open_positions = db.Column(db.Integer, nullable=False)
     preferences = db.Column(db.Integer, nullable=False)
     candidate_regex = db.Column(db.String(64), nullable=False)
@@ -128,7 +128,7 @@ class Election(db.Model):
 
     candidates = relationship(Candidates, backref="election", lazy="dynamic")
     votes = relationship(Votes, backref="election", lazy=True)
-    constituencies = relationship(Constituency, lazy=True)
+    constituencies = relationship(Constituency, backref="election", lazy="subquery")
 
     def __repr__(self):
         return f"Election {self.id} {self.title}"
@@ -155,7 +155,7 @@ class Election(db.Model):
             "voting_start_date": fields.DateTime,
             "voting_end_date": fields.DateTime,
             "candidates": fields.List(fields.Nested(Candidates.__json__())),
-            "constituencies": fields.List(fields.Nested("Constituency.__json__")),
+            "constituencies": fields.List(fields.Nested(Constituency.__json__())),
         }
         return _json
 
