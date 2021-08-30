@@ -8,7 +8,7 @@ from flask_restx import abort
 import backend
 
 
-def encode_auth_token(email) -> str:
+def encode_auth_token(email):
     """
     encodes the auth token
     """
@@ -22,7 +22,7 @@ def encode_auth_token(email) -> str:
     )
 
 
-def decode_auth_token(auth_token) -> str:
+def decode_auth_token(auth_token):
     """
     decodes the auth token
     """
@@ -80,7 +80,7 @@ def cec_only(f):
         except jwt.ExpiredSignatureError or jwt.InvalidTokenError:
             return {"msg": "Token expired", "url": url_for("auth_routes.login")}, 401
 
-        if g.user != "ec@iiit.ac.in":
+        if g.user.email != "ec@iiit.ac.in":
             return abort(403, "Forbidden")
 
         return f(*args, **kwargs)

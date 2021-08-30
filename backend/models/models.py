@@ -109,8 +109,8 @@ class Constituency(db.Model):
 
 
 class ElectionMethods(enum.Enum):
-    MP = 0
-    FC = 1
+    STV = 0
+    IRV = 1
 
 
 class Election(db.Model):
@@ -120,7 +120,7 @@ class Election(db.Model):
     title = db.Column(db.String(64), nullable=False)
     description = db.Column(db.String(512), default="")
     notice = db.Column(db.String(64), default=None)
-    election_method = db.Column(db.Enum(ElectionMethods), default=ElectionMethods.MP)
+    election_method = db.Column(db.Enum(ElectionMethods), nullable=False)
     nomination_start_date = db.Column(db.DateTime, nullable=False)
     nomination_end_date = db.Column(db.DateTime, nullable=False)
     voting_start_date = db.Column(db.DateTime, nullable=False)

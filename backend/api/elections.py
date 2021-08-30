@@ -24,6 +24,14 @@ parser.add_argument(
     required=True,
 )
 parser.add_argument(
+    "election_method",
+    help="Method of election",
+    type=str,
+    choices = ('STV', 'IRV'),
+    location="form",
+    required=True
+)
+parser.add_argument(
     "nomination_start_date",
     type=datetime_from_iso8601,
     help="Start date of the nominations",
@@ -70,6 +78,7 @@ class ElectionCreate(Resource):
         election = Election(
             title=args["name"],
             description=args["description"],
+            election_method = args["election_method"],
             nomination_start_date=args["nomination_start_date"],
             nomination_end_date=args["nomination_end_date"],
             voting_start_date=args["voting_start_date"],
