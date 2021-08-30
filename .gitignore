@@ -1,3 +1,7 @@
 **/__pycache__/*
 ./tmp/*
 backend/static/candidates/*
+backend/.eslintrc.json
+backend/node_modules/
+backend/package-lock.json
+backend/package.json
