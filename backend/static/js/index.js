@@ -1,1 +1,1 @@
-window.localStorage.setItem('preferences',JSON.stringify([]))
+window.localStorage.setItem('preferences', JSON.stringify([]));
