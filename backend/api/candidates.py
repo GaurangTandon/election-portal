@@ -58,9 +58,7 @@ class Nominate(Resource):
         election = Election.query.get(election_id)
         if not election:
             abort(404, "Election not found")
-        candidate = Candidates.query.filter_by(
-            user_id=user_id, election_id=election_id
-        ).first()
+        candidate = election.get_candidate(user_id)
         if not candidate:
             abort(404, "Candidate not found")
         if g.user.id != user_id and not candidate.approval_status:
