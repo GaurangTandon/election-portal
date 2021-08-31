@@ -39,8 +39,8 @@ def election_info(election_id):
 def candidate_info(election_id, user_id):
     election = Election.query.get_or_404(election_id)
     candidate = election.get_candidate(user_id)
-    if candidate and candidate.user_id != g.user.id or not candidate.approval_status:
-        return "Candidate not found", 404
+    # if candidate  or not candidate.approval_status:
+    #     return "Candidate not found", 404
     return render_template(
         "election/candidate.html",
         election=election,
