@@ -39,11 +39,6 @@ class Candidates(db.Model):
 
     @staticmethod
     def __json__():
-        class UserConverter(fields.Raw):
-            def format(self, value):
-                user = User.query.filter_by(id=value).first()
-                return {"name": user.name, "email": user.email}
-
         return {
             "user": fields.Nested(User.__json__()),
             "election_id": fields.Integer,
@@ -143,6 +138,18 @@ class Election(db.Model):
             def format(self, value):
                 return ElectionMethods(value).name
 
+        class ApprovedCandidateConverter(fields.Raw):
+            """
+            Converts candidates to a list of approved candidates
+            """
+
+            def format(self, value):
+                return [
+                    marshal(candidate, Candidates.__json__())
+                    for candidate in value
+                    if candidate.approval_status
+                ]
+
         # flask restx input parameters
         _json = {
             "id": fields.Integer,
@@ -154,13 +161,13 @@ class Election(db.Model):
             "nomination_end_date": fields.DateTime,
             "voting_start_date": fields.DateTime,
             "voting_end_date": fields.DateTime,
-            "candidates": fields.List(fields.Nested(Candidates.__json__())),
+            "candidates": ApprovedCandidateConverter(attribute="candidates"),
             "constituencies": fields.List(fields.Nested(Constituency.__json__())),
         }
         return _json
 
-    def get_candidate(self, user_id):
-        return self.candidates.filter_by(user_id=user_id).first()
+    def get_candidate(self, user_id, *args, **kwargs):
+        return self.candidates.filter_by(user_id=user_id, *args, **kwargs).first()
 
 
 class BlacklistedTokens(db.Model):

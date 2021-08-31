@@ -6,8 +6,6 @@ from flask_restx import Namespace, Resource, reqparse, abort
 from flask_restx import marshal_with
 from flask_restx.inputs import datetime_from_iso8601
 from flask import request, g
-from werkzeug.datastructures import FileStorage
-from werkzeug.utils import secure_filename
 
 
 from backend.middlewares.auth import auth_required
@@ -93,7 +91,9 @@ class Vote(Resource):
                 )
 
             for candidate_id in votes:
-                candidate = Candidates.query.get_or_404(candidate_id)
+                candidate = election.get_candidate(candidate_id, approval_status=True)
+                if not candidate:
+                    abort(400, "Candidate not found")
                 if len(candidate.votes) == 0:
                     candidate.votes = [1]
                 else:
@@ -103,7 +103,9 @@ class Vote(Resource):
 
         elif election.election_method == ElectionMethods.STV:
             for i, candidate_id in enumerate(votes):
-                candidate = election.get_candidate(candidate_id)
+                candidate = election.get_candidate(candidate_id, approval_status=True)
+                if not candidate:
+                    abort(400, "Candidate not found")
                 if len(candidate.votes) == 0:
                     candidate.votes = [0 for _ in range(constituency.preferences)]
                 candidate_votes = list(candidate.votes)

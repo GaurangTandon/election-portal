@@ -63,6 +63,8 @@ class Nominate(Resource):
         ).first()
         if not candidate:
             abort(404, "Candidate not found")
+        if g.user.id != user_id and not candidate.approval_status:
+            abort(403, "Candidate not found")
         return marshal(candidate, candidate.api_model), 200
 
     @api.expect(parser)
@@ -138,7 +140,7 @@ class Nominate(Resource):
 
         if candidate.approval_status:
             candidate.prev_manifesto = candidate.manifesto
-            candidate.approval_status = False
+            candidate.approval_status = None
 
         candidate.manifesto = args["manifesto"]
         db.session.commit()
@@ -247,14 +249,14 @@ class CandidateApprovals(Resource):
         return 200
 
 
-@api.route("/<int:election_id>/results")
-class ElectionResults(Resource):
-    def get(self, election_id):
-        candidates = Election.query.get_or_404(election_id).candidates
+# @api.route("/<int:election_id>/results")
+# class ElectionResults(Resource):
+#     def get(self, election_id):
+#         candidates = Election.query.get_or_404(election_id).candidates
 
-        model = Candidates.__json__()
-        model["pref1_counter"] = fields.Integer
-        model["pref2_counter"] = fields.Integer
-        model["pref3_counter"] = fields.Integer
+#         model = Candidates.__json__()
+#         model["pref1_counter"] = fields.Integer
+#         model["pref2_counter"] = fields.Integer
+#         model["pref3_counter"] = fields.Integer
 
-        return marshal(candidates, model)
+#         return marshal(candidates, model)

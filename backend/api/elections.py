@@ -101,7 +101,7 @@ class ElectionCreate(Resource):
 class ElectionList(Resource):
     @marshal_with(Election.__json__())
     def get(self):
-        return Election.query.all()
+        return Election.query.filter(Election.voting_end_date > datetime.now()).all()
 
 
 @api.route("/<int:election_id>")
