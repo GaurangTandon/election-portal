@@ -106,7 +106,7 @@ def cec_only(f):
         if not success:
             return {"msg": msg_or_user, "url": url_for("auth_routes.login")}, 401
         g.user = msg_or_user
-        if g.user.email != "ec@iiit.ac.in":
+        if g.user.email != "ec@students.iiit.ac.in":
             return abort(403, "Forbidden: only EC can create election")
 
         return f(*args, **kwargs)
