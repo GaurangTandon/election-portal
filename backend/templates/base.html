@@ -37,7 +37,7 @@
             <p class="dropdown-item-text" style="margin-top: -20px;"><b>Batch: </b>{{ g.user.batch | upper }}</p>
           </li>
           <hr class="dropdown-divider">
-          <li><a class="dropdown-item" href="{{ url_for('auth_routes.logout') }}">Logout</a></li>
+          <li class="dropdown-item"><a type="button" class="btn btn-danger" href="{{ url_for('auth_routes.logout') }}">Logout</a></li>
         </ul>
         {% else %}
         <a type="button" class="btn btn-success" href="{{ url_for('auth_routes.login') }}">
