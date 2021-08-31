@@ -11,6 +11,7 @@ auth_routes = Blueprint("auth_routes", __name__)
 
 cas_client = CASClient(
     version=3,
+    # TODO: move to http on self-hosted domain
     service_url="http://localhost:5000/login",
     server_url="https://login.iiit.ac.in/cas/",
 )
@@ -26,16 +27,21 @@ def login():
         return redirect(cas_login_url)
 
     email, _, __ = cas_client.verify_ticket(ticket)
+
     if not email:
         return redirect("/login")
     else:
         user = User.query.filter_by(email=email).first()
         if not user:
             data = get_ldap_data(email=email)
+            roll = data["rollno"]
+            if not isinstance(roll, int):
+                roll = int(roll)
+
             user = User(
                 name=data["name"],
                 email=email,
-                roll_number=data["rollno"],
+                roll_number=roll,
                 batch=data["batch"],
                 programme=data["programme"],
                 gender=data["gender"],

@@ -36,4 +36,7 @@ def get_ldap_data(email):
         batch_details = list(re.split("uid=|,ou=|,dc=", infostr)[2:4])
         ret["programme"] = batch_details[0]
         ret["batch"] = batch_details[1]
-    return ret
+
+    purify = lambda b: b.decode() if isinstance(b, bytes) else b
+    
+    return {a: purify(b) for a, b in ret.items()}
