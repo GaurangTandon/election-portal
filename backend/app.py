@@ -1,14 +1,10 @@
-import datetime
 import os
-import jwt
 
-from cas import CASClient
-from flask import Flask, redirect, render_template, request, g, session
+from flask import Flask, request, g, session
 
 from backend import api
-from backend.middlewares import auth
-from backend.models.models import User, BlacklistedTokens
 from backend.models.orm import db
+from backend.middlewares.auth import validate_access_token
 from backend.middlewares.ratelimit import limiter
 from backend.views.auth import auth_routes
 from backend.views.elections import election_routes
@@ -41,18 +37,10 @@ def before_request():
             access_token = session["apikey"]
         except KeyError:
             g.user = None
-    blt = None
-    if access_token is not None:
-        blt = BlacklistedTokens.query.filter_by(token=access_token).first()
-    if blt:
-        g.user = None
-    elif access_token:
-        try:
-            g.user = User.query.filter_by(
-                email=auth.decode_auth_token(bytes(access_token, "utf-8"))
-            ).first()
-        except jwt.ExpiredSignatureError or jwt.InvalidTokenError:
-            g.user = None
+            return
+
+    success, msg_or_user = validate_access_token(access_token)
+    g.user = msg_or_user if success else None
 
 
 if __name__ == "__main__":

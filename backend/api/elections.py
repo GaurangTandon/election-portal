@@ -24,6 +24,13 @@ parser.add_argument(
     required=True,
 )
 parser.add_argument(
+    "notice",
+    type=str,
+    help="Notice in the election",
+    location="form",
+    required=False,
+)
+parser.add_argument(
     "election_method",
     help="Method of election",
     type=str,
@@ -78,6 +85,7 @@ class ElectionCreate(Resource):
         election = Election(
             title=args["name"],
             description=args["description"],
+            notice=args["notice"],
             election_method=args["election_method"],
             nomination_start_date=args["nomination_start_date"],
             nomination_end_date=args["nomination_end_date"],
