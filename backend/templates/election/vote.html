@@ -1,5 +1,4 @@
-<button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#exampleModal" id="vote-button"
-    onclick="getpref()">
+<button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#exampleModal" id="vote-button">
     <h4><i class="bi bi-hand-index"></i> Vote </h4>
 </button>
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -21,7 +20,7 @@
                     <form id="PreferenceForm" class="needs-validation" novalidate>
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">1</span>
-                            <select class="form-select" aria-label="Default select example" onchange="check(this)">
+                            <select class="form-select" aria-label="Default select example">
                                 <option selected></option>
                                 <option value="1">One</option>
                                 <option value="2">Two</option>
@@ -31,7 +30,7 @@
 
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">2</span>
-                            <select class="form-select" aria-label="Default select example" onchange="check(this)">
+                            <select class="form-select" aria-label="Default select example">
                                 <option selected></option>
                                 <option value="1">One</option>
                                 <option value="2">Two</option>
@@ -40,7 +39,7 @@
                         </div>
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">3</span>
-                            <select class="form-select" aria-label="Default select example" onchange="check(this)">
+                            <select class="form-select" aria-label="Default select example">
                                 <option selected></option>
                                 <option value="1">One</option>
                                 <option value="2">Two</option>
@@ -49,7 +48,7 @@
                         </div>
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">4</span>
-                            <select class="form-select" aria-label="Default select example" onchange="check(this)">
+                            <select class="form-select" aria-label="Default select example">
                                 <option selected></option>
                                 <option value="1">One</option>
                                 <option value="2">Two</option>
@@ -71,11 +70,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" id="clearButton" class="btn btn-danger" onclick="clearall()">Clear
-                        All</button>
-                    <a class="btn btn-primary" id="submitButton" type="submit" href="#" role="button"
-                        onclick="submit()">Cast
-                        Vote</a>
+                    <button type="button" id="clearButton" class="btn btn-danger">Clear All</button>
+                    <a class="btn btn-primary" id="submitButton" type="submit" href="#" role="button">Cast Vote</a>
                 </div>
             </div>
         </div>
