@@ -24,8 +24,9 @@
           </div>
         </div>
         {% endfor %}
-
-
+        {% if ongoing_election_list|length == 0 %}
+          No ongoing elections
+        {% endif %}
       </div>
     </div>
     <div class="card" id="main-card">
@@ -45,6 +46,9 @@
           </div>
         </div>
         {% endfor %}
+        {% if upcoming_election_list|length == 0 %}
+          No upcoming elections
+        {% endif %}
       </div>
     </div>
     <div class="card" id="main-card">
