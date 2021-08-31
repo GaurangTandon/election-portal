@@ -10,7 +10,6 @@ election_routes = Blueprint("elections", __name__)
 
 
 @election_routes.route("/")
-# @auth_required
 def home():
     return render_template(
         "index.html",
@@ -27,7 +26,7 @@ def home():
 @election_routes.route("/<int:election_id>")
 def election_info(election_id):
     election = Election.query.get_or_404(election_id)
-    candidates = list(election.candidates)
+    candidates = list(election.candidates.filter_by(approval_status=True))
     random.shuffle(candidates)
     return render_template(
         "election/election.html",
@@ -39,9 +38,12 @@ def election_info(election_id):
 @election_routes.route("/<int:election_id>/candidate/<int:user_id>")
 def candidate_info(election_id, user_id):
     election = Election.query.get_or_404(election_id)
+    candidate = election.get_candidate(user_id)
+    if candidate and candidate.user_id != g.user.id or not candidate.approval_status:
+        return "Candidate not found", 404
     return render_template(
         "election/candidate.html",
         election=election,
-        candidate=election.get_candidate(user_id),
+        candidate=candidate,
         owner=True,
     )
