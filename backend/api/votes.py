@@ -32,24 +32,6 @@ parser.add_argument(
 )
 
 
-def get_constituency(user: User, election: Election) -> Constituency:
-    """
-    checks if user is eligible to vote for candidate
-    """
-    constituencies = election.constituencies
-    if user.email == Election.EC_EMAIL:
-        return None
-
-    if not constituencies:
-        raise ValueError("No constituency")
-
-    for constituency in constituencies:
-        if re.search(constituency.voter_regex, user.__constituency__()):
-            return constituency
-
-    return None
-
-
 @api.route("/<int:election_id>/vote")
 class Vote(Resource):
     @api.expect(parser)
@@ -75,9 +57,13 @@ class Vote(Resource):
         if vote:
             abort(400, "You have already voted in this election")
 
-        constituency = get_constituency(user, election)
+        constituency = election.get_constituency(user)
         if not constituency:
             abort(400, "You are not eligible to vote in this election")
+
+        candidate = election.get_candidate(user, approval_status=True)
+        if candidate:
+            abort(400, "You are a candidate inthis election")
 
         args = parser.parse_args()
         votes = args.get("votes")
@@ -106,6 +92,8 @@ class Vote(Resource):
                 candidate = election.get_candidate(candidate_id, approval_status=True)
                 if not candidate:
                     abort(400, "Candidate not found")
+                if not constituency.is_candidate_eligible(candidate.user):
+                    abort(400, "You cannot vote for this candidate")
                 if len(candidate.votes) == 0:
                     candidate.votes = [0 for _ in range(constituency.preferences)]
                 candidate_votes = list(candidate.votes)

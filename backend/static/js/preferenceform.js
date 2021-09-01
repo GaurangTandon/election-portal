@@ -72,7 +72,7 @@ submitButton.addEventListener("click", function submit(){
     // console.log(preferences);
     window.localStorage.setItem('preferences', JSON.stringify(preferences));
     if (checkbox.checked === true) {
-        submitButton.href = '../html/index.html';
+        submitButton.href = '/';
     } else {
         checkboxError.classList.add("showerror");
     }

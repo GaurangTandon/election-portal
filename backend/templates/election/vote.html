@@ -17,36 +17,19 @@
                     <div id="error">
                         <h6><i class="bi bi-exclamation-circle"></i> Kindly check your preference order</h6>
                     </div>
-                    <form id="PreferenceForm" class="needs-validation" novalidate>
+                    <form id="PreferenceForm" class="needs-validation" href="/backend/{{election_id}}/vote" method="POST" novalidate>
+                        {% for i in range(preferences) %}
                         <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon1">1</span>
-                            <select class="form-select" aria-label="Default select example">
+                            <span class="input-group-text" id="basic-addon1">{{ i + 1 }}</span>
+                            <select name="votes" class="form-select" aria-label="Default select example">
                                 <option selected></option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
+                                {% for candidate in eligible_candidates %}
+                                <option value="{{ candidate.user.id }}">{{ candidate.user.name }}</option>
+                                {% endfor %}
                             </select>
                         </div>
-
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon1">2</span>
-                            <select class="form-select" aria-label="Default select example">
-                                <option selected></option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
-                            </select>
-                        </div>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon1">3</span>
-                            <select class="form-select" aria-label="Default select example">
-                                <option selected></option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
-                            </select>
-                        </div>
-                        <div class="input-group mb-3">
+                        {% endfor %}
+                        <!-- <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">4</span>
                             <select class="form-select" aria-label="Default select example">
                                 <option selected></option>
@@ -54,7 +37,7 @@
                                 <option value="2">Two</option>
                                 <option value="3">Three</option>
                             </select>
-                        </div>
+                        </div> -->
 
                     </form>
                     <div class="form-check">

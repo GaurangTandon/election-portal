@@ -30,25 +30,6 @@ parser.add_argument(
 parser.add_argument("photo", type=FileStorage, help="Candidate photo", location="files")
 
 
-def check_nomination_eligibility(user: User, election: Election) -> bool:
-    """
-    checks if user is eligible to stand for candidate
-    """
-    constituencies = election.constituencies
-    if user.email == Election.EC_EMAIL:
-        return False
-
-    if not constituencies:
-        return True
-
-    return any(
-        [
-            re.search(constituency.candidate_regex, user.__constituency__())
-            for constituency in constituencies
-        ]
-    )
-
-
 @api.route("/<int:election_id>/candidate/<int:user_id>")
 class Nominate(Resource):
     def get(self, election_id, user_id):
@@ -87,7 +68,7 @@ class Nominate(Resource):
         if candidate:
             abort(400, "Already a candidate")
 
-        if not check_nomination_eligibility(user, election):
+        if not election.get_candidate_constituency(g.user):
             abort(400, "You are not eligible to be a candidate")
 
         args = parser.parse_args()
@@ -245,16 +226,3 @@ class CandidateApprovals(Resource):
         db.session.commit()
 
         return 200
-
-
-# @api.route("/<int:election_id>/results")
-# class ElectionResults(Resource):
-#     def get(self, election_id):
-#         candidates = Election.query.get_or_404(election_id).candidates
-
-#         model = Candidates.__json__()
-#         model["pref1_counter"] = fields.Integer
-#         model["pref2_counter"] = fields.Integer
-#         model["pref3_counter"] = fields.Integer
-
-#         return marshal(candidates, model)
