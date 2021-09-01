@@ -50,7 +50,7 @@ body{
     color: red; 
 }
 
-.showerror.error{
+.showerror{
   display: block;
 }
 
