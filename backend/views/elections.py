@@ -26,24 +26,48 @@ def home():
 @election_routes.route("/<int:election_id>")
 def election_info(election_id):
     election = Election.query.get_or_404(election_id)
-    candidates = list(election.candidates.filter_by(approval_status=True))
+    candidates = set(election.candidates.filter_by(approval_status=True))
+    if g.user:
+        constituency = election.get_constituency(g.user)
+    else:
+        constituency = None
     random.shuffle(candidates)
+    eligible_candidates={
+            candidate
+            for candidate in candidates
+            if constituency.is_candidate_eligible(candidate.user)
+        } if constituency else {}
+        
     return render_template(
         "election/election.html",
-        election=Election.query.get(election_id),
+        election=election,
         candidates=candidates,
+        preferences=constituency.preferences if constituency else 0,
+        eligible_candidates=eligible_candidates,
+        ineligible_candidates= candidates - eligible_candidates,
     )
 
 
 @election_routes.route("/<int:election_id>/candidate/<int:user_id>")
 def candidate_info(election_id, user_id):
     election = Election.query.get_or_404(election_id)
+    candidates = list(election.candidates.filter_by(approval_status=True))
     candidate = election.get_candidate(user_id)
-    # if candidate  or not candidate.approval_status:
-    #     return "Candidate not found", 404
+    if g.user:
+        constituency = election.get_constituency(g.user)
+    if not candidate or not candidate.approval_status:
+        return "Candidate not found", 404
     return render_template(
         "election/candidate.html",
         election=election,
         candidate=candidate,
-        owner=True,
+        editable=user_id == g.user.id and election.nomination_end_date > datetime.datetime.now() if g.user else False,
+        preferences=constituency.preferences if constituency else 0,
+        eligible_candidates=[
+            candidate
+            for candidate in candidates
+            if constituency.is_candidate_eligible(candidate.user)
+        ]
+        if constituency
+        else [],
     )

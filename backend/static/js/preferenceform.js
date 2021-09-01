@@ -13,8 +13,10 @@ let preferences = [];
 clearButton.addEventListener("click", function clearall(){
     form.reset();
   
+    error.classList.add("error");
     error.classList.remove("showerror");
-    checkboxError.classList.remove("error");
+    checkboxError.classList.add("error");
+    checkboxError.classList.remove("showerror");
     window.localStorage.setItem('preferences', JSON.stringify([]));
 });
 
@@ -35,7 +37,9 @@ form.addEventListener("change", function check(par){
 // const SHOW_CLS = "show";
 
 submitButton.addEventListener("click", function submit(){
+    error.classList.add("error");
     error.classList.remove("showerror");
+    checkboxError.classList.add("error")
     checkboxError.classList.remove("showerror");
     for (let i = 0; i < count; i += 1) {
         preferences[i] = form[i].value;
@@ -45,6 +49,7 @@ submitButton.addEventListener("click", function submit(){
     if (preferences[0] === '') {
         // console.log('empty');
         // error.classList.add(SHOW_CLS);
+        error.classList.remove("error");
         error.classList.add("showerror");
         return false;
     }
@@ -54,6 +59,7 @@ submitButton.addEventListener("click", function submit(){
             for (let j = i + 1; j < count; j += 1) {
                 if (preferences[j] !== '') {
                     // console.log('wrong order');
+                    error.classList.remove("error");
                     error.classList.add("showerror");
                     return false;
                 }
@@ -65,6 +71,7 @@ submitButton.addEventListener("click", function submit(){
                 submitButton.href = '../html/index.html';
                 return true;
             }
+            checkboxError.classList.remove("error")
             checkboxError.classList.add("showerror");
         }
     }
@@ -72,8 +79,9 @@ submitButton.addEventListener("click", function submit(){
     // console.log(preferences);
     window.localStorage.setItem('preferences', JSON.stringify(preferences));
     if (checkbox.checked === true) {
-        submitButton.href = '../html/index.html';
+        submitButton.href = '/';
     } else {
+        checkboxError.classList.remove("error")
         checkboxError.classList.add("showerror");
     }
 });

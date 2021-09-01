@@ -1,4 +1,5 @@
 import enum
+import re
 
 from backend.models.orm import db
 from flask_restx import fields, marshal
@@ -27,6 +28,7 @@ class Candidates(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
     election_id = db.Column(db.Integer, db.ForeignKey("election.id"), primary_key=True)
     manifesto = db.Column(db.String(1024))  # size defined as 1024 for now
+    manifesto_pdf = db.Column(db.String(1024), nullable=False) # Temporary column to support manifestos in pdf format
     prev_manifesto = db.Column(db.String(1024), default=None)
     approval_status = db.Column(db.Boolean, default=None)
     photo = db.Column(db.String(1024), default="default.jpg")
@@ -102,6 +104,12 @@ class Constituency(db.Model):
             "voter_description": fields.String,
         }
 
+    def is_candidate_eligible(self, user: User):
+        return re.match(self.candidate_regex, user.__constituency__()) is not None
+
+    def is_voter_eligible(self, user: User):
+        return re.match(self.voter_regex, user.__constituency__()) is not None
+
 
 class ElectionMethods(enum.Enum):
     STV = 0
@@ -125,7 +133,7 @@ class Election(db.Model):
     votes = relationship(Votes, backref="election", lazy=True)
     constituencies = relationship(Constituency, backref="election", lazy="subquery")
 
-    EC_EMAIL = "ec@students.iiit.ac.in" 
+    EC_EMAIL = "ec@students.iiit.ac.in"
 
     def __repr__(self):
         return f"Election {self.id} {self.title}"
@@ -170,6 +178,41 @@ class Election(db.Model):
 
     def get_candidate(self, user_id, *args, **kwargs):
         return self.candidates.filter_by(user_id=user_id, *args, **kwargs).first()
+
+    def get_approved_candidates(self):
+        return self.candidates.filter_by(approval_status=True)
+
+    def get_constituency(self, user: User) -> Constituency:
+        """
+        checks if user is eligible to vote for candidate
+        """
+        if user.email == Election.EC_EMAIL:
+            return None
+
+        if not self.constituencies:
+            raise ValueError("No constituency")
+
+        for constituency in self.constituencies:
+            if re.search(constituency.voter_regex, user.__constituency__()):
+                return constituency
+
+        return None
+
+    def get_candidate_constituency(self, user: User) -> Constituency:
+        """
+        checks if user is eligible to vote for candidate
+        """
+        if user.email == Election.EC_EMAIL:
+            return None
+
+        if not self.constituencies:
+            raise ValueError("No constituency")
+
+        for constituency in self.constituencies:
+            if re.search(constituency.candidate_regex, user.__constituency__()):
+                return constituency
+
+        return None
 
 
 class BlacklistedTokens(db.Model):
