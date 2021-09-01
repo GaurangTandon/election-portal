@@ -12,19 +12,11 @@ let preferences = [];
 clearButton.addEventListener("click", function clearall(){
     form.reset();
   
-    // error.classList.remove("error");
-    // checkboxError.classList.remove("error");
-    // error.classList.add("noerror");
-    // checkboxError.classList.add("noerror");
-    
-    checkboxError.style.display = 'none';
-    error.style.display = 'none';
+    error.classList.remove("showerror");
+    checkboxError.classList.remove("error");
     window.localStorage.setItem('preferences', JSON.stringify([]));
 });
 
-// /**
-//  * @param {Element} x 
-//  */
 form.addEventListener("change", function check(par){
 
     let cur = par.target;
@@ -42,8 +34,8 @@ form.addEventListener("change", function check(par){
 // const SHOW_CLS = "show";
 
 submitButton.addEventListener("click", function submit(){
-    error.style.display = 'none';
-    checkboxError.style.display = 'none';
+    error.classList.remove("showerror");
+    checkboxError.classList.remove("showerror");
     for (let i = 0; i < count; i += 1) {
         preferences[i] = form[i].value;
     }
@@ -52,7 +44,7 @@ submitButton.addEventListener("click", function submit(){
     if (preferences[0] === '') {
         // console.log('empty');
         // error.classList.add(SHOW_CLS);
-        error.style.display = 'block';
+        error.classList.add("showerror");
         return false;
     }
 
@@ -61,7 +53,7 @@ submitButton.addEventListener("click", function submit(){
             for (let j = i + 1; j < count; j += 1) {
                 if (preferences[j] !== '') {
                     // console.log('wrong order');
-                    error.style.display = 'block';
+                    error.classList.add("showerror");
                     return false;
                 }
             }
@@ -72,7 +64,7 @@ submitButton.addEventListener("click", function submit(){
                 submitButton.href = '../html/index.html';
                 return true;
             }
-            checkboxError.style.display = 'block';
+            checkboxError.classList.add("showerror");
         }
     }
     // return preferences
@@ -81,7 +73,7 @@ submitButton.addEventListener("click", function submit(){
     if (checkbox.checked === true) {
         submitButton.href = '../html/index.html';
     } else {
-        checkboxError.style.display = 'block';
+        checkboxError.classList.add("showerror");
     }
 });
 
@@ -95,15 +87,3 @@ voteButton.addEventListener("click", function getpref(){
     // console.log(document.getElementById("flexCheckDefault").checked)
 });
 
-// /**
-//  * Event delegation: a single form element accounts for its multiple children
-//  * @param {Element} form form element
-//  */
-// function attachHandler(form) {
-//     form.addEventListener("change", function onChangeHandler(event) {
-//         const elm = event.target;
-//         if (elm.className.includes("form-select")) {
-//             check(elm);
-//         }
-//     });
-// }

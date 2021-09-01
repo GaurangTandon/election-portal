@@ -32,12 +32,10 @@ body{
 
 #error{
     color: red; 
-    display: none;
 }
 
 #checkbox-error{
     color: red; 
-    display: none;
 }
 
 #candidate-card{
@@ -50,6 +48,14 @@ body{
 
 #election-notice{
     color: red; 
+}
+
+.showerror.error{
+  display: block;
+}
+
+.error{
+  display: none;
 }
 
 /* CSS for responsive iframe */
