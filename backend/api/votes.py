@@ -61,10 +61,6 @@ class Vote(Resource):
         if not constituency:
             abort(400, "You are not eligible to vote in this election")
 
-        candidate = election.get_candidate(user, approval_status=True)
-        if candidate:
-            abort(400, "You are a candidate inthis election")
-
         args = parser.parse_args()
         votes = args.get("votes")
         if not votes:
