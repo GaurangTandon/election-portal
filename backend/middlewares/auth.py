@@ -4,7 +4,7 @@ import json
 from typing import Any, Tuple, Union
 
 import jwt
-from backend.models.models import User, BlacklistedTokens
+from backend.models.models import Election, User, BlacklistedTokens
 from flask import g, request, redirect, url_for, session
 from flask_restx import abort
 import backend
@@ -106,7 +106,7 @@ def cec_only(f):
         if not success:
             return {"msg": msg_or_user, "url": url_for("auth_routes.login")}, 401
         g.user = msg_or_user
-        if g.user.email != "ec@students.iiit.ac.in":
+        if g.user.email != Election.EC_EMAIL:
             return abort(403, "Forbidden: only EC can create election")
 
         return f(*args, **kwargs)

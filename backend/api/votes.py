@@ -37,7 +37,7 @@ def get_constituency(user: User, election: Election) -> Constituency:
     checks if user is eligible to vote for candidate
     """
     constituencies = election.constituencies
-    if user.email == "ec@iiit.ac.in":
+    if user.email == Election.EC_EMAIL:
         return None
 
     if not constituencies:
