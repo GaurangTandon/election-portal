@@ -61,7 +61,7 @@ def candidate_info(election_id, user_id):
         "election/candidate.html",
         election=election,
         candidate=candidate,
-        owner=user_id == g.user.id if g.user else False,
+        editable=user_id == g.user.id and election.nomination_end_date > datetime.datetime.now() if g.user else False,
         preferences=constituency.preferences if constituency else 0,
         eligible_candidates=[
             candidate
