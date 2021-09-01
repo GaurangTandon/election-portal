@@ -26,24 +26,25 @@ def home():
 @election_routes.route("/<int:election_id>")
 def election_info(election_id):
     election = Election.query.get_or_404(election_id)
-    candidates = list(election.candidates.filter_by(approval_status=True))
+    candidates = set(election.candidates.filter_by(approval_status=True))
     if g.user:
         constituency = election.get_constituency(g.user)
     else:
         constituency = None
     random.shuffle(candidates)
+    eligible_candidates={
+            candidate
+            for candidate in candidates
+            if constituency.is_candidate_eligible(candidate.user)
+        } if constituency else {}
+        
     return render_template(
         "election/election.html",
         election=election,
         candidates=candidates,
         preferences=constituency.preferences if constituency else 0,
-        eligible_candidates=[
-            candidate
-            for candidate in candidates
-            if constituency.is_candidate_eligible(candidate.user)
-        ]
-        if constituency
-        else [],
+        eligible_candidates=eligible_candidates,
+        ineligible_candidates= candidates - eligible_candidates,
     )
 
 
