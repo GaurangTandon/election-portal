@@ -6,6 +6,7 @@ const checkbox = document.getElementById('flexCheckDefault');
 const submitButton = document.getElementById('submitButton');
 const clearButton = document.getElementById('clearButton');
 const voteButton = document.getElementById('vote-button');
+const settingsDropdown = document.getElementById('settings-dropdown');
 
 let preferences = [];
 
@@ -87,3 +88,6 @@ voteButton.addEventListener("click", function getpref(){
     // console.log(document.getElementById("flexCheckDefault").checked)
 });
 
+settingsDropdown.addEventListener("click", function stopDismiss(event){
+    event.stopPropagation();
+});
