@@ -88,6 +88,4 @@ voteButton.addEventListener("click", function getpref(){
     // console.log(document.getElementById("flexCheckDefault").checked)
 });
 
-settingsDropdown.addEventListener("click", function stopDismiss(event){
-    event.stopPropagation();
-});
+
