@@ -28,15 +28,18 @@
             Election Portal IIITH
         </a>
         <div class="btn-group">
-          <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+          <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="true">
             <i class="bi bi-gear-wide-connected"></i>
           </button>
-          <ul class="dropdown-menu dropdown-menu-end" style="width: 270px;">
-            <li><p class="dropdown-item-text"><b>Username: </b>John Doe</p></li>
-            <li><p class="dropdown-item-text" style="margin-top: -20px;"><b>Roll Number: </b>2020111013</p></li>
-            <hr class="dropdown-divider">
-            <li><a class="dropdown-item" href="#">Logout</a></li>
-          </ul>
+          
+          <div class="dropdown-menu dropdown-menu-end" id="settings-dropdown" style="width: 270px;">
+            <form>
+              <li><p class="dropdown-item-text"><b>Username: </b>John Doe</p></li>
+              <li><p class="dropdown-item-text" style="margin-top: -20px;"><b>Roll Number: </b>2020111013</p></li>
+              <hr class="dropdown-divider">
+              <li><a class="dropdown-item" href="#">Logout</a></li>
+            </form>
+          </div>
         </div>
     </div>
   </nav>
@@ -74,13 +77,13 @@
             
             <div class="modal-body">
               <h5>Choose your preferences</h5>
-              <div id="error">
+              <div id="error" class="error">
                 <h6><i class="bi bi-exclamation-circle"></i> Kindly check your preference order</h6>
               </div>
               <form id="PreferenceForm" class="needs-validation" novalidate>
                 <div class="input-group mb-3">
                   <span class="input-group-text" id="basic-addon1">1</span>
-                  <select class="form-select" aria-label="Default select example" onchange="check(this)">
+                  <select class="form-select" id="preference" aria-label="Default select example">
                     <option selected></option>
                     <option value="1">One</option>
                     <option value="2">Two</option>
@@ -90,7 +93,7 @@
                 
                 <div class="input-group mb-3">
                   <span class="input-group-text" id="basic-addon1">2</span>
-                  <select class="form-select" aria-label="Default select example" onchange="check(this)">
+                  <select class="form-select" id="preference" aria-label="Default select example">
                     <option selected></option>
                     <option value="1">One</option>
                     <option value="2">Two</option>
@@ -99,7 +102,7 @@
                 </div>
                 <div class="input-group mb-3">
                   <span class="input-group-text" id="basic-addon1">3</span>
-                  <select class="form-select" aria-label="Default select example" onchange="check(this)">
+                  <select class="form-select" id="preference" aria-label="Default select example">
                     <option selected></option>
                     <option value="1">One</option>
                     <option value="2">Two</option>
@@ -108,7 +111,7 @@
                 </div>
                 <div class="input-group mb-3">
                   <span class="input-group-text" id="basic-addon1">4</span>
-                  <select class="form-select" aria-label="Default select example" onchange="check(this)">
+                  <select class="form-select" id="preference" aria-label="Default select example">
                     <option selected></option>
                     <option value="1">One</option>
                     <option value="2">Two</option>
@@ -123,13 +126,13 @@
                   By checking this box, I understand that the vote I cast will be <b>final</b> and <b>cannot be changed later</b>.
                 </label>
               </div>
-              <div id="checkbox-error">
+              <div id="checkbox-error" class="error">
                 <h6><i class="bi bi-exclamation-circle"></i> Kindly check the box</h6>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" id="clearButton" class="btn btn-danger" onclick="clearall()">Clear All</button>
-              <a class="btn btn-primary" id="submitButton" type="submit" href="#" role="button" onclick="submit()">Cast Vote</a>
+              <button type="button" id="clearButton" class="btn btn-danger">Clear All</button>
+              <a class="btn btn-primary" id="submitButton" type="submit" href="#" role="button">Cast Vote</a>
             </div>
           </div>
         </div>

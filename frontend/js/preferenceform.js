@@ -1,125 +1,103 @@
-      
+const form = document.getElementById('PreferenceForm');
+const count = form.length;
+const error = document.getElementById('error');
+const checkboxError = document.getElementById('checkbox-error');
+const checkbox = document.getElementById('flexCheckDefault');
+const submitButton = document.getElementById('submitButton');
+const clearButton = document.getElementById("clearButton");
 
-var count = (document.getElementById("PreferenceForm")).length
-var form = document.getElementById("PreferenceForm")
-// console.log(preferences = window.localStorage.getItem('preferences'))
+let preferences = [];
 
-// const preferences = []
-// console.log(preferences = JSON.parse(window.localStorage.getItem('preferences')))
-// try
-// {
-//   console.log(const preferences = JSON.parse(window.localStorage.getItem('preferences')))
-// }
-// catch
-// {
-//   const preferences = []
-// }
+clearButton.addEventListener("click", function clearall(){
+  form.reset();
 
-// console.log(count)
+  error.classList.remove("showerror");
+  checkboxError.classList.remove("showerror");
+  // error.classList.add("showerror");
+  // checkboxError.classList.add("showerror");
 
-let preferences = []
+  // checkboxError.style.display = 'none';
+  // error.style.display = 'none';
+  window.localStorage.setItem('preferences', JSON.stringify([]));
+});
 
-// if (window.localStorage.getItem('preferences') != null)
-// {
-//   preferences = JSON.parse(window.localStorage.getItem('preferences'))
-// }
+form.addEventListener("change", function check(par){
 
-function clearall()
-{
-  document.getElementById("PreferenceForm").reset()
-  document.getElementById("error").style.display = "none";
-  window.localStorage.setItem('preferences',JSON.stringify([]))
-}
-
-function check(x)
-{
-  for(let i = 0; i < count; i++)
-  {
-    if ( form[i].value == x.value && form[i] != x)
-    {
-      form[i].value = ""
-    } 
-  }
-  for(let i = 0; i < count; i++)
-  {
-    preferences[i] = form[i].value
-  }
-  window.localStorage.setItem('preferences',JSON.stringify(preferences))
-}
-
-function submit()
-{
-  document.getElementById("error").style.display = "none";
-  document.getElementById("checkbox-error").style.display = "none";
-  for(let i = 0; i < count; i++)
-  {
-    preferences[i] = form[i].value
-  }
-  // console.log(preferences)
-
-  if(preferences[0] == "")
-  {
-    console.log("empty")
-    document.getElementById("error").style.display = "block";
-    return false
-  }
-
-  for(let i = 0; i < count; i++)
-  {
-    if(preferences[i] == "")
-    {
-      for(let j = i+1; j < count; j++)
-      {
-        if(preferences[j] != "")
-        {
-          // return false
-          console.log("wrong order")
-          document.getElementById("error").style.display = "block";
-          return false
-        }
-      }
-      // return preferences
-      console.log(preferences)
-      window.localStorage.setItem('preferences',JSON.stringify(preferences))
-      if(document.getElementById("flexCheckDefault").checked == true)
-      {
-        document.getElementById("submitButton").href = "../html/index.html"
-        return
-      }
-      else
-      {
-        document.getElementById("checkbox-error").style.display = "block";
-      }
-      
+  let cur = par.target;
+  for (let i = 0; i < count; i += 1) {
+    if (form[i].value === cur.value && form[i] !== cur) {
+        form[i].value = '';
     }
   }
-  // return preferences
-  console.log(preferences)
-  window.localStorage.setItem('preferences',JSON.stringify(preferences))
-  if(document.getElementById("flexCheckDefault").checked == true)
-  {
-    document.getElementById("submitButton").href = "../html/index.html"
+  for (let i = 0; i < count; i += 1) {
+    preferences[i] = form[i].value;
   }
-  else
-  {
-    document.getElementById("checkbox-error").style.display = "block";
+  window.localStorage.setItem('preferences', JSON.stringify(preferences));
+});
+
+
+submitButton.addEventListener("click", function submit(){
+  // error.style.display = 'none';
+  // checkboxError.style.display = 'none';
+
+  error.classList.remove("showerror");
+  checkboxError.classList.remove("showerror");
+  
+  for (let i = 0; i < count; i += 1) {
+      preferences[i] = form[i].value;
   }
-}
-
-// document.getElementById("clearButton").onclick = clearall()
-
-function getpref()
-{
-  preferences = JSON.parse(localStorage.getItem('preferences'))
   // console.log(preferences)
-  for(let i = 0; i < count; i++)
-  {
-    form[i].value = preferences[i]
+
+  if (preferences[0] === '') {
+      // console.log('empty');
+      // error.classList.add(SHOW_CLS);
+      error.classList.add("showerror");
+      // error.style.display = 'block';
+      return false;
   }
-  // console.log(document.getElementById("flexCheckDefault").checked)
+
+  for (let i = 0; i < count; i += 1) {
+      if (preferences[i] === '') {
+        for (let j = i + 1; j < count; j += 1) {
+            if (preferences[j] !== '') {
+                // console.log('wrong order');
+                // error.style.display = 'block';
+                error.classList.add("showerror");
+                return false;
+            }
+        }
+        // return preferences
+        // console.log(preferences);
+        window.localStorage.setItem('preferences', JSON.stringify(preferences));
+        if (checkbox.checked === true) {
+            submitButton.href = '../html/index.html';
+            return true;
+        }
+        // checkboxError.style.display = 'block';
+        checkboxError.classList.add("showerror");
+      }
+  }
+  // return preferences
+  // console.log(preferences);
+  window.localStorage.setItem('preferences', JSON.stringify(preferences));
+  if (checkbox.checked === true) {
+      submitButton.href = '../html/index.html';
+  } else {
+      // checkboxError.style.display = 'block';
+      checkboxError.classList.add("showerror");
+  }
+});
+
+function getpref() {
+    preferences = JSON.parse(localStorage.getItem('preferences'));
+    // console.log(preferences)
+    for (let i = 0; i < count; i += 1) {
+        form[i].value = preferences[i];
+    }
+    // console.log(document.getElementById("flexCheckDefault").checked)
 }
 
-
-
-
-
+document.getElementById("settings-dropdown").addEventListener("click", function stopDismiss(event)
+{
+  event.stopPropagation();
+});
