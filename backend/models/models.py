@@ -125,6 +125,8 @@ class Election(db.Model):
     votes = relationship(Votes, backref="election", lazy=True)
     constituencies = relationship(Constituency, backref="election", lazy="subquery")
 
+    EC_EMAIL = "ec@students.iiit.ac.in" 
+
     def __repr__(self):
         return f"Election {self.id} {self.title}"
 

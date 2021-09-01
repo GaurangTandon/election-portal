@@ -35,7 +35,7 @@ def check_nomination_eligibility(user: User, election: Election) -> bool:
     checks if user is eligible to stand for candidate
     """
     constituencies = election.constituencies
-    if user.email == "ec@iiit.ac.in":
+    if user.email == Election.EC_EMAIL:
         return False
 
     if not constituencies:
