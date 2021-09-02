@@ -21,7 +21,7 @@
                         method="POST" novalidate>
                         {% for i in range(preferences) %}
                         <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon1">{{ i + 1 }}</span>
+                            <span class="input-group-text" id="basic-addon{{ i }}">{{ i + 1 }}</span>
                             <select name="votes" class="form-select" aria-label="Default select example">
                                 <option selected></option>
                                 {% for candidate in eligible_candidates %}
