@@ -18,7 +18,7 @@
       </div>
     </div>
     <div class="row row-cols-1 d-flex row-cols-md-3 g-4" id="card-group">
-      {% for candidate in election.eligible_candidates %}
+      {% for candidate in eligible_candidates %}
       <div class="col">
         <div class="card h-100">
           <img class="img-fluid rounded" src="{{ url_for('static', filename=candidate.photo ) }}" class="card-img-top" alt="{{ url_for('static', filename='candidates/default.jpg') }}">
@@ -39,7 +39,7 @@
       </div>
     </div>
     <div class="row row-cols-1 d-flex row-cols-md-3 g-4" id="card-group">
-      {% for candidate in election.ineligible_candidates %}
+      {% for candidate in ineligible_candidates %}
       <div class="col">
         <div class="card h-100">
           <img class="img-fluid rounded" src="{{ url_for('static', filename=candidate.photo ) }}" class="card-img-top" alt="{{ url_for('static', filename='candidates/default.jpg') }}">
