@@ -2,8 +2,9 @@ from backend.middlewares.auth import auth_required
 import datetime
 import random
 
-from flask import Blueprint, render_template, g
+from flask import Blueprint, render_template, g, request
 from backend.models.models import Candidates, Election
+from backend.utils.vote import vote
 
 
 election_routes = Blueprint("elections", __name__)
@@ -23,7 +24,7 @@ def home():
     )
 
 
-@election_routes.route("/<int:election_id>")
+@election_routes.route("/<int:election_id>", methods=["GET", "POST"])
 def election_info(election_id):
     election = Election.query.get_or_404(election_id)
     candidates = list(election.candidates.filter_by(approval_status=True))
@@ -34,6 +35,10 @@ def election_info(election_id):
             if constituency.is_candidate_eligible(candidate.user)
         ] if constituency else []
     ineligible_candidates=list(set(candidates)-set(eligible_candidates))
+    message = None
+
+    if request.method == "POST":
+        message, _ = vote(election_id, request.form)
 
     random.shuffle(eligible_candidates)
     random.shuffle(ineligible_candidates)
@@ -45,6 +50,7 @@ def election_info(election_id):
         preferences=constituency.preferences if constituency else 0,
         eligible_candidates=eligible_candidates,
         ineligible_candidates= ineligible_candidates,
+        message=message,
     )
 
 
