@@ -40,4 +40,4 @@ class Vote(Resource):
     @auth_required
     def post(self, election_id):
         args = parser.parse_args()
-        return vote(election_id, args)
+        return vote(election_id, args.get("votes"))

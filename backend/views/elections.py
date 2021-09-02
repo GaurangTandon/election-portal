@@ -42,7 +42,7 @@ def election_info(election_id):
     message = None
 
     if request.method == "POST":
-        message, _ = vote(election_id, request.form)
+        message, _ = vote(election_id, request.form.getlist("votes"))
 
     random.shuffle(eligible_candidates)
     random.shuffle(ineligible_candidates)

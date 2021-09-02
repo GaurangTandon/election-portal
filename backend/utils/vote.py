@@ -5,7 +5,7 @@ from backend.models.orm import db
 from backend.models.models import Election, ElectionMethods, Votes
 
 
-def vote(election_id, args):
+def vote(election_id, votes):
 
     user = g.user
     assert user
@@ -29,7 +29,6 @@ def vote(election_id, args):
     if not constituency:
         return "You are not eligible to vote in this election", 400
 
-    votes = args.get("votes")
     if not votes:
         return "Please provide a list of candidates", 400
 
