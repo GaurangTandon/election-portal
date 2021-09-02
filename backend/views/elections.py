@@ -29,12 +29,16 @@ def election_info(election_id):
     election = Election.query.get_or_404(election_id)
     candidates = list(election.candidates.filter_by(approval_status=True))
     constituency = election.get_constituency(g.user) if g.user else None
-    eligible_candidates=[
+    eligible_candidates = (
+        [
             candidate
             for candidate in candidates
             if constituency.is_candidate_eligible(candidate.user)
-        ] if constituency else []
-    ineligible_candidates=list(set(candidates)-set(eligible_candidates))
+        ]
+        if constituency
+        else []
+    )
+    ineligible_candidates = list(set(candidates) - set(eligible_candidates))
     message = None
 
     if request.method == "POST":
@@ -42,14 +46,14 @@ def election_info(election_id):
 
     random.shuffle(eligible_candidates)
     random.shuffle(ineligible_candidates)
-        
+
     return render_template(
         "election/election.html",
         election=election,
         candidates=candidates,
         preferences=constituency.preferences if constituency else 0,
         eligible_candidates=eligible_candidates,
-        ineligible_candidates= ineligible_candidates,
+        ineligible_candidates=ineligible_candidates,
         message=message,
     )
 
@@ -67,7 +71,10 @@ def candidate_info(election_id, user_id):
         "election/candidate.html",
         election=election,
         candidate=candidate,
-        editable=user_id == g.user.id and election.nomination_end_date > datetime.datetime.now() if g.user else False,
+        editable=user_id == g.user.id
+        and election.nomination_end_date > datetime.datetime.now()
+        if g.user
+        else False,
         preferences=constituency.preferences if constituency else 0,
         eligible_candidates=[
             candidate

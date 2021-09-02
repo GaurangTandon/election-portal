@@ -2,8 +2,7 @@ from datetime import datetime
 
 from flask import g
 from backend.models.orm import db
-from backend.models.models import Election,ElectionMethods, Votes
-
+from backend.models.models import Election, ElectionMethods, Votes
 
 
 def vote(election_id, args):
@@ -13,14 +12,14 @@ def vote(election_id, args):
 
     election = Election.query.filter_by(id=election_id).first()
     if not election:
-        return  "Election not found", 404
+        return "Election not found", 404
 
     current_datetime = datetime.now()
     voting_start_date = election.voting_start_date
     voting_end_date = election.voting_end_date
 
     if not (voting_start_date <= current_datetime <= voting_end_date):
-        return  "Voting is currently closed", 400
+        return "Voting is currently closed", 400
 
     vote = Votes.query.filter_by(election_id=election_id, user_id=user.id).first()
     if vote:
@@ -57,7 +56,7 @@ def vote(election_id, args):
         for i, candidate_id in enumerate(votes):
             candidate = election.get_candidate(candidate_id, approval_status=True)
             if not candidate:
-                return  "Candidate not found", 400
+                return "Candidate not found", 400
             if not constituency.is_candidate_eligible(candidate.user):
                 return "This candidate is from another constituency", 400
             if len(candidate.votes) == 0:
