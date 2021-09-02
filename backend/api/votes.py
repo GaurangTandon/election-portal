@@ -89,7 +89,7 @@ class Vote(Resource):
                 if not candidate:
                     abort(400, "Candidate not found")
                 if not constituency.is_candidate_eligible(candidate.user):
-                    abort(400, "You cannot vote for this candidate")
+                    abort(400, "This candidate is from another constituency")
                 if len(candidate.votes) == 0:
                     candidate.votes = [0 for _ in range(constituency.preferences)]
                 candidate_votes = list(candidate.votes)
