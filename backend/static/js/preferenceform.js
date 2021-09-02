@@ -12,7 +12,7 @@ let preferences = [];
 
 clearButton.addEventListener("click", function clearall(){
     form.reset();
-  
+    checkbox.checked = false;
     error.classList.add("error");
     error.classList.remove("showerror");
     checkboxError.classList.add("error");
