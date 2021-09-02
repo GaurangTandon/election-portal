@@ -29,7 +29,9 @@ class Candidates(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
     election_id = db.Column(db.Integer, db.ForeignKey("election.id"), primary_key=True)
     manifesto = db.Column(db.String(1024))  # size defined as 1024 for now
-    manifesto_pdf = db.Column(db.String(1024), nullable=False) # Temporary column to support manifestos in pdf format
+    manifesto_pdf = db.Column(
+        db.String(1024), nullable=False
+    )  # Temporary column to support manifestos in pdf format
     prev_manifesto = db.Column(db.String(1024), default=None)
     approval_status = db.Column(db.Boolean, default=None)
     photo = db.Column(db.String(1024), default="default.jpg")
