@@ -82,11 +82,19 @@ class AddConstituency(Resource):
 
         args = parser.parse_args()
 
+        prefs = args["preferences"]
+        open_positions = args["open_positions"]
+
+        if open_positions <= 0:
+            abort(400, "Number of open positions must be a positive integer")
+        if prefs > open_positions:
+            abort(400, "Number of preferences cannot exceed number of positions")
+
         constituency = Constituency(
             name=args["name"],
             election_id=election_id,
-            open_positions=args["open_positions"],
-            preferences=args["preferences"],
+            open_positions=open_positions,
+            preferences=prefs,
             candidate_regex=args["candidate_regex"],
             candidate_description=args["candidate_description"],
             voter_regex=args["voter_regex"],
