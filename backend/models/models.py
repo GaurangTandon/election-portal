@@ -1,5 +1,6 @@
 import enum
 import re
+from typing import Optional
 
 from backend.models.orm import db
 from flask_restx import fields, marshal
@@ -182,9 +183,9 @@ class Election(db.Model):
     def get_approved_candidates(self):
         return self.candidates.filter_by(approval_status=True)
 
-    def get_constituency(self, user: User) -> Constituency:
+    def get_constituency(self, user: User) -> Optional[Constituency]:
         """
-        checks if user is eligible to vote for candidate
+        Get the constituency of the user in the current election. Returns None if user is ineligible.
         """
         if user.email == Election.EC_EMAIL:
             return None
@@ -200,7 +201,7 @@ class Election(db.Model):
 
     def get_candidate_constituency(self, user: User) -> Constituency:
         """
-        checks if user is eligible to vote for candidate
+        Get the constituency of the user in the current election. Returns None if user is ineligible.
         """
         if user.email == Election.EC_EMAIL:
             return None
