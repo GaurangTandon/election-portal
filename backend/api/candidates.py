@@ -32,6 +32,7 @@ parser.add_argument("photo", type=FileStorage, help="Candidate photo", location=
 
 @api.route("/<int:election_id>/candidate/<int:user_id>")
 class Nominate(Resource):
+    @marshal_with(Candidates.__json__())
     def get(self, election_id, user_id):
         """
         Endpoint to get the details of a candidate
@@ -42,15 +43,16 @@ class Nominate(Resource):
         candidate = election.get_candidate(user_id)
         if not candidate:
             abort(404, "Candidate not found")
-        if g.user.id != user_id and not candidate.approval_status:
-            abort(403, "Candidate not found")
-        return marshal(candidate, candidate.api_model), 200
+        # only candidate can view their own details if they are not approved
+        if not candidate.approval_status:
+            if g.user is None or g.user.id != user_id:
+                abort(403, "Candidate not found")
+        return candidate, 200
 
     @api.expect(parser)
     @api.doc(security="apikey")
     @auth_required
     def post(self, election_id, user_id):
-
         user = g.user
         assert user
 
