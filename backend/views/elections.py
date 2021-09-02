@@ -1,3 +1,4 @@
+from collections import defaultdict
 from backend.middlewares.auth import auth_required
 import datetime
 import random
@@ -15,8 +16,10 @@ def home():
     return render_template(
         "index.html",
         ongoing_election_list=Election.query.filter(
-            Election.nomination_start_date < datetime.datetime.now()
-        ).all(),
+            Election.nomination_start_date <= datetime.datetime.now()
+        )
+        .filter(datetime.datetime.now() <= Election.voting_end_date)
+        .all(),
         upcoming_election_list=Election.query.filter(
             Election.nomination_start_date > datetime.datetime.now()
         ).all(),
@@ -45,7 +48,15 @@ def election_info(election_id):
         message, _ = vote(election_id, request.form.getlist("votes"))
 
     random.shuffle(eligible_candidates)
-    random.shuffle(ineligible_candidates)
+
+    constituency_wise_ineligible_cands = defaultdict(list)
+    for cand in ineligible_candidates:
+        constituency = election.get_candidate_constituency(cand)
+        key = constituency.candidate_description
+        constituency_wise_ineligible_cands[key].append(cand)
+
+    for key in constituency_wise_ineligible_cands.keys():
+        random.shuffle(constituency_wise_ineligible_cands[key])
 
     return render_template(
         "election/election.html",
@@ -53,7 +64,7 @@ def election_info(election_id):
         candidates=candidates,
         preferences=constituency.preferences if constituency else 0,
         eligible_candidates=eligible_candidates,
-        ineligible_candidates=ineligible_candidates,
+        ineligible_candidates=constituency_wise_ineligible_cands,
         message=message,
     )
 

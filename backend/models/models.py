@@ -40,7 +40,8 @@ class Candidates(db.Model):
     user = relationship("User", lazy="subquery")
 
     def __repr__(self):
-        return f"Candidate {self.user_id} {self.election_id} {self.pref1_counter} {self.pref2_counter} {self.pref3_counter}"
+        # TODO: integrate votes array here
+        return f"Candidate {self.user_id} {self.election_id}"
 
     @staticmethod
     def __json__():
@@ -201,18 +202,22 @@ class Election(db.Model):
 
         return None
 
-    def get_candidate_constituency(self, user: User) -> Constituency:
+    def get_candidate_constituency(
+        self, candidate: Candidates
+    ) -> Optional[Constituency]:
         """
         Get the constituency of the user in the current election. Returns None if user is ineligible.
         """
-        if user.email == Election.EC_EMAIL:
+        if candidate.user.email == Election.EC_EMAIL:
             return None
 
         if not self.constituencies:
             raise ValueError("No constituency")
 
+        candidate_consti_str = candidate.user.__constituency__()
         for constituency in self.constituencies:
-            if re.search(constituency.candidate_regex, user.__constituency__()):
+            regex = constituency.candidate_regex
+            if re.search(regex, candidate_consti_str):
                 return constituency
 
         return None

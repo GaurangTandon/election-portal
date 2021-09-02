@@ -122,3 +122,7 @@ body{
     margin-left: auto !important;
     margin-right: auto !important;
   }
+
+  .ineligible-constituency {
+      color: white;
+  }

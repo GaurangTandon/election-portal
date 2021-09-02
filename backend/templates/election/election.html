@@ -39,18 +39,23 @@
       </div>
     </div>
     <div class="row row-cols-1 row-cols-md-3 g-4">
-      {% for candidate in ineligible_candidates %}
-      <div class="col">
-        <div class="card h-100">
-          <img class="img-fluid rounded" src="{{ url_for('static', filename=candidate.photo ) }}" class="card-img-top" alt="{{ url_for('static', filename='candidates/default.jpg') }}">
-          <div class="card-body">
-            <h4 class="card-title"><b>{{ candidate.user.name }}</b></h4>
-            <p class="card-text"><b>Candidate Batch: </b>{{ candidate.user.batch | upper}}</p>
-            <p class="card-text"><b>Candidate Roll Number: </b>{{ candidate.user.roll_number }}</p>
-            <a class="btn btn-primary" href="{{ url_for('elections.candidate_info', election_id = election.id, user_id = candidate.user.id) }}" role="button">View Manifesto</a>
-          </div>
+      {% for constituency, candidates in ineligible_candidates.items() %}
+        <div class="row">
+          <h2 class="ineligible-constituency">{{ constituency }}</h2>
+          {% for candidate in candidates %}
+              <div class="col">
+                <div class="card h-100">
+                  <img class="img-fluid rounded" src="{{ url_for('static', filename=candidate.photo ) }}" class="card-img-top" alt="{{ url_for('static', filename='candidates/default.jpg') }}">
+                  <div class="card-body">
+                    <h4 class="card-title"><b>{{ candidate.user.name }}</b></h4>
+                    <p class="card-text"><b>Candidate Batch: </b>{{ candidate.user.batch | upper}}</p>
+                    <p class="card-text"><b>Candidate Roll Number: </b>{{ candidate.user.roll_number }}</p>
+                    <a class="btn btn-primary" href="{{ url_for('elections.candidate_info', election_id = election.id, user_id = candidate.user.id) }}" role="button">View Manifesto</a>
+                  </div>
+                </div>
+              </div>
+          {% endfor %}
         </div>
-      </div>
       {% endfor %}
     </div>
 
