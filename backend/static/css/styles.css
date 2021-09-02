@@ -50,6 +50,11 @@ body{
     color: red; 
 }
 
+#candidate-img{
+  max-width: 600px;
+  max-height: 800px;
+}
+
 .showerror{
   display: block;
 }
