@@ -12,6 +12,7 @@ clearButton.addEventListener("click", function clearall(){
   form.reset();
 
   error.classList.remove("showerror");
+  checkbox.checked = false;
   checkboxError.classList.remove("showerror");
   // error.classList.add("showerror");
   // checkboxError.classList.add("showerror");

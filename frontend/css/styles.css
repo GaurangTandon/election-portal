@@ -5,6 +5,7 @@ body{
 
 #main-card{
     margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 #settings-dropdown{
@@ -32,12 +33,12 @@ body{
 
 #error{
     color: red; 
-    display: none;
+    /* display: none; */
 }
 
 #checkbox-error{
     color: red; 
-    display: none;
+    /* display: none; */
 }
 
 #candidate-card{
@@ -46,4 +47,12 @@ body{
 
 #card-group{
     margin-top: 0px;
+}
+
+.showerror.error{
+    display: block;
+}
+
+.error{
+    display: none;
 }
