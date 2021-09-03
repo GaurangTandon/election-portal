@@ -53,8 +53,9 @@ def login():
         cas_login_url = cas_client.get_login_url()
         return redirect(cas_login_url)
 
-    email, _, __ = cas_client.verify_ticket(ticket)
+    email, _, _ = cas_client.verify_ticket(ticket)
 
+    # email is None when the ticket is invalid
     if not email:
         return redirect("/login")
     else:
