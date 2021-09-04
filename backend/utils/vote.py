@@ -4,6 +4,7 @@ from flask import g
 
 from backend.models.orm import db
 from backend.models.models import (
+    Candidates,
     CumulativeHashes,
     Election,
     ElectionMethods,
@@ -11,7 +12,7 @@ from backend.models.models import (
     VoteCamp,
     Votes,
 )
-from .crypto import get_nonce_and_hash
+from .crypto import generate_nonce, get_nonce_and_hash
 
 
 def vote(election_id, votes):
@@ -64,7 +65,7 @@ def vote(election_id, votes):
             )
         candidates.append(candidate)
 
-    vcamp = VoteCamp(cumulative_hash=1)
+    vcamp = VoteCamp(cumulative_hash=1, used=False)
 
     hash_objects = []
     hashes = []
@@ -72,7 +73,13 @@ def vote(election_id, votes):
         key = candidate.get_key()
         nonce, hsh = get_nonce_and_hash(key)
         hash_obj = Hashes(
-            key=key, nonce=nonce, hash=hsh, vote_camp=vcamp.id, vote_camp_order=idx
+            key=key,
+            nonce=nonce,
+            hash=hsh,
+            vote_camp=vcamp.id,
+            vote_camp_order=idx,
+            election_id=election_id,
+            user_id=candidate.user.id,
         )
         hash_objects.append(hash_obj)
         hashes.append(hsh)
@@ -85,6 +92,7 @@ def vote(election_id, votes):
     db.session.commit()
 
     # IDs are only correct after committing into db
+    vcamp.id = generate_nonce(length=VoteCamp.ID_LEN)
     vcamp.cumulative_hash = cum_hash.id
     db.session.add(vcamp)
     db.session.commit()
@@ -94,4 +102,51 @@ def vote(election_id, votes):
         db.session.add(hobj)
     db.session.commit()
 
-    return {"id": cum_hash.id, "hash": hash_f}, 200
+    return {"id": vcamp.id, "hash": hash_f}, 200
+
+
+def cast(election_id, votecamp_id):
+    """
+    Take the votes given by votecamp id and actually perform them
+    """
+    election = Election.query.get_or_404(election_id)
+    votecamp = VoteCamp.query.get_or_404(votecamp_id)
+
+    # votes given by votecamp are guaranteed to be correct as
+    # validation has already taken place when putting them into db previously
+
+    if votecamp.used:
+        return "This vote has already been cast. Please recheck the id", 400
+
+    votecamp.used = True
+    votes = Hashes.query.filter_by(vote_camp=votecamp_id).all()
+
+    for vote_hash in votes:
+        vote_pref_order = vote_hash.vote_camp_order
+        user_id = vote_hash.user_id
+        el2 = vote_hash.election_id
+        assert el2 == election_id
+        candidate = Candidates.query.filter_by(
+            user_id=user_id, election_id=election_id
+        ).first()
+        if election.election_method == ElectionMethods.IRV:
+            if len(candidate.votes) == 0:
+                candidate.votes = [1]
+            else:
+                candidate_votes = list(candidate.votes)
+                candidate_votes[0] += 1
+                candidate.votes = candidate_votes
+        elif election.election_method == ElectionMethods.STV:
+            consti = election.get_candidate_constituency(candidate)
+            if len(candidate.votes) == 0:
+                candidate.votes = [0 for _ in range(consti.preferences)]
+            candidate_votes = list(candidate.votes)
+            candidate_votes[vote_pref_order] += 1
+            candidate.votes = candidate_votes
+        else:
+            assert False
+        db.session.add(candidate)
+
+    db.session.add(votecamp)
+    db.session.commit()
+    return "Success", 200
