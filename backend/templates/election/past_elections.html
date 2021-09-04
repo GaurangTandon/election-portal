@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container">
+      <div class="card" id="main-card">
+        <h1 class="card-header">Past Elections</h1>
+        <div class="card-body">
+          {% for election in past_election_list %}
+          <div class="card" id="subheading-card">
+            <div class="card-body">
+              <h4 class="card-title">{{ election.title }}</h4>
+              <a class="btn btn-primary" href="{{ url_for('elections.election_info', election_id = election.id) }}" role="button">View Candidates</a>
+              <a class="btn btn-success" href="#" role="button">View Results</a>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="container">
+    <div class="card" id="main-card">
+      <h1 class="card-header">Ongoing Elections</h1>
+      <div class="card-body">
+        {% for election in ongoing_election_list %}
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">{{ election.title }}</h4>
+            <p class="card-body">{{ election.description }}</p>
+            {% if election.notice %}<h6 id="election-notice"><b><i class="bi bi-exclamation-circle"></i> {{
+                election.notice }}</b></h6>{% endif %}
+
+            {% if now <= election.nomination_end_date %} <h6><b>Nomination Start Date: </b> {{
+              election.nomination_start_date.strftime("%d/%m/%Y %H:%M") }}</h6>
+              <h6><b>Nomination End Date: </b> {{ election.nomination_end_date.strftime("%d/%m/%Y %H:%M") }}</h6>
+              {% else %}
+              <h6><b>Voting Start Date: </b> {{ election.voting_start_date.strftime("%d/%m/%Y %H:%M") }}</h6>
+              <h6><b>Voting End Date: </b> {{ election.voting_end_date.strftime("%d/%m/%Y %H:%M") }}</h6>
+              {% endif %}
+              <a class="btn btn-primary" href="{{ url_for('elections.election_info', election_id = election.id) }}"
+                role="button">View Candidates</a>
+          </div>
+        </div>
+        {% endfor %}
+        {% if ongoing_election_list|length == 0 %}
+          No ongoing elections
+        {% endif %}
+      </div>
+    </div>
+    <div class="card" id="main-card">
+      <h1 class="card-header">Upcoming Elections</h1>
+      <div class="card-body">
+        {% for election in upcoming_election_list %}
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">{{ election.title }}</h4>
+            <p class="card-body">{{ election.description }}</p>
+            {% if election.notice %}<h6 id="election-notice"><b><i class="bi bi-exclamation-circle"></i> {{
+                election.notice }}</b></h6>{% endif %}
+
+            <h6><b>Nomination Start Date: </b> {{
+              election.nomination_start_date.strftime("%d/%m/%Y %H:%M") }}</h6>
+            <h6><b>Nomination End Date: </b> {{ election.nomination_end_date.strftime("%d/%m/%Y %H:%M") }}</h6>
+          </div>
+        </div>
+        {% endfor %}
+        {% if upcoming_election_list|length == 0 %}
+          No upcoming elections
+        {% endif %}
+      </div>
+    </div>
+    <div class="card" id="main-card">
+      <h1 class="card-header">Past Elections</h1>
+      <div class="card-body">
+
+        <a href="{{ url_for('elections.past_elections') }}">View list of all past elections</a>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="{{ url_for('static',filename='js/index.js') }}"></script>
+  {% endblock %}

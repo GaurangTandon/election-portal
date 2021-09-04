@@ -1,0 +1,125 @@
+<!DOCTYPE html5>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../css/styles.css">
+    <title>Election Portal</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-sm navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand mb-0 h1" href="../html/index.html">
+                <i class="bi bi-people" style="font-size: 1em;"></i>
+                Election Portal IIITH
+            </a>
+            <div class="btn-group">
+              <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-gear-wide-connected"></i>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end" id="settings-dropdown">
+                <li><p class="dropdown-item-text"><b>Username: </b>John Doe</p></li>
+                <li><p class="dropdown-item-text" style="margin-top: -20px;"><b>Roll Number: </b>2020111013</p></li>
+                <hr class="dropdown-divider">
+                <li><a class="dropdown-item" href="#">Logout</a></li>
+              </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+      <div class="card" id="main-card">
+        <h1 class="card-header">Ongoing Elections</h1>
+        <div class="card-body">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Members of Parliament Election 2021 <i class="bi bi-check2" style="color: green;"></i></i></h4>
+              <p class="card-body">Election Description Election Description Election Description Election Description Election Description Election Description Election Description
+                Election DescriptionElection Description Election Description Election Description</p>
+              <h6><b>Nomination Start Date: </b> 10/07/2002</h6>
+              <h6><b>Nomination End Date: </b> 10/07/2002</h6>
+              <h6><b>Voting Start Date: </b> 10/07/2002</h6>
+              <h6><b>Voting End Date: </b> 10/07/2002</h6>
+              <a class="btn btn-primary" href="../html/election_id.html" role="button">View Candidates</a>
+            </div>
+          </div>         <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Members of Parliament Election 2021 <i class="bi bi-check-square" style="color: green;"></i></i></h4>
+              <p class="card-body">Election Description Election Description Election Description Election Description Election Description Election Description Election Description
+                Election DescriptionElection Description Election Description Election Description
+              </p>
+              <h6><b>Nomination Start Date: </b> 10/07/2002</h6>
+              <h6><b>Nomination End Date: </b> 10/07/2002</h6>
+              <h6><b>Voting Start Date: </b> 10/07/2002</h6>
+              <h6><b>Voting End Date: </b> 10/07/2002</h6>
+              <a class="btn btn-primary" href="../html/election_id.html" role="button">View Candidates</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card" id="main-card">
+        <h1 class="card-header">Upcoming Elections</h1>
+        <div class="card-body">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Members of Parliament Election 2021</h4>
+              <p class="card-body">Election Description Election Description Election Description Election Description Election Description Election Description Election Description
+                Election DescriptionElection Description Election Description Election Description
+              </p>
+              <!-- <a class="btn btn-primary" href="../html/election_id.html" role="button">Nominate</a> -->
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Members of Parliament Election 2021</h4>
+              <p class="card-body">Election Description Election Description Election Description Election Description Election Description Election Description Election Description
+                Election DescriptionElection Description Election Description Election Description
+              </p>
+              <!-- <a class="btn btn-primary" href="../html/election_id.html" role="button">Nominate</a> -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card" id="main-card">
+        <h1 class="card-header">Past Elections</h1>
+        <div class="card-body">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Members of Parliament Election 2021</h4>
+              <p class="card-body">Election Description Election Description Election Description Election Description Election Description Election Description Election Description
+                Election DescriptionElection Description Election Description Election Description
+              </p>
+              <a class="btn btn-primary" href="../html/election_id.html" role="button">View Candidates</a>
+              <a class="btn btn-success" href="../html/results.html" role="button">View Results</a>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Members of Parliament Election 2021 <i class="bi bi-check-circle-fill" style="color: green;"></i></h4>
+              <p class="card-body">Election Description Election Description Election Description Election Description Election Description Election Description Election Description
+                Election DescriptionElection Description Election Description Election Description
+              </p>
+              <a class="btn btn-primary" href="../html/election_id.html" role="button">View Candidates</a>
+              <a class="btn btn-success" href="../html/results.html" role="button">View Results</a>
+            </div>
+          </div>
+          <a href="../html/past_elections.html">View list of all past elections</a>
+        </div>
+      </div>
+    </div>
+    
+
+    <script src="../js/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
+        crossorigin="anonymous">
+    </script>
+</body>
+
+</html>
