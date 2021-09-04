@@ -62,7 +62,7 @@
             <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
         </div>
     </div>
-    {% if g.user %}
+    {% if can_vote %}
     {% include "election/vote.html" %}
     {% endif %}
     {% endblock %}

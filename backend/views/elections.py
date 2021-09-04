@@ -4,7 +4,7 @@ import datetime
 import random
 
 from flask import Blueprint, render_template, g, request
-from backend.models.models import Candidates, Election
+from backend.models.models import Election, Votes
 from backend.utils.vote import vote
 
 
@@ -58,6 +58,11 @@ def election_info(election_id):
     for key in constituency_wise_ineligible_cands.keys():
         random.shuffle(constituency_wise_ineligible_cands[key])
 
+    vote = Votes.query.filter_by(election_id=election_id,user_id=g.user.id).first() if g.user else None
+
+    can_vote = (eligible_candidates and not vote) and (election.voting_end_date > datetime.datetime.now())
+    
+
     return render_template(
         "election/election.html",
         election=election,
@@ -66,6 +71,7 @@ def election_info(election_id):
         eligible_candidates=eligible_candidates,
         ineligible_candidates=constituency_wise_ineligible_cands,
         message=message,
+        can_vote=can_vote,
     )
 
 

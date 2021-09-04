@@ -63,7 +63,7 @@
       
 
   </div>
-{% if g.user %}
+{% if can_vote %}
 {% include "election/vote.html" %}
 {% endif %}
 {% endblock %}
