@@ -1,29 +1,13 @@
-import os
-import re
-from datetime import datetime
-
-from flask_restx import Namespace, Resource, reqparse, abort
-from flask_restx import marshal_with
-from flask_restx.inputs import datetime_from_iso8601
-from flask import request, g
+from flask_restx import Namespace, Resource, reqparse
 
 
 from backend.middlewares.auth import auth_required
-from backend.models.models import (
-    Constituency,
-    Election,
-    ElectionMethods,
-    Candidates,
-    User,
-    Votes,
-)
-from backend.models.orm import db
-from backend.utils.vote import vote
+from backend.utils.vote import vote, cast, audit
 
 
 api = Namespace("votes", description="Votes related operations")
-parser = reqparse.RequestParser()
-parser.add_argument(
+voteparser = reqparse.RequestParser()
+voteparser.add_argument(
     "votes",
     type=int,
     help="List of candidates voted for",
@@ -31,13 +15,41 @@ parser.add_argument(
     location="form",
     required=True,
 )
+castparser = reqparse.RequestParser()
+castparser.add_argument(
+    "votecampid",
+    type=str,
+    help="The vote camp id received on /vote endpoint",
+    location="form",
+    required=True,
+)
 
 
 @api.route("/<int:election_id>/vote")
 class Vote(Resource):
-    @api.expect(parser)
+    @api.expect(voteparser)
     @api.doc(security="apikey")
     @auth_required
     def post(self, election_id):
-        args = parser.parse_args()
+        args = voteparser.parse_args()
         return vote(election_id, args.get("votes"))
+
+
+@api.route("/<int:election_id>/cast")
+class Cast(Resource):
+    @api.expect(castparser)
+    @api.doc(security="apikey")
+    @auth_required
+    def post(self, election_id):
+        args = castparser.parse_args()
+        return cast(args.get("votecampid"))
+
+
+@api.route("/<int:election_id>/audit")
+class Audit(Resource):
+    @api.expect(castparser)
+    @api.doc(security="apikey")
+    @auth_required
+    def post(self, election_id):
+        args = castparser.parse_args()
+        return audit(args.get("votecampid"))

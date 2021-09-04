@@ -1,55 +1,58 @@
-<button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#exampleModal" id="vote-button">
+<button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#vote_modal" id="vote-button">
     <h4><i class="bi bi-hand-index"></i> Vote </h4>
 </button>
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+{% if not inter_message and not audit_message %}
+<div class="modal fade" id="vote_modal" tabindex="-1" aria-labelledby="vote_modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="exampleModalLabel">
+                    <h4 class="modal-title" id="vote_modalLabel">
                         Member of Parliament Election 2021
                     </h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-                <div class="modal-body">
-                    <h5>Choose your preferences</h5>
-                    <div id="formerror">
-                        <h6><i class="bi bi-exclamation-circle"></i>{{ message }}</h6>
-                    </div>
-                    <div id="error" class="error">
-                        <h6><i class="bi bi-exclamation-circle"></i> Kindly check your preference order</h6>
-                    </div>
-                    <form id="PreferenceForm" class="needs-validation" action="{{ url_for('elections.election_info', election_id=election.id) }}"
-                        method="POST" novalidate>
-                        {% for i in range(preferences) %}
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon{{ i }}">{{ i + 1 }}</span>
-                            <select name="votes" class="form-select" aria-label="Default select example">
-                                <option selected></option>
-                                {% for candidate in eligible_candidates %}
-                                <option value="{{ candidate.user.id }}">{{ candidate.user.name }}</option>
-                                {% endfor %}
-                            </select>
+                    <div class="modal-body">
+                        <h5>Choose your preferences</h5>
+                        {% if error_vote %}
+                            <div id="formerror">
+                                <h6><i class="bi bi-exclamation-circle"></i>{{ message }}</h6>
+                            </div>
+                        {% endif %}
+                        <div id="error" class="error">
+                            <h6><i class="bi bi-exclamation-circle"></i> Kindly check your preference order</h6>
                         </div>
-                        {% endfor %}
+                        <form id="PreferenceForm" class="needs-validation" action="{{ url_for('elections.election_info', election_id=election.id) }}"
+                            method="POST" novalidate>
+                            {% for i in range(preferences) %}
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon{{ i }}">{{ i + 1 }}</span>
+                                <select name="votes" class="form-select" aria-label="Default select example">
+                                    <option selected></option>
+                                    {% for candidate in eligible_candidates %}
+                                    <option value="{{ candidate.user.id }}">{{ candidate.user.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            {% endfor %}
 
 
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                            <label class="form-check-label" for="flexCheckDefault">
-                                By checking this box, I understand that the vote I cast will be <b>final</b> and
-                                <b>cannot be changed later</b>.
-                            </label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                <label class="form-check-label" for="flexCheckDefault">
+                                    By checking this box, I understand that the vote I cast will be <b>final</b> and
+                                    <b>cannot be changed later</b>.
+                                </label>
+                            </div>
+                            <div id="checkbox-error" class="error">
+                                <h6><i class="bi bi-exclamation-circle"></i> Kindly check the box</h6>
+                            </div>
+                        </form>
+                        <div class="modal-footer">
+                            <button type="button" id="clearButton" class="btn btn-danger">Clear All</button>
+                            <button class="btn btn-primary" id="submitButton" href="#" role="button">Cast Vote</button>
                         </div>
-                        <div id="checkbox-error" class="error">
-                            <h6><i class="bi bi-exclamation-circle"></i> Kindly check the box</h6>
-                        </div>
-                        
-                    </form>
-                    <div class="modal-footer">
-                        <button type="button" id="clearButton" class="btn btn-danger">Clear All</button>
-                        <button class="btn btn-primary" id="submitButton" href="#" role="button">Cast Vote</button>
                     </div>
                 </div>
 
@@ -57,4 +60,14 @@
         </div>
     </div>
 </div>
+
 <script src="{{ url_for('static',filename='js/preferenceform.js') }}"></script>
+
+{% if display_vote_modal %}
+<script>
+    var myModal = new bootstrap.Modal(document.getElementById('vote_modal'));
+    myModal.show();
+    getpref();
+</script>
+{% endif %}
+{% endif %}

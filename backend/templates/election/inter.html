@@ -1,0 +1,42 @@
+{% if inter_message %}
+<div class="modal show" id="inter_modal" tabindex="-1" aria-labelledby="Intermediate step modal">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        Finalize or audit your vote
+                    </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div>
+                        <p>Your cryptographically generated proof token is: <pre>{{ inter_message.hash }}</pre></p>
+                        <p>A ballot will be released after election, where this token will be present, guranteeing that your vote was recorded</p>
+                        <p>You may now audit the contents of this token, or finalize your vote. You are allowed to audit multiple times before finalising your vote. If your vote is not finalized, it will not be tallied in the results.</p>
+
+                        <p>For more details, visit <a href="/security">our security page</a></p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <form id="auditbtn" class="needs-validation" action="{{ url_for('elections.token_audit', election_id=election.id) }}" method="POST" novalidate>
+                            <button class="btn btn-primary" id="audit_button" role="button">Audit Vote</button>
+                        </form>
+                        <form id="finbtn" class="needs-validation" action="{{ url_for('elections.token_cast', election_id=election.id) }}" method="POST" novalidate>
+                            <button class="btn btn-success" id="commit_button" role="button">Finalize Vote</button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+#inter_modal {
+    /* if bootstrap would actually show a modal with class .show, I wouldn't need this  */
+    display: block;
+}
+</style>
+{% endif %}

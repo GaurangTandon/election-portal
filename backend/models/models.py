@@ -2,9 +2,10 @@ import enum
 import re
 from typing import Optional
 
-from backend.models.orm import db
 from flask_restx import fields, marshal
 from sqlalchemy.orm import relationship
+
+from backend.models.orm import db
 
 
 class Votes(db.Model):
@@ -16,6 +17,7 @@ class Votes(db.Model):
     def __repr__(self):
         return f"Vote {self.user_id} {self.election_id} {self.vote_time}"
 
+    @staticmethod
     def __json__():
         return {
             "user_id": fields.Integer,
@@ -53,6 +55,12 @@ class Candidates(db.Model):
             "approval_status": fields.String,
         }
 
+    def get_key(self) -> str:
+        """
+        Get the key for this record used in generating the cryptographic keys
+        """
+        return str(self.user.roll_number)
+
 
 class User(db.Model):
     __tablename__ = "user"
@@ -72,6 +80,7 @@ class User(db.Model):
     def __json__():
         return {
             "id": fields.Integer,
+            "roll_number": fields.Integer,
             "name": fields.String,
             "email": fields.String,
             "batch": fields.String,
@@ -109,10 +118,10 @@ class Constituency(db.Model):
         }
 
     def is_candidate_eligible(self, user: User):
-        return re.match(self.candidate_regex, user.__constituency__()) is not None
+        return re.search(self.candidate_regex, user.__constituency__()) is not None
 
     def is_voter_eligible(self, user: User):
-        return re.match(self.voter_regex, user.__constituency__()) is not None
+        return re.search(self.voter_regex, user.__constituency__()) is not None
 
 
 class ElectionMethods(enum.Enum):
@@ -231,3 +240,61 @@ class BlacklistedTokens(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     token = db.Column(db.String(1024), nullable=False)
     blacklisted_on = db.Column(db.DateTime, nullable=False)
+
+
+class Hashes(db.Model):
+    __tablename__ = "hashes"
+
+    HASH_LEN = 256 // 4
+    NONCE_LEN = 16
+    KEY_LEN = HASH_LEN
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.ForeignKey("user.id"), nullable=False)
+    vote_camp = db.Column(db.ForeignKey("votecamp.id"), nullable=False)
+    vote_camp_order = db.Column(db.Integer, nullable=False)
+    key = db.Column(db.String(KEY_LEN), nullable=False)
+    nonce = db.Column(db.String(NONCE_LEN), nullable=False)
+    hash = db.Column(db.String(HASH_LEN), nullable=False)
+
+    @staticmethod
+    def __json__():
+        return {
+            "key": fields.String,
+            "nonce": fields.String,
+            "hash": fields.String,
+        }
+
+
+class CumulativeHashes(db.Model):
+    __tablename__ = "cumhashes"
+
+    MAX_HASH_COUNT = 30
+    HASH_LEN = Hashes.HASH_LEN * MAX_HASH_COUNT
+
+    id = db.Column(db.Integer, primary_key=True)
+    hash_str = db.Column(db.String(HASH_LEN), nullable=False)
+    nonce = db.Column(db.String(Hashes.NONCE_LEN), nullable=False)
+    hash = db.Column(db.String(Hashes.HASH_LEN), nullable=False)
+
+    @staticmethod
+    def __json__():
+        return {
+            "hash_str": fields.String,
+            "nonce": fields.String,
+            "hash": fields.String,
+        }
+
+
+class VoteCamp(db.Model):
+    __tablename__ = "votecamp"
+
+    ID_LEN = 64
+
+    id = db.Column(db.String(ID_LEN), primary_key=True)
+    election_id = db.Column(db.ForeignKey("election.id"), nullable=False)
+    cumulative_hash = db.Column(db.ForeignKey("cumhashes.id"), nullable=False)
+    # property is True when this votecamp has already been used for auditing
+    has_audited = db.Column(db.Boolean, nullable=False)
+    # property is True when this votecamp has already been cast
+    has_cast = db.Column(db.Boolean, nullable=False)
