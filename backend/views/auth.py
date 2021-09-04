@@ -17,37 +17,49 @@ cas_client = CASClient(
 )
 
 
+def store_new_user(email: str):
+    """
+    Construct a User object from email's LDAP data
+    and commit to DB, if it does not already exist
+    """
+
+    user = User.query.filter_by(email=email).first()
+    if user:
+        return
+
+    data = get_ldap_data(email=email)
+    roll = data["rollno"]
+    if not isinstance(roll, int):
+        roll = int(roll)
+
+    user = User(
+        name=data["name"],
+        email=email,
+        roll_number=roll,
+        batch=data["batch"],
+        programme=data["programme"],
+        gender=data["gender"],
+    )
+    db.session.add(user)
+    db.session.commit()
+
+
 @auth_routes.route("/login")
 def login():
-    next = request.args.get("next")
+    _ = request.args.get("next")
     ticket = request.args.get("ticket")
 
     if not ticket:
         cas_login_url = cas_client.get_login_url()
         return redirect(cas_login_url)
 
-    email, _, __ = cas_client.verify_ticket(ticket)
+    email, _, _ = cas_client.verify_ticket(ticket)
 
+    # email is None when the ticket is invalid
     if not email:
         return redirect("/login")
     else:
-        user = User.query.filter_by(email=email).first()
-        if not user:
-            data = get_ldap_data(email=email)
-            roll = data["rollno"]
-            if not isinstance(roll, int):
-                roll = int(roll)
-
-            user = User(
-                name=data["name"],
-                email=email,
-                roll_number=roll,
-                batch=data["batch"],
-                programme=data["programme"],
-                gender=data["gender"],
-            )
-            db.session.add(user)
-            db.session.commit()
+        store_new_user(email)
 
         auth_token = auth.encode_auth_token(email)
         session["apikey"] = auth_token

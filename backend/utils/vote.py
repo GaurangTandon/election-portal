@@ -18,16 +18,9 @@ def vote(election_id, votes):
     voting_start_date = election.voting_start_date
     voting_end_date = election.voting_end_date
 
+    # trivial checks first
     if not (voting_start_date <= current_datetime <= voting_end_date):
         return "Voting is currently closed", 400
-
-    vote = Votes.query.filter_by(election_id=election_id, user_id=user.id).first()
-    if vote:
-        return "You have already voted in this election", 400
-
-    constituency = election.get_constituency(user)
-    if not constituency:
-        return "You are not eligible to vote in this election", 400
 
     if not votes:
         return "Please provide a list of candidates", 400
@@ -35,15 +28,28 @@ def vote(election_id, votes):
     if len(set(votes)) != len(votes):
         return "Please provide a list of unique candidates", 400
 
+    # db checks next
+    constituency = election.get_constituency(user)
+    if not constituency:
+        return "You are not eligible to vote in this election", 400
+
+    vote = Votes.query.filter_by(election_id=election_id, user_id=user.id).first()
+    if vote:
+        return "You have already voted in this election", 400
+
     if len(votes) > constituency.preferences:
-        return "You need to vote for %d candidates" % constituency.preferences, 400
+        return (
+            "You need to vote for atmost %d candidates" % constituency.preferences,
+            400,
+        )
 
     if election.election_method == ElectionMethods.IRV:
-
         for candidate_id in votes:
             candidate = election.get_candidate(candidate_id, approval_status=True)
             if not candidate:
-                return "Candidate not found", 400
+                return f"Candidate with id {candidate_id} not found", 400
+            if not constituency.is_candidate_eligible(candidate.user):
+                return "This candidate is from another constituency", 400
             if len(candidate.votes) == 0:
                 candidate.votes = [1]
             else:

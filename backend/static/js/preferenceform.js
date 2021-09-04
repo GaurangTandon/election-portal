@@ -1,12 +1,11 @@
 const form = document.getElementById('PreferenceForm');
-const count = form.length;
+const count = form.length - 1;
 const error = document.getElementById('error');
 const checkboxError = document.getElementById('checkbox-error');
 const checkbox = document.getElementById('flexCheckDefault');
 const submitButton = document.getElementById('submitButton');
 const clearButton = document.getElementById('clearButton');
 const voteButton = document.getElementById('vote-button');
-const settingsDropdown = document.getElementById('settings-dropdown');
 
 let preferences = [];
 
@@ -68,7 +67,8 @@ submitButton.addEventListener("click", function submit(){
             // console.log(preferences);
             window.localStorage.setItem('preferences', JSON.stringify(preferences));
             if (checkbox.checked === true) {
-                submitButton.href = '../html/index.html';
+                form.submit();
+                window.localStorage.setItem('preferences', JSON.stringify([]));
                 return true;
             }
             checkboxError.classList.remove("error")
@@ -79,7 +79,8 @@ submitButton.addEventListener("click", function submit(){
     // console.log(preferences);
     window.localStorage.setItem('preferences', JSON.stringify(preferences));
     if (checkbox.checked === true) {
-        submitButton.href = '/';
+        form.submit();
+        window.localStorage.setItem('preferences', JSON.stringify([]));
     } else {
         checkboxError.classList.remove("error")
         checkboxError.classList.add("showerror");
@@ -89,6 +90,9 @@ submitButton.addEventListener("click", function submit(){
 // document.getElementById("clearButton").onclick = clearall()
 voteButton.addEventListener("click", function getpref(){
     preferences = JSON.parse(localStorage.getItem('preferences'));
+    if (preferences === null) {
+        preferences = [];
+    }
     // console.log(preferences)
     for (let i = 0; i < count; i += 1) {
         form[i].value = preferences[i];
