@@ -197,7 +197,8 @@ class Election(db.Model):
 
     def get_constituency(self, user: User) -> Optional[Constituency]:
         """
-        Get the constituency of the user in the current election. Returns None if user is ineligible.
+        Get the constituency in which user is eligible to vote for in the election.
+        Returns None if user is ineligible.
         """
         if user.email == Election.EC_EMAIL:
             return None
@@ -215,7 +216,8 @@ class Election(db.Model):
         self, candidate: Candidates
     ) -> Optional[Constituency]:
         """
-        Get the constituency of the user in the current election. Returns None if user is ineligible.
+        Get the constituency in which the user eligible to nominate himself in the current election.
+        Returns None if user is ineligible.
         """
         if candidate.user.email == Election.EC_EMAIL:
             return None

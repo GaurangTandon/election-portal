@@ -4,9 +4,8 @@ import datetime
 import random
 
 from flask import Blueprint, render_template, g, request, session
-from backend.models.models import Candidates, Election
+from backend.models.models import Candidates, Election, Votes
 from backend.utils.vote import vote, cast, audit, VOTEID_SESSION_KEY
-
 
 election_routes = Blueprint("elections", __name__)
 
@@ -54,12 +53,23 @@ def get_details_common_to_renders(election_id):
         random.shuffle(constituency_wise_ineligible_cands[key])
 
     prefs = constituency.preferences if constituency else 0
+
+    vote = (
+        Votes.query.filter_by(election_id=election_id, user_id=g.user.id).first()
+        if g.user
+        else None
+    )
+    can_vote = (eligible_candidates and not vote) and (
+        election.voting_end_date > datetime.datetime.now()
+    )
+
     return {
         "election": election,
         "candidates": candidates,
         "preferences": prefs,
         "eligible_candidates": eligible_candidates,
         "ineligible_candidates": constituency_wise_ineligible_cands,
+        "can_vote": can_vote,
     }
 
 
@@ -135,3 +145,14 @@ def candidate_info(election_id, user_id):
         if constituency
         else [],
     )
+
+
+@election_routes.route("/past-elections")
+def past_elections():
+    return render_template(
+        "election/past_elections.html",
+        past_election_list=Election.query.filter(
+            Election.voting_end_date < datetime.datetime.now()
+        ).all(),
+    )
+

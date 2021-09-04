@@ -55,11 +55,11 @@
       <h1 class="card-header">Past Elections</h1>
       <div class="card-body">
 
-        <a href="../html/past_elections.html">View list of all past elections</a>
+        <a href="{{ url_for('elections.past_elections') }}">View list of all past elections</a>
       </div>
     </div>
   </div>
 
 
-  <script src="../js/index.js"></script>
+  <script src="{{ url_for('static',filename='js/index.js') }}"></script>
   {% endblock %}

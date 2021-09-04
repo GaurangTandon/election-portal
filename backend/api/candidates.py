@@ -53,6 +53,9 @@ class Nominate(Resource):
     @api.doc(security="apikey")
     @auth_required
     def post(self, election_id, user_id):
+        """
+        Endpoint to nominate yourself as a candidate
+        """
         user = g.user
         assert user
 
@@ -95,6 +98,9 @@ class Nominate(Resource):
     @api.doc(security="apikey")
     @auth_required
     def put(self, election_id, user_id):
+        """
+        Endpoint to edit candidate's manifesto
+        """
 
         user = g.user
         assert user

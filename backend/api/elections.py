@@ -74,6 +74,9 @@ class ElectionCreate(Resource):
     @api.doc(security="apikey")
     @cec_only
     def post(self):
+        """
+        Endpoint to create a new election. CEC Only.
+        """
         args = parser.parse_args()
         if not (
             args["nomination_start_date"]
@@ -101,6 +104,9 @@ class ElectionCreate(Resource):
 class ElectionList(Resource):
     @marshal_with(Election.__json__())
     def get(self):
+        """
+        Returns a list of active elections
+        """
         return Election.query.filter(Election.voting_end_date > datetime.now()).all()
 
 
@@ -108,12 +114,18 @@ class ElectionList(Resource):
 class ElectionDetails(Resource):
     @marshal_with(Election.__json__())
     def get(self, election_id):
+        """
+        Returns details regarding a particular election
+        """
         return Election.query.get_or_404(election_id)
 
     @cec_only
     @api.doc(security="apikey")
     @api.expect(parser)
     def put(self, election_id):
+        """
+        CEC only view to edit election details
+        """
         election = Election.query.get_or_404(election_id)
         args = parser.parse_args()
         if not (
@@ -135,6 +147,9 @@ class ElectionDetails(Resource):
     @cec_only
     @api.doc(security="apikey")
     def delete(self, election_id):
+        """
+        CEC only view to delete election
+        """
         election = Election.query.get_or_404(election_id)
         db.session.delete(election)
         db.session.commit()
