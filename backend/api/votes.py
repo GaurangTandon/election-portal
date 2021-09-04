@@ -50,6 +50,6 @@ class Audit(Resource):
     @api.expect(castparser)
     @api.doc(security="apikey")
     @auth_required
-    def post(self, _):
+    def post(self, election_id):
         args = castparser.parse_args()
         return audit(args.get("votecampid"))

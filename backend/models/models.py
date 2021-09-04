@@ -293,5 +293,7 @@ class VoteCamp(db.Model):
 
     id = db.Column(db.String(ID_LEN), primary_key=True)
     cumulative_hash = db.Column(db.ForeignKey("cumhashes.id"), nullable=False)
-    # property is True when this votecamp has already been used for voting or auditing
-    used = db.Column(db.Boolean, nullable=False)
+    # property is True when this votecamp has already been used for auditing
+    has_audited = db.Column(db.Boolean, nullable=False)
+    # property is True when this votecamp has already been cast
+    has_cast = db.Column(db.Boolean, nullable=False)

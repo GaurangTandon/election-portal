@@ -66,7 +66,7 @@ def vote(election_id, votes):
             )
         candidates.append(candidate)
 
-    vcamp = VoteCamp(cumulative_hash=1, used=False)
+    vcamp = VoteCamp(cumulative_hash=1, has_cast=False, has_audited=False)
 
     hash_objects = []
     hashes = []
@@ -116,10 +116,10 @@ def cast(election_id, votecamp_id):
     # votes given by votecamp are guaranteed to be correct as
     # validation has already taken place when putting them into db previously
 
-    if votecamp.used:
-        return "This vote has already been cast. Please recheck the id", 400
+    if votecamp.has_cast or votecamp.has_audited:
+        return "This vote has already been cast or audited", 400
 
-    votecamp.used = True
+    votecamp.has_cast = True
     votes = Hashes.query.filter_by(vote_camp=votecamp_id).all()
 
     for vote_hash in votes:
@@ -156,11 +156,11 @@ def cast(election_id, votecamp_id):
 def audit(votecamp_id):
     votecamp = VoteCamp.query.get_or_404(votecamp_id)
 
-    if votecamp.used:
+    if votecamp.has_cast:
         # ideally auditing should be allowed multiple times, but hard to integrate in the UI anyway
-        return "This vote has already been cast/audited. Please recheck the id", 401
+        return "Votes that have been finalized cannot be audited", 401
 
-    votecamp.used = True
+    votecamp.has_audited = True
     votes = Hashes.query.filter_by(vote_camp=votecamp_id).all()
 
     voted_keys = []
@@ -199,3 +199,56 @@ def audit(votecamp_id):
         "final_combined_key": key_f + "," + nonce,
         "final_hash": combined_hash_obj.hash,
     }
+
+
+def build_diagnostic_for_token(token_details):
+    """
+    Generates a plain text string explaining in natural language how to audit
+    a token
+    token_details is a dictionary containing all the metadata required to generate
+    this plain text
+    """
+
+    token = token_details["final_hash"]
+    message = ""
+
+    def output(s: str):
+        nonlocal message
+        message += s
+
+    output(
+        f"# Audit of `token`\n\nThe given token proof is: `{token}`. This file contains information on how to audit this token. Through this auditing, you will be guaranteed that this token proof is a genuine representation of the original vote choices.\n"
+    )
+
+    voted_keys = token_details["voted_keys"]
+    message += (
+        "We used the SHA256 hashing algorithm. You can run it on Linux"
+        + ' as `echo -n "<string>" | sha256sum`\n'
+        + "We added nonces to the strings (before hashing them) to make it impossible to reverse-engineer the string to match the hash. Each nonce is a 16 byte random integer.\n"
+        + "You can find more details about our cryptographic methodology on the page https://election.iiit.ac.in/security"
+        + f"\n\nThe given token encodes {len(voted_keys)} preferences\n"
+    )
+    for order, pref in voted_keys:
+        key, nonce = pref["key"], pref["nonce"]
+        output(f"\n## Preference {order + 1}\n\n")
+        output(
+            f"The unique key of the candidate is: `{key}`"
+            + f", and the nonce attached to it is: `{nonce}`"
+            + f". This yields the combined string: `{pref['combined']}`\n"
+        )
+        output(f"The hash of the above combined string is: `{pref['hash']}`\n")
+
+    output("\n## Combining all hashes\n\n")
+    output(
+        f"The combined string of all hashes is: `{token_details['final_combined_key']}`\n"
+        + f"Using the nonce: `{token_details['final_nonce']}`,"
+        + f" the final string of all hashes obtained is: `{token_details['final_combined_key']}`\n"
+    )
+    output(
+        f"Hashing the above final string gives the final hash: `{token_details['final_hash']}`. This final hash is the same as the token proof that was assigned to you.\n"
+    )
+
+    output(
+        "\n## Conclusion\n\nWe have successfully audited the internal representation of the given token proof."
+    )
+    return message
