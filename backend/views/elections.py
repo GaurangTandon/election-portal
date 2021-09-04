@@ -60,7 +60,7 @@ def get_details_common_to_renders(election_id):
         else None
     )
     can_vote = (eligible_candidates and not vote) and (
-        election.voting_end_date > datetime.datetime.now()
+        election.voting_end_date >= datetime.datetime.now() >= election.voting_start_date
     )
 
     return {
