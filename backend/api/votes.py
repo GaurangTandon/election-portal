@@ -2,7 +2,7 @@ from flask_restx import Namespace, Resource, reqparse
 
 
 from backend.middlewares.auth import auth_required
-from backend.utils.vote import vote, cast
+from backend.utils.vote import vote, cast, audit
 
 
 api = Namespace("votes", description="Votes related operations")
@@ -47,8 +47,9 @@ class Cast(Resource):
 
 @api.route("/<int:election_id>/audit")
 class Audit(Resource):
-    @api.expect(voteparser)
+    @api.expect(castparser)
     @api.doc(security="apikey")
     @auth_required
-    def post(self, election_id):
-        return None
+    def post(self, _):
+        args = castparser.parse_args()
+        return audit(args.get("votecampid"))

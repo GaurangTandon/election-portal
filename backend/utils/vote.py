@@ -1,4 +1,5 @@
 from datetime import datetime
+from operator import itemgetter
 
 from flask import g
 
@@ -150,3 +151,51 @@ def cast(election_id, votecamp_id):
     db.session.add(votecamp)
     db.session.commit()
     return "Success", 200
+
+
+def audit(votecamp_id):
+    votecamp = VoteCamp.query.get_or_404(votecamp_id)
+
+    if votecamp.used:
+        # ideally auditing should be allowed multiple times, but hard to integrate in the UI anyway
+        return "This vote has already been cast/audited. Please recheck the id", 401
+
+    votecamp.used = True
+    votes = Hashes.query.filter_by(vote_camp=votecamp_id).all()
+
+    voted_keys = []
+    for vote_hash in votes:
+        vote_pref_order = vote_hash.vote_camp_order
+        key = vote_hash.key
+        nonce = vote_hash.nonce
+        combined_str = key + "," + nonce
+
+        voted_keys.append(
+            (
+                vote_pref_order,
+                {
+                    "key": key,
+                    "nonce": nonce,
+                    "combined": combined_str,
+                    "hash": vote_hash.hash,
+                },
+            )
+        )
+    voted_keys.sort(key=itemgetter(0))
+
+    db.session.add(votecamp)
+    db.session.commit()
+
+    combined_hash_obj = CumulativeHashes.query.filter_by(
+        id=votecamp.cumulative_hash
+    ).first()
+    key_f = combined_hash_obj.hash_str
+    nonce = combined_hash_obj.nonce
+
+    return {
+        "voted_keys": voted_keys,
+        "final_key_str": key_f,
+        "final_nonce": nonce,
+        "final_combined_key": key_f + "," + nonce,
+        "final_hash": combined_hash_obj.hash,
+    }
