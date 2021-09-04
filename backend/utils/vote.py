@@ -1,8 +1,7 @@
 from datetime import datetime
 from operator import itemgetter
-import os
 
-from flask import g, send_from_directory
+from flask import g, send_from_directory, session
 
 from backend.models.orm import db
 from backend.models.models import (
@@ -15,6 +14,8 @@ from backend.models.models import (
     Votes,
 )
 from .crypto import generate_nonce, get_nonce_and_hash
+
+VOTEID_SESSION_KEY = "voteid"
 
 
 def vote(election_id, votes):
@@ -104,21 +105,25 @@ def vote(election_id, votes):
         db.session.add(hobj)
     db.session.commit()
 
+    session[VOTEID_SESSION_KEY] = vcamp.id
     return {"id": vcamp.id, "hash": hash_f}, 200
 
 
-def cast(election_id, votecamp_id):
+def cast(votecamp_id):
     """
     Take the votes given by votecamp id and actually perform them
     """
-    election = Election.query.get_or_404(election_id)
     votecamp = VoteCamp.query.get_or_404(votecamp_id)
+    election = Election.query.get_or_404(votecamp.election_id)
 
     # votes given by votecamp are guaranteed to be correct as
     # validation has already taken place when putting them into db previously
 
     if votecamp.has_cast or votecamp.has_audited:
         return "This vote has already been cast or audited", 400
+
+    if votecamp_id != session[VOTEID_SESSION_KEY]:
+        return "Can only cast vote with the same votecamp id as in the session", 400
 
     votecamp.has_cast = True
     votes = Hashes.query.filter_by(vote_camp=votecamp_id).all()
@@ -127,10 +132,7 @@ def cast(election_id, votecamp_id):
         vote_pref_order = vote_hash.vote_camp_order
         user_id = vote_hash.user_id
         el2 = vote_hash.election_id
-        assert el2 == election_id
-        candidate = Candidates.query.filter_by(
-            user_id=user_id, election_id=election_id
-        ).first()
+        candidate = Candidates.query.filter_by(user_id=user_id, election_id=el2).first()
         if election.election_method == ElectionMethods.IRV:
             if len(candidate.votes) == 0:
                 candidate.votes = [1]
@@ -154,7 +156,7 @@ def cast(election_id, votecamp_id):
     return "Success", 200
 
 
-def audit(votecamp_id):
+def audit(votecamp_id, return_file=True):
     votecamp = VoteCamp.query.get_or_404(votecamp_id)
 
     if votecamp.has_cast:
@@ -206,12 +208,17 @@ def audit(votecamp_id):
     # no file paths here are user-crafted strings
     # even then, send_from_directory ensures that files _outside_ the supplied DIR
     # will not be sent in any way
-    filename = f"{final_hash[:15]}.md"
-    DIR = "static/votedata"
+    filename = f"{final_hash[:15]}.md"  # probability of collision is 2^60
+    INTER_DIR = "votedata"
+    DIR = f"static/{INTER_DIR}"
     with open(f"{DIR}/{filename}", "w") as f:
         f.write(diagnostic_str)
 
-    return send_from_directory(DIR, filename)
+    if return_file:
+        return send_from_directory(DIR, filename)
+    else:
+        rel_to_static_path = INTER_DIR + "/" + filename
+        return rel_to_static_path
 
 
 def build_diagnostic_for_token(token_details):
@@ -258,7 +265,7 @@ def build_diagnostic_for_token(token_details):
         + f" the final string of all hashes obtained is: `{token_details['final_combined_key']}`\n"
     )
     output(
-        f"Hashing the above final string gives the final hash: `{token_details['final_hash']}`. This final hash is the same as the token proof that was assigned to you.\n"
+        f"\nHashing the above final string gives the final hash: `{token_details['final_hash']}`. This final hash is the same as the token proof that was assigned to you.\n"
     )
 
     output(

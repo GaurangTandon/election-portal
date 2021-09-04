@@ -42,7 +42,7 @@ class Cast(Resource):
     @auth_required
     def post(self, election_id):
         args = castparser.parse_args()
-        return cast(election_id, args.get("votecampid"))
+        return cast(args.get("votecampid"))
 
 
 @api.route("/<int:election_id>/audit")
