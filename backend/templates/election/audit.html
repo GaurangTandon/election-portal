@@ -16,7 +16,9 @@
                     </div>
 
                     <div class="modal-footer">
-                        <a class="btn btn-primary" id="goback_button" role="button" href="/{{ election.id }}">Back to voting</a>
+                        <form id="auditbtn" class="needs-validation" action="{{ url_for('elections.election_vote', election_id=election.id) }}" method="GET" novalidate>
+                            <button class="btn btn-primary" id="goback_button" role="button">Back to Voting</button>
+                        </form>
                     </div>
                 </div>
 

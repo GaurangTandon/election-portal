@@ -68,7 +68,9 @@ def vote(election_id, votes):
             )
         candidates.append(candidate)
 
-    vcamp = VoteCamp(cumulative_hash=1, has_cast=False, has_audited=False)
+    vcamp = VoteCamp(
+        cumulative_hash=1, has_cast=False, has_audited=False, election_id=election.id
+    )
 
     hash_objects = []
     hashes = []

@@ -248,9 +248,7 @@ class Hashes(db.Model):
     KEY_LEN = HASH_LEN
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer)
-    election_id = db.Column(db.Integer)
-    db.ForeignKeyConstraint(["user_id", "election_id"], ["user.id", "election.id"])
+    user_id = db.Column(db.ForeignKey("user.id"), nullable=False)
     vote_camp = db.Column(db.ForeignKey("votecamp.id"), nullable=False)
     vote_camp_order = db.Column(db.Integer, nullable=False)
     key = db.Column(db.String(KEY_LEN), nullable=False)
@@ -292,6 +290,7 @@ class VoteCamp(db.Model):
     ID_LEN = 64
 
     id = db.Column(db.String(ID_LEN), primary_key=True)
+    election_id = db.Column(db.ForeignKey("election.id"), nullable=False)
     cumulative_hash = db.Column(db.ForeignKey("cumhashes.id"), nullable=False)
     # property is True when this votecamp has already been used for auditing
     has_audited = db.Column(db.Boolean, nullable=False)

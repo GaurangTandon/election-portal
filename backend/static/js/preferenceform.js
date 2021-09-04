@@ -91,8 +91,7 @@ if (submitButton) {
 }
 
 if (voteButton) {
-    // document.getElementById("clearButton").onclick = clearall()
-    voteButton.addEventListener("click", function getpref() {
+    window.getpref = function () {
         preferences = JSON.parse(localStorage.getItem('preferences'));
         if (preferences === null) {
             preferences = [];
@@ -102,5 +101,7 @@ if (voteButton) {
             form[i].value = preferences[i];
         }
         // console.log(document.getElementById("flexCheckDefault").checked)
-    });
+    };
+    // document.getElementById("clearButton").onclick = clearall()
+    voteButton.addEventListener("click", getpref);
 }

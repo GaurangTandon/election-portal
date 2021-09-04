@@ -61,12 +61,13 @@
     </div>
 </div>
 
-{% if display_vote_modal %}
-<style>
-#vote_modal {
-    display: block;
-}
-</style>
-{% endif %}
-{% endif %}
 <script src="{{ url_for('static',filename='js/preferenceform.js') }}"></script>
+
+{% if display_vote_modal %}
+<script>
+    var myModal = new bootstrap.Modal(document.getElementById('vote_modal'));
+    myModal.show();
+    getpref();
+</script>
+{% endif %}
+{% endif %}
