@@ -60,7 +60,7 @@ def election_info(election_id):
 
     vote = Votes.query.filter_by(election_id=election_id,user_id=g.user.id).first() if g.user else None
 
-    can_vote = (eligible_candidates and not vote) and (election.voting_end_date > datetime.datetime.now())
+    can_vote = (eligible_candidates and not vote) and (election.voting_end_date > datetime.datetime.now() > election.voting_start_date)
     
 
     return render_template(
