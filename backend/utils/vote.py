@@ -1,7 +1,8 @@
 from datetime import datetime
 from operator import itemgetter
+import os
 
-from flask import g
+from flask import g, send_from_directory
 
 from backend.models.orm import db
 from backend.models.models import (
@@ -191,14 +192,26 @@ def audit(votecamp_id):
     ).first()
     key_f = combined_hash_obj.hash_str
     nonce = combined_hash_obj.nonce
+    final_hash = combined_hash_obj.hash
 
-    return {
+    token_details = {
         "voted_keys": voted_keys,
         "final_key_str": key_f,
         "final_nonce": nonce,
         "final_combined_key": key_f + "," + nonce,
-        "final_hash": combined_hash_obj.hash,
+        "final_hash": final_hash,
     }
+    diagnostic_str = build_diagnostic_for_token(token_details)
+
+    # no file paths here are user-crafted strings
+    # even then, send_from_directory ensures that files _outside_ the supplied DIR
+    # will not be sent in any way
+    filename = f"{final_hash[:15]}.md"
+    DIR = "static/votedata"
+    with open(f"{DIR}/{filename}", "w") as f:
+        f.write(diagnostic_str)
+
+    return send_from_directory(DIR, filename)
 
 
 def build_diagnostic_for_token(token_details):
