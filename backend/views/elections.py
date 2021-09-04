@@ -95,3 +95,10 @@ def candidate_info(election_id, user_id):
         if constituency
         else [],
     )
+
+@election_routes.route("/past-elections")
+def past_elections():
+    return render_template("election/past_elections.html",
+        past_election_list=Election.query.filter(
+            Election.voting_end_date < datetime.datetime.now()
+        ).all())

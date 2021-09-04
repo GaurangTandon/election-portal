@@ -8,7 +8,7 @@
           <div class="card" id="subheading-card">
             <div class="card-body">
               <h4 class="card-title">{{ election.title }}</h4>
-              <a class="btn btn-primary" href="{{ url_for('elections.past_elections', election_id = election.id) }}" role="button">View Candidates</a>
+              <a class="btn btn-primary" href="{{ url_for('elections.election_info', election_id = election.id) }}" role="button">View Candidates</a>
               <a class="btn btn-success" href="#" role="button">View Results</a>
             </div>
           </div>

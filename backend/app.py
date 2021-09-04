@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, request, g, session
+from flask import Flask, request, g, session, send_from_directory
 
 from backend import api
 from backend.models.orm import db
@@ -47,6 +47,10 @@ def before_request():
     success, msg_or_user = validate_access_token(access_token)
     g.user = msg_or_user if success else None
 
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
