@@ -11,6 +11,7 @@ from flask import request, g
 from backend.middlewares.auth import auth_required
 from backend.models.models import (
     Constituency,
+    CumulativeHashes,
     Election,
     ElectionMethods,
     Candidates,
@@ -41,3 +42,22 @@ class Vote(Resource):
     def post(self, election_id):
         args = parser.parse_args()
         return vote(election_id, args.get("votes"))
+
+
+@api.route("/<int:election_id>/cast")
+class Cast(Resource):
+    @api.expect(parser)
+    @api.doc(security="apikey")
+    @auth_required
+    def post(self, election_id):
+        args = parser.parse_args()
+        return vote(election_id, args.get("votes"))
+
+
+@api.route("/<int:election_id>/audit")
+class Audit(Resource):
+    @api.expect(parser)
+    @api.doc(security="apikey")
+    @auth_required
+    def post(self, election_id):
+        return None

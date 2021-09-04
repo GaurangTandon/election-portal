@@ -1,12 +1,20 @@
 from datetime import datetime
 
 from flask import g
+
 from backend.models.orm import db
-from backend.models.models import Election, ElectionMethods, Votes
+from backend.models.models import (
+    CumulativeHashes,
+    Election,
+    ElectionMethods,
+    Hashes,
+    VoteCamp,
+    Votes,
+)
+from .crypto import get_nonce_and_hash
 
 
 def vote(election_id, votes):
-
     user = g.user
     assert user
 
@@ -39,38 +47,51 @@ def vote(election_id, votes):
 
     if len(votes) > constituency.preferences:
         return (
-            "You need to vote for atmost %d candidates" % constituency.preferences,
+            "You can vote for atmost %d candidates" % constituency.preferences,
             400,
         )
 
-    if election.election_method == ElectionMethods.IRV:
-        for candidate_id in votes:
-            candidate = election.get_candidate(candidate_id, approval_status=True)
-            if not candidate:
-                return f"Candidate with id {candidate_id} not found", 400
-            if not constituency.is_candidate_eligible(candidate.user):
-                return "This candidate is from another constituency", 400
-            if len(candidate.votes) == 0:
-                candidate.votes = [1]
-            else:
-                candidate_votes = list(candidate.votes)
-                candidate_votes[0] += 1
-                candidate.votes = candidate_votes
+    candidates = []
+    for candidate_id in votes:
+        candidate = election.get_candidate(candidate_id, approval_status=True)
+        err = f"Candidate with id {candidate_id}"
+        if not candidate:
+            return f"{err} not found", 404
+        if not constituency.is_candidate_eligible(candidate.user):
+            return (
+                f"{err} is from another constituency (required: {constituency.id})",
+                401,
+            )
+        candidates.append(candidate)
 
-    elif election.election_method == ElectionMethods.STV:
-        for i, candidate_id in enumerate(votes):
-            candidate = election.get_candidate(candidate_id, approval_status=True)
-            if not candidate:
-                return "Candidate not found", 400
-            if not constituency.is_candidate_eligible(candidate.user):
-                return "This candidate is from another constituency", 400
-            if len(candidate.votes) == 0:
-                candidate.votes = [0 for _ in range(constituency.preferences)]
-            candidate_votes = list(candidate.votes)
-            candidate_votes[i] += 1
-            candidate.votes = candidate_votes
+    vcamp = VoteCamp(cumulative_hash=1)
 
-    vote = Votes(election_id=election_id, user_id=user.id, vote_time=datetime.now())
-    db.session.add(vote)
+    hash_objects = []
+    hashes = []
+    for idx, candidate in enumerate(candidates):
+        key = candidate.get_key()
+        nonce, hsh = get_nonce_and_hash(key)
+        hash_obj = Hashes(
+            key=key, nonce=nonce, hash=hsh, vote_camp=vcamp.id, vote_camp_order=idx
+        )
+        hash_objects.append(hash_obj)
+        hashes.append(hsh)
+
+    hash_concat = "".join(hashes)
+    nonce_f, hash_f = get_nonce_and_hash(hash_concat)
+    cum_hash = CumulativeHashes(nonce=nonce_f, hash=hash_f, hash_str=hash_concat)
+
+    db.session.add(cum_hash)
     db.session.commit()
-    return "Success", 200
+
+    # IDs are only correct after committing into db
+    vcamp.cumulative_hash = cum_hash.id
+    db.session.add(vcamp)
+    db.session.commit()
+
+    for hobj in hash_objects:
+        hobj.vote_camp = vcamp.id
+        db.session.add(hobj)
+    db.session.commit()
+
+    return {"id": cum_hash.id, "hash": hash_f}, 200

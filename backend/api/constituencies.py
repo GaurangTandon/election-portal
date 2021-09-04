@@ -1,18 +1,12 @@
-from datetime import datetime
-
+from flask import g
 from flask_restx import Namespace, Resource, reqparse, abort
-from flask_restx import marshal_with
-from flask_restx.inputs import datetime_from_iso8601
-from flask import request, g
+from flask_restx.marshalling import marshal_with
 
 
 from backend.middlewares.auth import auth_required, cec_only
 from backend.models.models import (
     Constituency,
     Election,
-    ElectionMethods,
-    Candidates,
-    User,
 )
 from backend.models.orm import db
 
@@ -105,3 +99,15 @@ class AddConstituency(Resource):
         db.session.commit()
 
         return 200
+
+
+@api.route("/<int:election_id>/constituency")
+class GetConstituency(Resource):
+    @marshal_with(Constituency.__json__())
+    @api.doc(security="apikey")
+    @auth_required
+    def get(self, election_id: int):
+        user = g.user
+        election = Election.query.get_or_404(election_id)
+
+        return election.get_constituency(user)
