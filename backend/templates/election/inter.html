@@ -1,0 +1,30 @@
+<div class="modal " id="inter_modal" tabindex="-1" aria-labelledby="Intermediate step modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalLabel">
+                        Finalize or audit your vote
+                    </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div>
+                        <p>Your cryptographically generated proof token is: <pre>{{ proof }}</pre></p>
+                        <p>A ballot will be released after election, where this token will be present, guranteeing that your vote was recorded</p>
+                        <p>You may now audit the contents of this token, or finalize your vote. You are allowed to audit multiple times before finalising your vote. If your vote is not finalized, it will not be tallied in the results.</p>
+
+                        <p>For more details, visit <a href="/security">our security page</a></p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" id="audit_button" class="btn btn-primary">Audit Vote</button>
+                        <button class="btn btn-success" id="commit_button" href="#" role="button">Finalize Vote</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
