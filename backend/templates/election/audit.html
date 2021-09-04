@@ -1,0 +1,33 @@
+{% if audit_message %}
+<div class="modal show" id="audit_modal" tabindex="-1" aria-labelledby="Intermediate step modal">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        Audit your vote
+                    </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div>
+                        Auditing information for your token is attached in a file. Click <a href="{{ url_for('static', filename=filepath) }}" rel="download">here</a> to download it.
+                    </div>
+
+                    <div class="modal-footer">
+                        <a class="btn btn-primary" id="goback_button" role="button" href="/{{ election.id }}">Back to voting</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+#audit_modal {
+    /* if bootstrap would actually show a modal with class .show, I wouldn't need this  */
+    display: block;
+}
+</style>
+{% endif %}
