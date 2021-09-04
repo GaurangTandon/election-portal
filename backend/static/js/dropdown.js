@@ -1,5 +1,7 @@
 const settingsDropdown = document.getElementById('settings-dropdown');
-
-settingsDropdown.addEventListener("click", function stopDismiss(event){
-    event.stopPropagation();
-});
+if(settingsDropdown !== null)
+{
+    settingsDropdown.addEventListener("click", function stopDismiss(event){
+        event.stopPropagation();
+    });
+}
