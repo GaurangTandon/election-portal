@@ -83,7 +83,6 @@ def vote(election_id, votes):
             hash=hsh,
             vote_camp=vcamp.id,
             vote_camp_order=idx,
-            election_id=election_id,
             user_id=candidate.user.id,
         )
         hash_objects.append(hash_obj)
@@ -133,7 +132,7 @@ def cast(votecamp_id):
     for vote_hash in votes:
         vote_pref_order = vote_hash.vote_camp_order
         user_id = vote_hash.user_id
-        el2 = vote_hash.election_id
+        el2 = votecamp.election_id
         candidate = Candidates.query.filter_by(user_id=user_id, election_id=el2).first()
         if election.election_method == ElectionMethods.IRV:
             if len(candidate.votes) == 0:
@@ -153,6 +152,9 @@ def cast(votecamp_id):
             assert False
         db.session.add(candidate)
 
+    vote = Votes(election_id=votecamp.election_id, user_id=g.user.id, vote_time=datetime.now())
+
+    db.session.add(vote)
     db.session.add(votecamp)
     db.session.commit()
     return "Success", 200
