@@ -2,10 +2,10 @@ from cas import CASClient
 from flask import redirect, request, render_template, Blueprint, session
 import datetime
 
-from backend.utils.ldap_query import get_ldap_data
-from backend.models.models import User, BlacklistedTokens
-from backend.models.orm import db
-from backend.middlewares import auth
+from app.utils.ldap_query import get_ldap_data
+from app.models.models import User, BlacklistedTokens
+from app.models.orm import db
+from app.middlewares import auth
 
 auth_routes = Blueprint("auth_routes", __name__)
 

@@ -5,7 +5,7 @@ from typing import Optional
 from flask_restx import fields, marshal
 from sqlalchemy.orm import relationship
 
-from backend.models.orm import db
+from app.models.orm import db
 
 
 class Votes(db.Model):

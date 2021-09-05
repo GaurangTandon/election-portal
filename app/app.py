@@ -2,12 +2,12 @@ import os
 
 from flask import Flask, request, g, session, send_from_directory
 
-from backend import api
-from backend.models.orm import db
-from backend.middlewares.auth import validate_access_token
-from backend.middlewares.ratelimit import limiter
-from backend.views.auth import auth_routes
-from backend.views.elections import election_routes
+from app import api
+from app.models.orm import db
+from app.middlewares.auth import validate_access_token
+from app.middlewares.ratelimit import limiter
+from app.views.auth import auth_routes
+from app.views.elections import election_routes
 
 
 def create_app(db_path: str = "sqlite:////tmp/test.db"):

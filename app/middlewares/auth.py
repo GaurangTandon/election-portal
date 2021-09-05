@@ -4,10 +4,10 @@ import json
 from typing import Any, Tuple, Union
 
 import jwt
-from backend.models.models import Election, User, BlacklistedTokens
+from app.models.models import Election, User, BlacklistedTokens
 from flask import g, request, redirect, url_for, session
 from flask_restx import abort
-import backend
+import app
 
 
 def encode_auth_token(email):
@@ -19,9 +19,7 @@ def encode_auth_token(email):
         "iat": datetime.datetime.utcnow(),
         "sub": email,
     }
-    return jwt.encode(
-        payload, backend.app.app.config.get("SECRET_KEY"), algorithm="HS256"
-    )
+    return jwt.encode(payload, app.app.app.config.get("SECRET_KEY"), algorithm="HS256")
 
 
 def decode_auth_token(auth_token):
@@ -29,7 +27,7 @@ def decode_auth_token(auth_token):
     decodes the auth token
     """
     payload = jwt.decode(
-        auth_token, backend.app.app.config.get("SECRET_KEY"), algorithms=["HS256"]
+        auth_token, app.app.app.config.get("SECRET_KEY"), algorithms=["HS256"]
     )
     return payload["sub"]
 

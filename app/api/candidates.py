@@ -2,9 +2,9 @@ import os
 import re
 from datetime import datetime
 
-from backend.middlewares.auth import cec_only, auth_required
-from backend.models.models import Candidates, Election, ElectionMethods, User
-from backend.models.orm import db
+from app.middlewares.auth import cec_only, auth_required
+from app.models.models import Candidates, Election, ElectionMethods, User
+from app.models.orm import db
 from flask import g, request
 from flask_restx import (
     Namespace,
