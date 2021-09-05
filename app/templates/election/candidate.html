@@ -50,7 +50,9 @@
     <div class="card" id="main-card">
         <div class="card-body">
             <h4 class="card-title"><b>Manifesto </b>{% if editable %}<a class="btn btn-primary" href="../html/candidate_id_edit.html" role="button">Edit</a>{% endif %}</h4>
-            <p class="card-text">{{ candidate.manifesto }}
+            {% if candidate.manifesto %}
+                <p class="card-text">{{ candidate.manifesto }}
+            {% endif %}
               <div id="Iframe-Master-CC-and-Rs" class="set-margin set-padding set-border set-box-shadow center-block-horiz">
                 <div class="responsive-wrapper responsive-wrapper-wxh-572x612" style="-webkit-overflow-scrolling: touch; overflow: auto;">
                   <iframe src="{{ url_for('static',filename=candidate.manifesto_pdf) }}#view=FitH"> 

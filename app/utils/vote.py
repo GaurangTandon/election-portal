@@ -135,7 +135,7 @@ def cast(votecamp_id):
         el2 = votecamp.election_id
         candidate = Candidates.query.filter_by(user_id=user_id, election_id=el2).first()
         if election.election_method == ElectionMethods.IRV:
-            if len(candidate.votes) == 0:
+            if not candidate.votes or len(candidate.votes) == 0:
                 candidate.votes = [1]
             else:
                 candidate_votes = list(candidate.votes)
@@ -143,7 +143,7 @@ def cast(votecamp_id):
                 candidate.votes = candidate_votes
         elif election.election_method == ElectionMethods.STV:
             consti = election.get_candidate_constituency(candidate)
-            if len(candidate.votes) == 0:
+            if not candidate.votes or len(candidate.votes) == 0:
                 candidate.votes = [0 for _ in range(consti.preferences)]
             candidate_votes = list(candidate.votes)
             candidate_votes[vote_pref_order] += 1
@@ -152,7 +152,9 @@ def cast(votecamp_id):
             assert False
         db.session.add(candidate)
 
-    vote = Votes(election_id=votecamp.election_id, user_id=g.user.id, vote_time=datetime.now())
+    vote = Votes(
+        election_id=votecamp.election_id, user_id=g.user.id, vote_time=datetime.now()
+    )
 
     db.session.add(vote)
     db.session.add(votecamp)
