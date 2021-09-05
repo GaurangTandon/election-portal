@@ -6,9 +6,9 @@ from flask_restx.inputs import datetime_from_iso8601
 from flask import request, g
 
 
-from backend.middlewares.auth import auth_required, cec_only
-from backend.models.models import Election, ElectionMethods, Candidates, User
-from backend.models.orm import db
+from app.middlewares.auth import auth_required, cec_only
+from app.models.models import Election, ElectionMethods, Candidates, User
+from app.models.orm import db
 
 api = Namespace("elections", description="Election portals Election generic frontend")
 

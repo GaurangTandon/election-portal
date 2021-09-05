@@ -3,8 +3,8 @@ from operator import itemgetter
 
 from flask import g, send_from_directory, session
 
-from backend.models.orm import db
-from backend.models.models import (
+from app.models.orm import db
+from app.models.models import (
     Candidates,
     CumulativeHashes,
     Election,

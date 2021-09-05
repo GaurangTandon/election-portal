@@ -1,9 +1,9 @@
 from flask_restx import Api
 
-from backend.api.elections import api as ns1
-from backend.api.candidates import api as ns2
-from backend.api.votes import api as ns3
-from backend.api.constituencies import api as ns4
+from app.api.elections import api as ns1
+from app.api.candidates import api as ns2
+from app.api.votes import api as ns3
+from app.api.constituencies import api as ns4
 
 authorizations = {
     "apikey": {"type": "apiKey", "in": "header", "name": "Authorization"},
