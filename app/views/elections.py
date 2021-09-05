@@ -1,10 +1,10 @@
 from collections import defaultdict
-from backend.middlewares.auth import auth_required
+
 import datetime
 import random
 
 from flask import Blueprint, render_template, g, request, session
-from backend.models.models import Candidates, Election, Votes
+from backend.models.models import Election, Votes
 from backend.utils.vote import vote, cast, audit, VOTEID_SESSION_KEY
 
 election_routes = Blueprint("elections", __name__)
@@ -60,7 +60,9 @@ def get_details_common_to_renders(election_id):
         else None
     )
     can_vote = (eligible_candidates and not vote) and (
-        election.voting_end_date >= datetime.datetime.now() >= election.voting_start_date
+        election.voting_end_date
+        >= datetime.datetime.now()
+        >= election.voting_start_date
     )
 
     return {
@@ -73,30 +75,33 @@ def get_details_common_to_renders(election_id):
     }
 
 
-@election_routes.route("/<int:election_id>", methods=["GET", "POST"])
-def election_info(election_id):
+def vote_handler(election_id: int, display_vote_modal=False):
     message = None
 
     is_post_request = request.method == "POST"
+    args = {}
     if is_post_request:
         message, exit_code = vote(election_id, request.form.getlist("votes"))
 
-    args = {}
-    if is_post_request:
         if exit_code == 200:
             args["inter_message"] = message
         else:
             args["error_vote"] = message
 
+    args["display_vote_modal"] = display_vote_modal
     args.update(get_details_common_to_renders(election_id))
 
     return render_template("election/election.html", **args)
 
 
+@election_routes.route("/<int:election_id>", methods=["GET", "POST"])
+def election_info(election_id):
+    return vote_handler(election_id=election_id)
+
+
 @election_routes.route("/<int:election_id>/vote", methods=["GET"])
 def election_vote(election_id):
-    args = get_details_common_to_renders(election_id)
-    return render_template("election/election.html", **args, display_vote_modal=True)
+    return vote_handler(election_id=election_id, display_vote_modal=True)
 
 
 @election_routes.route("/<int:election_id>/audit", methods=["POST"])
@@ -155,4 +160,3 @@ def past_elections():
             Election.voting_end_date < datetime.datetime.now()
         ).all(),
     )
-
