@@ -24,8 +24,8 @@ RUN apt update && \
 COPY requirements.txt /opt
 RUN pip install --no-cache-dir -r /opt/requirements.txt uwsgi
 
-COPY ./app /opt
+COPY . /opt
 
-ENV PYTHONPATH="/opt"
+WORKDIR /opt/app
 
-CMD ["python3.8", "app.py"]
+CMD ["flask", "run", "--host=0.0.0.0"]
