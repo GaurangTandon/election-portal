@@ -1,8 +1,8 @@
 from flask_restx import Namespace, Resource, reqparse
 
 
-from backend.middlewares.auth import auth_required
-from backend.utils.vote import vote, cast, audit
+from app.middlewares.auth import auth_required
+from app.utils.vote import vote, cast, audit
 
 
 api = Namespace("votes", description="Votes related operations")

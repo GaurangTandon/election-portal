@@ -4,8 +4,8 @@ import datetime
 import random
 
 from flask import Blueprint, render_template, g, request, session
-from backend.models.models import Election, Votes
-from backend.utils.vote import vote, cast, audit, VOTEID_SESSION_KEY
+from app.models.models import Election, Votes
+from app.utils.vote import vote, cast, audit, VOTEID_SESSION_KEY
 
 election_routes = Blueprint("elections", __name__)
 

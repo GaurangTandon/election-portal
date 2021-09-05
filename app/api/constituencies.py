@@ -3,12 +3,12 @@ from flask_restx import Namespace, Resource, reqparse, abort
 from flask_restx.marshalling import marshal_with
 
 
-from backend.middlewares.auth import auth_required, cec_only
-from backend.models.models import (
+from app.middlewares.auth import auth_required, cec_only
+from app.models.models import (
     Constituency,
     Election,
 )
-from backend.models.orm import db
+from app.models.orm import db
 
 api = Namespace("constituency", description="Election Constituency Frontend")
 

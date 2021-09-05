@@ -1,4 +1,4 @@
-from backend.models.models import Hashes
+from app.models.models import Hashes
 import hashlib
 import secrets
 from typing import List
