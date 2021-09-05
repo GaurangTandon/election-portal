@@ -1,0 +1,29 @@
+version: "3.9"
+services:
+    app:
+        build: .
+        depends_on: 
+            - db
+        ports:
+            - 5000:5000
+        environment:
+            SQLALCHEMY_DATABASE_URI: postgresql://sqluser:${DB_PASSWORD}@db:5432/election
+        volumes:
+            - election_static:/opt/app/static
+    adminer:
+        image: adminer
+        restart: always
+        ports:
+            - 5001:8080
+    db:
+        image: postgres:latest
+        volumes:
+            - election_db:/var/lib/postgresql/data
+        environment:
+            POSTGRES_USER: sqluser
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
+            POSTGRES_DB: election
+volumes:
+    election_static:
+        external: true
+    election_db:
