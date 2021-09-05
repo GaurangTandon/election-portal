@@ -12,7 +12,7 @@ auth_routes = Blueprint("auth_routes", __name__)
 cas_client = CASClient(
     version=3,
     # TODO: move to http on self-hosted domain
-    service_url="http://localhost:5000/login",
+    service_url="http://election.iiit.ac.in/login",
     server_url="https://login.iiit.ac.in/cas/",
 )
 

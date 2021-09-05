@@ -129,8 +129,7 @@ def candidate_info(election_id, user_id):
     election = Election.query.get_or_404(election_id)
     candidates = list(election.candidates.filter_by(approval_status=True))
     candidate = election.get_candidate(user_id)
-    if g.user:
-        constituency = election.get_constituency(g.user)
+    constituency = election.get_constituency(g.user) if g.user else None
     if not candidate or not candidate.approval_status:
         return "Candidate not found", 404
     return render_template(
