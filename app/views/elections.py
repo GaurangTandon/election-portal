@@ -59,6 +59,7 @@ def get_details_common_to_renders(election_id):
         if g.user
         else None
     )
+    has_voted = True if vote else False
     can_vote = (eligible_candidates and not vote) and (
         election.voting_end_date
         >= datetime.datetime.now()
@@ -72,6 +73,7 @@ def get_details_common_to_renders(election_id):
         "eligible_candidates": eligible_candidates,
         "ineligible_candidates": constituency_wise_ineligible_cands,
         "can_vote": can_vote,
+        "has_voted": has_voted,
         "voter_consti_desc": constituency.voter_description,
         "candi_consti_desc": constituency.candidate_description,
         "consti_seats_count": constituency.open_positions,
