@@ -14,3 +14,12 @@ Then we create the `.env` file. First, do `cp .env.template .env`, then edit `.e
 ## Setup
 
 Command to create the docker volume: `docker volume create -o device=/root/election-portal/app/static -o type=bind -o o=bind election_static`
+
+Create a file `docker-compose.override.yaml` with these contents. This ensures that CAS will redirect you to localhost instead of election.iiit.ac.in
+
+```yaml
+services:
+    app:
+        environment:
+            REDIRECT_HOST: http://127.0.0.1:5000
+```

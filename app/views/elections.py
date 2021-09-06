@@ -1,3 +1,4 @@
+from app.middlewares.auth import auth_required
 from collections import defaultdict
 
 import datetime
@@ -29,14 +30,16 @@ def home():
 def get_details_common_to_renders(election_id):
     election = Election.query.get_or_404(election_id)
     candidates = list(election.candidates.filter_by(approval_status=True))
-    constituency = election.get_constituency(g.user) if g.user else None
+    # it is possible that even a logged in user may not have a constituency
+    # for example, if they are an alumni
+    voter_constituency = election.get_constituency(g.user) if g.user else None
     eligible_candidates = (
         [
             candidate
             for candidate in candidates
-            if constituency.is_candidate_eligible(candidate.user)
+            if voter_constituency.is_candidate_eligible(candidate.user)
         ]
-        if constituency
+        if voter_constituency
         else []
     )
     ineligible_candidates = list(set(candidates) - set(eligible_candidates))
@@ -45,14 +48,14 @@ def get_details_common_to_renders(election_id):
 
     constituency_wise_ineligible_cands = defaultdict(list)
     for cand in ineligible_candidates:
-        constituency = election.get_candidate_constituency(cand)
-        key = constituency.candidate_description
+        cand_constituency = election.get_candidate_constituency(cand)
+        key = cand_constituency.candidate_description
         constituency_wise_ineligible_cands[key].append(cand)
 
     for key in constituency_wise_ineligible_cands.keys():
         random.shuffle(constituency_wise_ineligible_cands[key])
 
-    prefs = constituency.preferences if constituency else 0
+    prefs = voter_constituency.preferences if voter_constituency else 0
 
     vote = (
         Votes.query.filter_by(election_id=election_id, user_id=g.user.id).first()
@@ -66,19 +69,25 @@ def get_details_common_to_renders(election_id):
         >= election.voting_start_date
     )
 
-    return {
-        "election": election,
-        "candidates": candidates,
-        "preferences": prefs,
-        "eligible_candidates": eligible_candidates,
-        "ineligible_candidates": constituency_wise_ineligible_cands,
-        "can_vote": can_vote,
-        "has_voted": has_voted,
-        "voter_consti_desc": constituency.voter_description,
-        "candi_consti_desc": constituency.candidate_description,
-        "consti_seats_count": constituency.open_positions,
-        "consti_compete_count": len(eligible_candidates),
-    }
+    args = {}
+    if voter_constituency:
+        args["voter_consti_desc"] = voter_constituency.voter_description
+        args["candi_consti_desc"] = voter_constituency.candidate_description
+        args["consti_seats_count"] = voter_constituency.open_positions
+
+    args.update(
+        {
+            "election": election,
+            "candidates": candidates,
+            "preferences": prefs,
+            "eligible_candidates": eligible_candidates,
+            "ineligible_candidates": constituency_wise_ineligible_cands,
+            "can_vote": can_vote,
+            "has_voted": has_voted,
+            "consti_compete_count": len(eligible_candidates),
+        }
+    )
+    return args
 
 
 def vote_handler(election_id: int, display_vote_modal=False):
@@ -101,16 +110,19 @@ def vote_handler(election_id: int, display_vote_modal=False):
 
 
 @election_routes.route("/<int:election_id>", methods=["GET", "POST"])
+@auth_required
 def election_info(election_id):
     return vote_handler(election_id=election_id)
 
 
 @election_routes.route("/<int:election_id>/vote", methods=["GET"])
+@auth_required
 def election_vote(election_id):
     return vote_handler(election_id=election_id, display_vote_modal=True)
 
 
 @election_routes.route("/<int:election_id>/audit", methods=["POST"])
+@auth_required
 def token_audit(election_id):
     votecamp_id = session[VOTEID_SESSION_KEY]
     file_path, filename = audit(votecamp_id=votecamp_id, return_file=False)
@@ -126,6 +138,7 @@ def token_audit(election_id):
 
 
 @election_routes.route("/<int:election_id>/cast", methods=["POST"])
+@auth_required
 def token_cast(election_id):
     votecamp_id = session[VOTEID_SESSION_KEY]
     cast(votecamp_id=votecamp_id)
@@ -135,6 +148,7 @@ def token_cast(election_id):
 
 
 @election_routes.route("/<int:election_id>/candidate/<int:user_id>")
+@auth_required
 def candidate_info(election_id, user_id):
     election = Election.query.get_or_404(election_id)
     candidates = list(election.candidates.filter_by(approval_status=True))

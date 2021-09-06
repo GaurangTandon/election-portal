@@ -72,12 +72,14 @@ def auth_required(f):
             try:
                 access_token = session["apikey"]
             except KeyError:
-                return "Requires CAS login", 401
-                # return redirect(url_for("auth_routes.login"))
+                # TODO: how to make this return differently based on GET/POST requests
+                # return "Requires CAS login", 401
+                return redirect(url_for("auth_routes.login"))
 
         success, msg_or_user = validate_access_token(access_token)
         if not success:
-            return {"msg": msg_or_user, "url": url_for("auth_routes.login")}, 401
+            return redirect(url_for("auth_routes.login"))
+            # return {"msg": msg_or_user, "url": url_for("auth_routes.login")}, 401
         g.user = msg_or_user
         return f(*args, **kwargs)
 

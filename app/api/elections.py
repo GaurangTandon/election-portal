@@ -3,11 +3,10 @@ from datetime import datetime
 from flask_restx import Namespace, Resource, reqparse, abort
 from flask_restx import marshal_with
 from flask_restx.inputs import datetime_from_iso8601
-from flask import request, g
 
 
-from app.middlewares.auth import auth_required, cec_only
-from app.models.models import Election, ElectionMethods, Candidates, User
+from app.middlewares.auth import cec_only
+from app.models.models import Election
 from app.models.orm import db
 
 api = Namespace("elections", description="Election portals Election generic frontend")
