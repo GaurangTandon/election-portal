@@ -1,6 +1,6 @@
 {% if inter_message %}
-<div class="modal show" id="inter_modal" tabindex="-1" aria-labelledby="Intermediate step modal">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+<div class="modal show fade" id="inter_modal" tabindex="-1" aria-labelledby="Intermediate step modal" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -12,14 +12,20 @@
 
                 <div class="modal-body">
                     <div>
-                        <p>Your cryptographically generated proof token is: <pre>{{ inter_message.hash }}</pre></p>
+                        <p>Your cryptographically generated proof token is:</p>
+                        <div class="row">
+                            <div class="col col-md-6">
+                                <pre style="width: 200px;" id="token-proof">{{ inter_message.hash }}</pre>
+                            </div>
+                            <div class="col col-md-2">
+                                <button type="button" class="btn btn-info" id="copy-button">Copy</button>
+                            </div>
+                        </div>
                         <p>This is a <b>SECRET</b>, do not share this with anyone, including EC members.</p>
                         <p>A ballot will be released after election, where this token will be present, guranteeing that your vote was recorded</p>
-                        <p>You may now audit the contents of this token, or finalize your vote. Auditing will allow you to confirm that this token correctly encodes your preferences.</p>
+                        <p>You may now <b>audit</b> the contents of this token, or <b>finalize</b> your vote. Auditing will allow you to confirm that this token correctly encodes your preferences.</p>
 
-                        <p>You are allowed to audit multiple times before finalising your vote. If your vote is not finalized, it will not be tallied in the results.</p>
-
-                        <p>For more details, visit <a href="/security">our security page</a></p>
+                        <p>If your vote is not finalized, it will not be tallied in the results.</p>
                     </div>
 
                     <div class="modal-footer">
@@ -36,10 +42,25 @@
         </div>
     </div>
 </div>
+<div class="modal-backdrop show fade"></div>
 <style>
 #inter_modal {
     /* if bootstrap would actually show a modal with class .show, I wouldn't need this  */
     display: block;
 }
+#copy-button {
+    float: right;
+}
+#token-proof {
+    float: left;
+}
 </style>
+<script>
+const copyBtn = document.getElementById("copy-button");
+const tokenProofPre = document.getElementById("token-proof");
+const tokenProofStr = tokenProofPre.innerText.trim();
+copyBtn.addEventListener("click", function() { 
+    window.navigator.clipboard.writeText(tokenProofStr);
+});
+</script>
 {% endif %}

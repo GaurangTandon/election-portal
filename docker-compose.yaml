@@ -24,6 +24,8 @@ services:
             POSTGRES_USER: sqluser
             POSTGRES_PASSWORD: ${DB_PASSWORD}
             POSTGRES_DB: election
+            TZ: Asia/Kolkata
+            PGTZ: Asia/Kolkata
 volumes:
     election_static:
         external: true

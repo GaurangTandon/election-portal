@@ -2,7 +2,7 @@ import os
 
 from flask import Flask, request, g, session, send_from_directory
 
-from app import api
+# from app import api
 from app.models.orm import db
 from app.middlewares.auth import validate_access_token
 from app.middlewares.ratelimit import limiter
@@ -24,7 +24,8 @@ def create_app(db_path: str = "sqlite:////tmp/test.db"):
     app.register_blueprint(static_routes)
 
     limiter.init_app(app)
-    api.init_app(app)
+    # Commented as we are not using api in the app for now
+    # api.init_app(app)
     db.init_app(app)
     db.create_all(app=app)
     return app

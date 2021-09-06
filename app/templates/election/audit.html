@@ -1,5 +1,5 @@
 {% if audit_message %}
-<div class="modal show" id="audit_modal" tabindex="-1" aria-labelledby="Intermediate step modal">
+<div class="modal show" id="audit_modal" tabindex="-1" aria-labelledby="Intermediate step modal" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -27,6 +27,7 @@
         </div>
     </div>
 </div>
+<div class="modal-backdrop show fade"></div>
 <style>
 #audit_modal {
     /* if bootstrap would actually show a modal with class .show, I wouldn't need this  */
