@@ -12,7 +12,8 @@
 
                 <div class="modal-body">
                     <div>
-                        Auditing information for your token is attached in a file. Click <a href="{{ url_for('static', filename=filepath) }}" rel="download">here</a> to download it.
+                        <p>Auditing information for your token is attached in the file <a href="{{ url_for('static', filename=filepath) }}" rel="download" id="download">{{filename}}</a> and has been auto-downloaded.</p>
+                        <p>You should now go back to voting to finalize your vote, otherwise it will not be tallied.</p>
                     </div>
 
                     <div class="modal-footer">
@@ -32,4 +33,9 @@
     display: block;
 }
 </style>
+<script>
+window.addEventListener("load", function() {
+    document.getElementById("download").click();
+});
+</script>
 {% endif %}

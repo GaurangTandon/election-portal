@@ -224,7 +224,7 @@ def audit(votecamp_id, return_file=True):
         return send_from_directory(DIR, filename)
     else:
         rel_to_static_path = INTER_DIR + "/" + filename
-        return rel_to_static_path
+        return rel_to_static_path, filename
 
 
 def build_diagnostic_for_token(token_details):
@@ -266,7 +266,7 @@ def build_diagnostic_for_token(token_details):
 
     output("\n## Combining all hashes\n\n")
     output(
-        f"The combined string of all hashes is: `{token_details['final_combined_key']}`\n"
+        f"The combined string of all hashes is: `{token_details['final_key_str']}`\n"
         + f"Using the nonce: `{token_details['final_nonce']}`,"
         + f" the final string of all hashes obtained is: `{token_details['final_combined_key']}`\n"
     )

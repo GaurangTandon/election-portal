@@ -1,6 +1,7 @@
 from cas import CASClient
 from flask import redirect, request, render_template, Blueprint, session
 import datetime
+import os
 
 from app.utils.ldap_query import get_ldap_data
 from app.models.models import User, BlacklistedTokens
@@ -12,7 +13,7 @@ auth_routes = Blueprint("auth_routes", __name__)
 cas_client = CASClient(
     version=3,
     # TODO: move to http on self-hosted domain
-    service_url="http://election.iiit.ac.in/login",
+    service_url=os.getenv("REDIRECT_HOST", "http://127.0.0.1:5000") + "/login",
     server_url="https://login.iiit.ac.in/cas/",
 )
 
