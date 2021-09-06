@@ -72,6 +72,10 @@ def get_details_common_to_renders(election_id):
         "eligible_candidates": eligible_candidates,
         "ineligible_candidates": constituency_wise_ineligible_cands,
         "can_vote": can_vote,
+        "voter_consti_desc": constituency.voter_description,
+        "candi_consti_desc": constituency.candidate_description,
+        "consti_seats_count": constituency.open_positions,
+        "consti_compete_count": len(eligible_candidates),
     }
 
 

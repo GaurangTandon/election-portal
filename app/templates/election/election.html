@@ -4,28 +4,27 @@
     <div class="card" id="main-card">
       <div class="card-body" id="heading-card">
         <h1>{{ election.title }}</h1>
-      </div>
-    </div>
-    <div class="card" id="subheading-card">
-      <div class="card-body" id="heading-card">
-        <h3> {{ election.description }} </h3>
+        {{ election.description }} 
       </div>
     </div>
 
     <div class="card" id="main-card">
       <div class="card-body" id="heading-card">
-        <h3><b>Candidates from your constituency</b></h3>
+          <h3>Your constituency: {{voter_consti_desc}}</h3>
+          All candidates belong to: {{candi_consti_desc}}<br>
+          Number of open seats: {{consti_seats_count}}<br>
+          Number of candidates: {{consti_compete_count}}
       </div>
     </div>
-    <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="row row-cols-1 row-cols-md-4 g-4">
       {% for candidate in eligible_candidates %}
       <div class="col">
         <div class="card h-100">
-          <img class="img-fluid rounded" src="{{ url_for('static', filename=candidate.photo ) }}" class="card-img-top" onerror="{{ url_for('static', filename='candidates/default.jpg') }}">
+          <img class="img-fluid rounded candidate-photo" src="{{ url_for('static', filename=candidate.photo ) }}" class="card-img-top" onerror="{{ url_for('static', filename='candidates/default.jpg') }}">
           <div class="card-body">
             <h4 class="card-title"><b>{{ candidate.user.name }}</b></h4>
-            <p class="card-text"><b>Candidate Batch: </b>{{ candidate.user.batch | upper}}</p>
-            <p class="card-text"><b>Candidate Roll Number: </b>{{ candidate.user.roll_number }}</p>
+            <p class="card-text"><b>Batch: </b>{{ candidate.user.batch | upper}}</p>
+            <p class="card-text"><b>Roll Number: </b>{{ candidate.user.roll_number }}</p>
             <a class="btn btn-primary" href="{{ url_for('elections.candidate_info', election_id = election.id, user_id = candidate.user.id) }}" role="button">View Manifesto</a>
           </div>
         </div>
@@ -35,24 +34,24 @@
 
     <div class="card" id="main-card">
       <div class="card-body" id="heading-card">
-        <h3><b>Candidates from other constituencies</b></h3>
+        <h3>Candidates from other constituencies</h3>
       </div>
     </div>
     {% for constituency, candidates in ineligible_candidates.items() %}
       <div class="card" id="main-card">
         <div class="card-body" id="heading-card">
-          <h3 class="ineligible-constituency">{{ constituency | upper }}</h3>
+          <h4 class="ineligible-constituency">{{ constituency | upper }}</h4>
         </div>
       </div>
-      <div class="row row-cols-1 row-cols-md-3 g-4">
+      <div class="row row-cols-1 row-cols-md-4 g-4">
         {% for candidate in candidates %}
           <div class="col">
             <div class="card h-100">
-              <img class="img-fluid rounded" src="{{ url_for('static', filename=candidate.photo ) }}" class="card-img-top" onerror="{{ url_for('static', filename='candidates/default.jpg') }}">
+              <img class="img-fluid rounded candidate-photo" src="{{ url_for('static', filename=candidate.photo ) }}" class="card-img-top" onerror="{{ url_for('static', filename='candidates/default.jpg') }}">
               <div class="card-body">
                 <h4 class="card-title"><b>{{ candidate.user.name }}</b></h4>
-                <p class="card-text"><b>Candidate Batch: </b>{{ candidate.user.batch | upper}}</p>
-                <p class="card-text"><b>Candidate Roll Number: </b>{{ candidate.user.roll_number }}</p>
+                <p class="card-text"><b>Batch: </b>{{ candidate.user.batch | upper}}</p>
+                <p class="card-text"><b>Roll Number: </b>{{ candidate.user.roll_number }}</p>
                 <a class="btn btn-primary" href="{{ url_for('elections.candidate_info', election_id = election.id, user_id = candidate.user.id) }}" role="button">View Manifesto</a>
               </div>
             </div>
