@@ -7,11 +7,13 @@ import random
 from flask import Blueprint, render_template, g, request, session
 from app.models.models import Election, Votes
 from app.utils.vote import vote, cast, audit, VOTEID_SESSION_KEY
+from app.middlewares.ratelimit import limiter
 
 election_routes = Blueprint("elections", __name__)
 
 
 @election_routes.route("/")
+@limiter.limit("1 per second")
 def home():
     return render_template(
         "index.html",
@@ -111,18 +113,21 @@ def vote_handler(election_id: int, display_vote_modal=False):
 
 @election_routes.route("/<int:election_id>", methods=["GET", "POST"])
 @auth_required
+@limiter.limit("2 per minute")
 def election_info(election_id):
     return vote_handler(election_id=election_id)
 
 
 @election_routes.route("/<int:election_id>/vote", methods=["GET"])
 @auth_required
+@limiter.limit("2 per minute")
 def election_vote(election_id):
     return vote_handler(election_id=election_id, display_vote_modal=True)
 
 
 @election_routes.route("/<int:election_id>/audit", methods=["POST"])
 @auth_required
+@limiter.limit("2 per minute")
 def token_audit(election_id):
     votecamp_id = session[VOTEID_SESSION_KEY]
     file_path, filename = audit(votecamp_id=votecamp_id, return_file=False)
@@ -139,6 +144,7 @@ def token_audit(election_id):
 
 @election_routes.route("/<int:election_id>/cast", methods=["POST"])
 @auth_required
+@limiter.limit("2 per minute")
 def token_cast(election_id):
     votecamp_id = session[VOTEID_SESSION_KEY]
     cast(votecamp_id=votecamp_id)
@@ -149,6 +155,7 @@ def token_cast(election_id):
 
 @election_routes.route("/<int:election_id>/candidate/<int:user_id>")
 @auth_required
+@limiter.limit("12 per minute")
 def candidate_info(election_id, user_id):
     election = Election.query.get_or_404(election_id)
     candidates = list(election.candidates.filter_by(approval_status=True))
@@ -176,6 +183,7 @@ def candidate_info(election_id, user_id):
 
 
 @election_routes.route("/past-elections")
+@limiter.limit("20 per minute")
 def past_elections():
     return render_template(
         "election/past_elections.html",

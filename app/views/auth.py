@@ -7,6 +7,7 @@ from app.utils.ldap_query import get_ldap_data
 from app.models.models import User, BlacklistedTokens
 from app.models.orm import db
 from app.middlewares import auth
+from app.middlewares.ratelimit import limiter
 
 auth_routes = Blueprint("auth_routes", __name__)
 
@@ -46,6 +47,7 @@ def store_new_user(email: str):
 
 
 @auth_routes.route("/login")
+@limiter.limit("12 per minute")
 def login():
     _ = request.args.get("next")
     ticket = request.args.get("ticket")
@@ -69,6 +71,7 @@ def login():
 
 @auth_routes.route("/logout")
 @auth.auth_required
+@limiter.limit("12 per minute")
 def logout():
     access_token = request.headers.get("Authorization")
     if not access_token:
