@@ -15,7 +15,7 @@
   <div class="container">
     <div class="card" id="main-card">
       <div class="card-body">
-        <h1>{{ election.title }}</h1>
+          <h1><a href="/{{ election.id }}">{{ election.title }}</a></h1>
       </div>
     </div>
     <div class="card" id="subheading-card">
@@ -23,29 +23,18 @@
         <h2>Candidate Profile</h2>
       </div>
     </div>
-    <div class="card" id="subheading-card">
-        <div class="card-body">
-          <h3><b>Candidate Name: </b>{{ candidate.user.name }}</h3>
-        </div>
-    </div>
     
-    <div class="row row-cols-1 d-flex row-cols-md-2 g-4" id="card-group">
-
-        <div class="col">
-          <div class="card card-body flex-fill">
-            <img src="{{ url_for('static', filename=candidate.photo ) }}" class="card-img-top" alt="Card image cap">
-          </div>
+    <div class="row m-2 g-4">
+        <div class="col-md-4 offset-md-2" style="background: white;">
+            <img src="{{ url_for('static', filename=candidate.photo ) }}" alt="Card image cap" style="height: 200px;">
         </div>
-        <div class="col">
-            <div class="card card-body flex-fill">
-              <div class="card-body">
-                <h4 class="card-text"><b>Batch: </b>{{ candidate.user.batch | upper }}</h4>
-                <h4 class="card-text"><b>Roll Number: </b>{{ candidate.user.roll_number }}</h4>
-                <h4 class="card-text"><b>Course: </b>{{ candidate.user.programme | upper }}</h4>
-                <h4 class="card-text"><b>Email ID: </b>{{ candidate.user.email }}</h4>
-              </div>
-            </div>
-          </div>
+        <div style="background: white;" class="col-md-4 p-4">
+            <h5><b>Name: </b>{{ candidate.user.name }}</h5>
+            <h5><b>Batch: </b>{{ candidate.user.batch | upper }}</h5>
+            <h5><b>Roll Number: </b>{{ candidate.user.roll_number }}</h5>
+            <h5><b>Course: </b>{{ candidate.user.programme | upper }}</h5>
+            <h5><b>Email ID: </b>{{ candidate.user.email }}</h5>
+        </div>
       </div>
     <div class="card" id="main-card">
         <div class="card-body">

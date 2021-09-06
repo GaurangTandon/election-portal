@@ -1,7 +1,7 @@
 from app.models.models import Hashes
 import hashlib
 import secrets
-from typing import List
+from typing import List, Union
 
 
 def generate_nonce(length=Hashes.NONCE_LEN) -> str:
@@ -12,8 +12,11 @@ def generate_nonce(length=Hashes.NONCE_LEN) -> str:
     return secrets.token_hex(length // 2)
 
 
-def hash256(iterable: List[bytes]) -> str:
-    serialized = b",".join(iterable)
+def hash256(iterable: Union[List[bytes], str]) -> str:
+    if isinstance(iterable, list):
+        serialized = b",".join(iterable)
+    else:
+        serialized = iterable.encode()
     return hashlib.sha256(serialized).hexdigest()
 
 

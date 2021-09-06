@@ -59,6 +59,7 @@ def get_details_common_to_renders(election_id):
         if g.user
         else None
     )
+    has_voted = True if vote else False
     can_vote = (eligible_candidates and not vote) and (
         election.voting_end_date
         >= datetime.datetime.now()
@@ -72,6 +73,11 @@ def get_details_common_to_renders(election_id):
         "eligible_candidates": eligible_candidates,
         "ineligible_candidates": constituency_wise_ineligible_cands,
         "can_vote": can_vote,
+        "has_voted": has_voted,
+        "voter_consti_desc": constituency.voter_description,
+        "candi_consti_desc": constituency.candidate_description,
+        "consti_seats_count": constituency.open_positions,
+        "consti_compete_count": len(eligible_candidates),
     }
 
 
@@ -107,11 +113,15 @@ def election_vote(election_id):
 @election_routes.route("/<int:election_id>/audit", methods=["POST"])
 def token_audit(election_id):
     votecamp_id = session[VOTEID_SESSION_KEY]
-    file_path = audit(votecamp_id=votecamp_id, return_file=False)
+    file_path, filename = audit(votecamp_id=votecamp_id, return_file=False)
 
     args = get_details_common_to_renders(election_id)
     return render_template(
-        "election/election.html", **args, filepath=file_path, audit_message=True
+        "election/election.html",
+        **args,
+        filepath=file_path,
+        audit_message=True,
+        filename=filename
     )
 
 

@@ -6,3 +6,4 @@ node_modules/
 .idea
 app/static/votedata/*
 app/static/pdf/*
+docker-compose.override.yaml

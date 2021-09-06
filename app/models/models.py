@@ -250,19 +250,20 @@ class Hashes(db.Model):
     KEY_LEN = HASH_LEN
 
     id = db.Column(db.Integer, primary_key=True)
+    """
+    This user id received the vote and at the given order
+    """
     user_id = db.Column(db.ForeignKey("user.id"), nullable=False)
     vote_camp = db.Column(db.ForeignKey("votecamp.id"), nullable=False)
     vote_camp_order = db.Column(db.Integer, nullable=False)
     key = db.Column(db.String(KEY_LEN), nullable=False)
     nonce = db.Column(db.String(NONCE_LEN), nullable=False)
-    hash = db.Column(db.String(HASH_LEN), nullable=False)
 
     @staticmethod
     def __json__():
         return {
             "key": fields.String,
             "nonce": fields.String,
-            "hash": fields.String,
         }
 
 
@@ -275,14 +276,12 @@ class CumulativeHashes(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     hash_str = db.Column(db.String(HASH_LEN), nullable=False)
     nonce = db.Column(db.String(Hashes.NONCE_LEN), nullable=False)
-    hash = db.Column(db.String(Hashes.HASH_LEN), nullable=False)
 
     @staticmethod
     def __json__():
         return {
             "hash_str": fields.String,
             "nonce": fields.String,
-            "hash": fields.String,
         }
 
 

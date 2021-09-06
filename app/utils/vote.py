@@ -13,7 +13,7 @@ from app.models.models import (
     VoteCamp,
     Votes,
 )
-from .crypto import generate_nonce, get_nonce_and_hash
+from .crypto import generate_nonce, get_nonce_and_hash, hash256
 
 VOTEID_SESSION_KEY = "voteid"
 
@@ -80,7 +80,6 @@ def vote(election_id, votes):
         hash_obj = Hashes(
             key=key,
             nonce=nonce,
-            hash=hsh,
             vote_camp=vcamp.id,
             vote_camp_order=idx,
             user_id=candidate.user.id,
@@ -90,7 +89,7 @@ def vote(election_id, votes):
 
     hash_concat = "".join(hashes)
     nonce_f, hash_f = get_nonce_and_hash(hash_concat)
-    cum_hash = CumulativeHashes(nonce=nonce_f, hash=hash_f, hash_str=hash_concat)
+    cum_hash = CumulativeHashes(nonce=nonce_f, hash_str=hash_concat)
 
     db.session.add(cum_hash)
     db.session.commit()
@@ -186,7 +185,7 @@ def audit(votecamp_id, return_file=True):
                     "key": key,
                     "nonce": nonce,
                     "combined": combined_str,
-                    "hash": vote_hash.hash,
+                    "hash": hash256(combined_str),
                 },
             )
         )
@@ -200,13 +199,14 @@ def audit(votecamp_id, return_file=True):
     ).first()
     key_f = combined_hash_obj.hash_str
     nonce = combined_hash_obj.nonce
-    final_hash = combined_hash_obj.hash
+    combined = key_f + "," + nonce
+    final_hash = hash256(combined)
 
     token_details = {
         "voted_keys": voted_keys,
         "final_key_str": key_f,
         "final_nonce": nonce,
-        "final_combined_key": key_f + "," + nonce,
+        "final_combined_key": combined,
         "final_hash": final_hash,
     }
     diagnostic_str = build_diagnostic_for_token(token_details)
@@ -224,7 +224,7 @@ def audit(votecamp_id, return_file=True):
         return send_from_directory(DIR, filename)
     else:
         rel_to_static_path = INTER_DIR + "/" + filename
-        return rel_to_static_path
+        return rel_to_static_path, filename
 
 
 def build_diagnostic_for_token(token_details):
@@ -266,7 +266,7 @@ def build_diagnostic_for_token(token_details):
 
     output("\n## Combining all hashes\n\n")
     output(
-        f"The combined string of all hashes is: `{token_details['final_combined_key']}`\n"
+        f"The combined string of all hashes is: `{token_details['final_key_str']}`\n"
         + f"Using the nonce: `{token_details['final_nonce']}`,"
         + f" the final string of all hashes obtained is: `{token_details['final_combined_key']}`\n"
     )
