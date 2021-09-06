@@ -8,6 +8,7 @@ from app.middlewares.auth import validate_access_token
 from app.middlewares.ratelimit import limiter
 from app.views.auth import auth_routes
 from app.views.elections import election_routes
+from app.views.static import static_routes
 
 
 def create_app(db_path: str = "sqlite:////tmp/test.db"):
@@ -20,6 +21,7 @@ def create_app(db_path: str = "sqlite:////tmp/test.db"):
 
     app.register_blueprint(auth_routes)
     app.register_blueprint(election_routes)
+    app.register_blueprint(static_routes)
 
     limiter.init_app(app)
     api.init_app(app)
@@ -47,10 +49,15 @@ def before_request():
     success, msg_or_user = validate_access_token(access_token)
     g.user = msg_or_user if success else None
 
-@app.route('/favicon.ico')
+
+@app.route("/favicon.ico")
 def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'),
-                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
+    return send_from_directory(
+        os.path.join(app.root_path, "static"),
+        "favicon.ico",
+        mimetype="image/vnd.microsoft.icon",
+    )
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
