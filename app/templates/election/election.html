@@ -19,14 +19,16 @@
         </div>
     {% endif %}
 
-    <div class="card m-2">
-      <div class="card-body">
-          <h3>Your constituency: {{voter_consti_desc}}</h3>
-          All candidates belong to: {{candi_consti_desc}}<br>
-          Number of open seats: {{consti_seats_count}}<br>
-          Number of candidates: {{consti_compete_count}}
-      </div>
-    </div>
+    {% if voter_consti_desc %}
+        <div class="card m-2">
+          <div class="card-body">
+              <h3>Your constituency: {{voter_consti_desc}}</h3>
+              All candidates belong to: {{candi_consti_desc}}<br>
+              Number of open seats: {{consti_seats_count}}<br>
+              Number of candidates: {{consti_compete_count}}
+          </div>
+        </div>
+    {% endif %}
     <div class="row row-cols-1 row-cols-md-4 g-4">
       {% for candidate in eligible_candidates %}
       <div class="col">
@@ -49,9 +51,9 @@
       </div>
     </div>
     {% for constituency, candidates in ineligible_candidates.items() %}
-      <div class="card">
+      <div class="card m-2">
         <div class="card-body">
-          <h4 class="ineligible-constituency">{{ constituency | upper }}</h4>
+          <h4 class="ineligible-constituency">{{ constituency }}</h4>
         </div>
       </div>
       <div class="row row-cols-1 row-cols-md-4 g-4">
