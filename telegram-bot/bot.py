@@ -1,3 +1,4 @@
+from datetime import datetime
 import requests
 import os
 import sys
@@ -5,6 +6,8 @@ from typing import List
 
 import psutil
 
+def flatten_list(lst: List):
+    return ",".join(map(str, lst))
 
 def send_message(msg: str):
     BOT_TOKEN = os.getenv("TG_BOT_TOKEN", "")
@@ -26,8 +29,7 @@ def generate_message(
     swap_percent: float,
     disk_percent: float,
 ):
-    cpu_str = ", ".join(map(str, cpu_usages))
-    return f"""CPU %usage: {cpu_str}
+    return f"""CPU %usage: {flatten_list(cpu_usages)}
 Mem %usage: {mem_percent}
 Swap %usage: {swap_percent}
 Disk %usage: {disk_percent}"""
@@ -52,10 +54,21 @@ def collect_and_send_stats(check_ok=True):
     if disk_percent > THRESH:
         ok = False
 
+    msg = generate_message(cpu_usages, mem_percent, swap_percent, disk_percent)
+    timestamp = datetime.now()
+    time_minute = timestamp.time().minute
+
+    # append the CPU usage data every five minutes to the log
+    if time_minute == 5:
+        with open("data.csv", "wa") as f:
+            csv_msg = (
+                flatten_list(cpu_usages) + "," + str(mem_percent) +
+                    "," + str(swap_percent) + "," + str(disk_percent)
+            )
+            f.write(csv_msg + "\n")
+
     if (check_ok and not ok) or (not check_ok):
-        send_message(
-            generate_message(cpu_usages, mem_percent, swap_percent, disk_percent)
-        )
+        send_message(msg)
 
 
 if __name__ == "__main__":
