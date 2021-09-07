@@ -70,8 +70,15 @@ def collect_and_send_stats(check_ok=True):
     )
 
     # append the CPU usage data to log
-    with open("data.csv", "wa") as f:
+    with open("machine-statistics.csv", "a") as f:
         f.write(csv_msg)
+
+    """
+    ~150 bytes written every 5minutes
+    In one day we have 24 * 60 = 1440 minutes
+    Total bytes written = 1440 * 150 = 216kB
+    Which is still less than one megabyte
+    """
 
     if (check_ok and not ok) or (not check_ok):
         send_message(msg)
