@@ -22,10 +22,10 @@ RUN apt update && \
     rm -rf /var/lib/apt/lists
 
 COPY requirements.txt /opt
-RUN pip install --no-cache-dir -r /opt/requirements.txt uwsgi
+RUN pip install --no-cache-dir -r /opt/requirements.txt
 
 COPY . /opt
 
-WORKDIR /opt/app
+ENV PYTHONPATH /opt
 
-CMD ["flask", "run", "--host=0.0.0.0"]
+CMD ["gunicorn", "--access-logfile", "-", "-w", "16", "-b", "0.0.0.0:5000", "app.app:app"]
