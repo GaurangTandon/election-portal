@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python /root/election-portal/telegram-bot/bot.py
+python3.6 /root/election-portal/telegram-bot/bot.py

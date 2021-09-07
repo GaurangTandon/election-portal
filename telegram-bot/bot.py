@@ -61,16 +61,17 @@ def collect_and_send_stats(check_ok=True):
 
     msg = generate_message(cpu_usages, mem_percent, swap_percent, disk_percent)
     timestamp = datetime.now()
-    time_minute = timestamp.time().minute
+    csv_msg = (
+        timestamp.isoformat() + "," +
+        flatten_list(cpu_usages) + "," + 
+        str(mem_percent) + "," + 
+        str(swap_percent) + "," + 
+        str(disk_percent) + "\n"
+    )
 
-    # append the CPU usage data every five minutes to the log
-    if time_minute == 5:
-        with open("data.csv", "wa") as f:
-            csv_msg = (
-                flatten_list(cpu_usages) + "," + str(mem_percent) +
-                    "," + str(swap_percent) + "," + str(disk_percent)
-            )
-            f.write(csv_msg + "\n")
+    # append the CPU usage data to log
+    with open("data.csv", "wa") as f:
+        f.write(csv_msg)
 
     if (check_ok and not ok) or (not check_ok):
         send_message(msg)
