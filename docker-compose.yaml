@@ -9,6 +9,8 @@ services:
         environment:
             SQLALCHEMY_DATABASE_URI: postgresql://sqluser:${DB_PASSWORD}@db:5432/election
             REDIRECT_HOST: http://election.iiit.ac.in
+            TG_BOT_TOKEN: ${BOT_TOKEN}
+            TG_CHAT_ID: ${CHAT_ID}
         volumes:
             - election_static:/opt/app/static
     adminer:
