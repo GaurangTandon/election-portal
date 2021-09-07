@@ -1,15 +1,20 @@
+"""
+Do not put type annotations 
+because the centos server runs python3.6
+which doesn't support them
+"""
+
 from datetime import datetime
 import requests
 import os
 import sys
-from typing import List
 
 import psutil
 
-def flatten_list(lst: List):
+def flatten_list(lst):
     return ",".join(map(str, lst))
 
-def send_message(msg: str):
+def send_message(msg):
     BOT_TOKEN = os.getenv("TG_BOT_TOKEN", "")
     if not BOT_TOKEN:
         print("Bot token not found", file=sys.stderr)
@@ -24,10 +29,10 @@ def send_message(msg: str):
 
 
 def generate_message(
-    cpu_usages: List[float],
-    mem_percent: float,
-    swap_percent: float,
-    disk_percent: float,
+    cpu_usages,
+    mem_percent,
+    swap_percent,
+    disk_percent,
 ):
     return f"""CPU %usage: {flatten_list(cpu_usages)}
 Mem %usage: {mem_percent}
@@ -39,7 +44,7 @@ def collect_and_send_stats(check_ok=True):
     THRESH = 60
     ok = True
 
-    cpu_usages: List[float] = psutil.cpu_percent(interval=0.1, percpu=True)
+    cpu_usages = psutil.cpu_percent(interval=0.1, percpu=True)
     max_usage = max(cpu_usages)
     if max_usage > THRESH:
         ok = False
