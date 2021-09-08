@@ -52,13 +52,13 @@
       {% endfor %}
     </div>
 
-    <div class="card m-2">
-      <div class="card-body">
-        <h3>Candidates from other constituencies</h3>
-      </div>
-    </div>
     {% if ineligible_candidates | length == 0 %}
     {% else %}
+        <div class="card m-2">
+            <div class="card-body">
+                <h3>Candidates from other constituencies</h3>
+            </div>
+        </div>
         {% for constituency, candidates in ineligible_candidates.items() %}
           <div class="card m-2">
             <div class="card-body">

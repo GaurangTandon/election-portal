@@ -26,9 +26,9 @@
     
     <div class="row m-2 g-4">
         <div class="col-md-4 offset-md-2" style="background: white;">
-            <img src="{{ url_for('static', filename=candidate.photo ) }}" alt="Card image cap" style="height: 200px;">
+            <img src="{{ url_for('static', filename=candidate.photo ) }}" alt="Card image cap" style="height: 200px;margin: auto;display: block;">
         </div>
-        <div style="background: white;" class="col-md-4 p-4">
+        <div style="background: white;" class="col-md-5 p-4">
             <h5><b>Name: </b>{{ candidate.user.name }}</h5>
             <h5><b>Batch: </b>{{ candidate.user.batch | upper }}</h5>
             <h5><b>Roll Number: </b>{{ candidate.user.roll_number }}</h5>
