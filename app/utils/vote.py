@@ -1,5 +1,6 @@
 from datetime import datetime
 from operator import itemgetter
+import os
 
 from flask import g, send_from_directory, session
 
@@ -57,6 +58,9 @@ def vote(election_id, votes):
 
     candidates = []
     for candidate_id in votes:
+        # possible when number of candidates is less than the number of seats
+        if candidate_id == "":
+            continue
         candidate = election.get_candidate(candidate_id, approval_status=True)
         err = f"Candidate with id {candidate_id}"
         if not candidate:
@@ -217,6 +221,8 @@ def audit(votecamp_id, return_file=True):
     filename = f"{final_hash[:15]}.md"  # probability of collision is 2^60
     INTER_DIR = "votedata"
     DIR = f"static/{INTER_DIR}"
+    if 'static' not in os.listdir("."):
+        DIR = "app/" + DIR
     with open(f"{DIR}/{filename}", "w") as f:
         f.write(diagnostic_str)
 
