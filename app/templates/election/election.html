@@ -28,6 +28,13 @@
               Number of candidates: {{consti_compete_count}}
           </div>
         </div>
+    {% else %}
+        <div class="card m-2">
+            <div class="card-body">
+                <h3>You do not belong to any voting constituency</h3>
+                Contact EC if you think this is in error
+            </div>
+        </div>
     {% endif %}
     <div class="row row-cols-1 row-cols-md-4 g-4">
       {% for candidate in eligible_candidates %}
@@ -45,35 +52,35 @@
       {% endfor %}
     </div>
 
-    <div class="card m-2">
-      <div class="card-body">
-        <h3>Candidates from other constituencies</h3>
-      </div>
-    </div>
-    {% for constituency, candidates in ineligible_candidates.items() %}
-      <div class="card m-2">
-        <div class="card-body">
-          <h4 class="ineligible-constituency">{{ constituency }}</h4>
+    {% if ineligible_candidates | length == 0 %}
+    {% else %}
+        <div class="card m-2">
+            <div class="card-body">
+                <h3>Candidates from other constituencies</h3>
+            </div>
         </div>
-      </div>
-      <div class="row row-cols-1 row-cols-md-4 g-4">
-        {% for candidate in candidates %}
-          <div class="col">
-            <div class="card h-100">
-              <img class="img-fluid rounded candidate-photo" src="{{ url_for('static', filename=candidate.photo ) }}" class="card-img-top" onerror="{{ url_for('static', filename='candidates/default.jpg') }}">
-              <div class="card-body">
-                <h4 class="card-title"><b>{{ candidate.user.name }}</b></h4>
-                <p class="card-text"><b>Batch: </b>{{ candidate.user.batch | upper}}</p>
-                <p class="card-text"><b>Roll Number: </b>{{ candidate.user.roll_number }}</p>
-                <a class="btn btn-primary" href="{{ url_for('elections.candidate_info', election_id = election.id, user_id = candidate.user.id) }}" role="button">View Manifesto</a>
-              </div>
+        {% for constituency, candidates in ineligible_candidates.items() %}
+          <div class="card m-2">
+            <div class="card-body">
+              <h4 class="ineligible-constituency">{{ constituency }}</h4>
             </div>
           </div>
+          <div class="row row-cols-1 row-cols-md-4 g-4">
+            {% for candidate in candidates %}
+              <div class="col">
+                <div class="card h-100">
+                  <img class="img-fluid rounded candidate-photo" src="{{ url_for('static', filename=candidate.photo ) }}" class="card-img-top" onerror="{{ url_for('static', filename='candidates/default.jpg') }}">
+                  <div class="card-body">
+                    <h4 class="card-title"><b>{{ candidate.user.name }}</b></h4>
+                    <p class="card-text"><b>Batch: </b>{{ candidate.user.batch | upper}}</p>
+                    <p class="card-text"><b>Roll Number: </b>{{ candidate.user.roll_number }}</p>
+                    <a class="btn btn-primary" href="{{ url_for('elections.candidate_info', election_id = election.id, user_id = candidate.user.id) }}" role="button">View Manifesto</a>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
         {% endfor %}
-      </div>
-    {% endfor %}
-    {% if ineligible_candidates | length == 0 %}
-        None
     {% endif %}
       
 

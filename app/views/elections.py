@@ -13,7 +13,6 @@ election_routes = Blueprint("elections", __name__)
 
 
 @election_routes.route("/")
-@auth_required
 @limiter.limit("1 per second")
 def home():
     return render_template(

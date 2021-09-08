@@ -28,4 +28,4 @@ COPY . /opt
 
 ENV PYTHONPATH /opt
 
-CMD ["gunicorn", "--access-logfile", "-", "-w", "16", "-b", "0.0.0.0:5000", "app.app:app"]
+CMD ["gunicorn", "--workers", "6", "--threads", "4", "-b", "0.0.0.0:5000", "app.app:app"]

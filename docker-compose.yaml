@@ -8,7 +8,7 @@ services:
             - 5000:5000
         environment:
             SQLALCHEMY_DATABASE_URI: postgresql://sqluser:${DB_PASSWORD}@db:5432/election
-            REDIRECT_HOST: http://election.iiit.ac.in
+            REDIRECT_HOST: https://election.iiit.ac.in
         volumes:
             - election_static:/opt/app/static
     adminer:
@@ -40,10 +40,11 @@ services:
             - POSTGRES_USER=sqluser
             - POSTGRES_PASSWORD=${DB_PASSWORD}
             - POSTGRES_EXTRA_OPTS=-Z6 --schema=public --blobs
-            - SCHEDULE="*/5 * * * *"
+            - SCHEDULE=@every 30m
             - BACKUP_KEEP_DAYS=7
             - BACKUP_KEEP_WEEKS=4
             - BACKUP_KEEP_MONTHS=2
+            - HEALTHCHECK_PORT=18423
 volumes:
     election_static:
         external: true
