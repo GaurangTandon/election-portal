@@ -40,10 +40,11 @@ services:
             - POSTGRES_USER=sqluser
             - POSTGRES_PASSWORD=${DB_PASSWORD}
             - POSTGRES_EXTRA_OPTS=-Z6 --schema=public --blobs
-            - SCHEDULE="*/5 * * * *"
+            - SCHEDULE=@every 5m
             - BACKUP_KEEP_DAYS=7
             - BACKUP_KEEP_WEEKS=4
             - BACKUP_KEEP_MONTHS=2
+            - HEALTHCHECK_PORT=18423
 volumes:
     election_static:
         external: true
