@@ -28,6 +28,13 @@
               Number of candidates: {{consti_compete_count}}
           </div>
         </div>
+    {% else %}
+        <div class="card m-2">
+            <div class="card-body">
+                <h3>You do not belong to any voting constituency</h3>
+                Contact EC if you think this is in error
+            </div>
+        </div>
     {% endif %}
     <div class="row row-cols-1 row-cols-md-4 g-4">
       {% for candidate in eligible_candidates %}
