@@ -1,6 +1,4 @@
-<button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#vote_modal" id="vote-button">
-    <h4><i class="bi bi-hand-index"></i> Vote </h4>
-</button>
+{% include "election/vote_btn.html" %}
 {% if not inter_message and not audit_message %}
 <div class="modal fade" id="vote_modal" tabindex="-1" aria-labelledby="vote_modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
