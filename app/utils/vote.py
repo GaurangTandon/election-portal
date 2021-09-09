@@ -1,6 +1,7 @@
 from datetime import datetime
 from operator import itemgetter
 import os
+import sys
 
 from flask import g, send_from_directory, session
 
@@ -35,9 +36,18 @@ def vote(election_id, votes):
     if not (voting_start_date <= current_datetime <= voting_end_date):
         return "Voting is currently closed", 400
 
-    if not votes:
-        return "Please provide a list of candidates", 400
+    # method to print in docker compose
+    # print("hello2", file=sys.stdout, flush=True)
+    # sys.stdout.flush()
 
+    # casting empty vote is allowed
+    # if not votes:
+    #     return "Please provide a list of candidates", 400
+
+    if all(x == '' for x in votes):
+        votes = []
+
+    # it is allowed to not vote for any candidate
     if len(set(votes)) != len(votes):
         return "Please provide a list of unique candidates", 400
 

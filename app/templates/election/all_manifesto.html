@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+<div class="card" id="main-card">
+  <div class="card-body">
+      <h1><a href="/{{ election.id }}">{{ election.title }}</a></h1>
+  </div>
+</div>
+{% for candidate in candidates %}
+<div class="card" id="main-card">
+    <div class="card-body">
+        <h3 class="card-title"><b>Manifesto of {{ candidate.user.name }}</b></h3>
+          <div id="Iframe-Master-CC-and-Rs" class="set-margin set-padding set-border set-box-shadow center-block-horiz">
+            <div class="responsive-wrapper responsive-wrapper-wxh-572x612" style="-webkit-overflow-scrolling: touch; overflow: auto;">
+              <iframe src="{{ url_for('static',filename=candidate.manifesto_pdf) }}#view=FitH"> 
+                <p style="font-size: 110%;"><em><strong>ERROR: </strong>  An &#105;frame should be displayed here but your browser version does not support &#105;frames. </em>Please update your browser to its most recent version and try again.</p>
+              </iframe>
+            </div>
+          </div>
+        </p>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

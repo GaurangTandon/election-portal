@@ -1,7 +1,12 @@
-<button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#vote_modal" id="vote-button">
-    <h4><i class="bi bi-hand-index"></i> Vote </h4>
-</button>
+{% include "election/vote_btn.html" %}
 {% if not inter_message and not audit_message %}
+
+{% if election.election_method | string() == "ElectionMethods.STV" %}
+    {% set word = "preference" %}
+{% elif election.election_method | string() == "ElectionMethods.IRV" %}
+    {% set word = "choice" %}
+{% endif %}
+
 <div class="modal fade" id="vote_modal" tabindex="-1" aria-labelledby="vote_modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
         <div class="modal-dialog">
@@ -14,14 +19,17 @@
                 </div>
 
                     <div class="modal-body">
-                        <h5>Choose your preferences</h5>
+                        <h5>Select your {{ word }}</h5>
+                        {% if election.election_method | string() == "ElectionMethods.IRV" %}
+                            <p>All your choices have equal weight in this election</p>
+                        {% endif %}
                         {% if error_vote %}
                             <div id="formerror">
                                 <h6><i class="bi bi-exclamation-circle"></i>{{ error_vote }}</h6>
                             </div>
                         {% endif %}
                         <div id="error" class="error">
-                            <h6><i class="bi bi-exclamation-circle"></i> Kindly check your preference order</h6>
+                            <h6><i class="bi bi-exclamation-circle"></i>Kindly check your {{ word }} order</h6>
                         </div>
                         <form id="PreferenceForm" class="needs-validation" action="{{ url_for('elections.election_info', election_id=election.id) }}"
                             method="POST" novalidate>
@@ -29,7 +37,7 @@
                             <div class="input-group mb-3">
                                 <span class="input-group-text" id="basic-addon{{ i }}">{{ i + 1 }}</span>
                                 <select name="votes" class="form-select" aria-label="Default select example">
-                                    <option selected></option>
+                                    <option selected value="">None</option>
                                     {% for candidate in eligible_candidates %}
                                     <option value="{{ candidate.user.id }}">{{ candidate.user.name }}</option>
                                     {% endfor %}

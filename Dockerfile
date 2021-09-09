@@ -10,7 +10,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # Prevents Python from writing pyc files to disc
 ENV PYTHONDONTWRITEBYTECODE 1
 # Prevents Python from buffering stdout/stderr
-ENV PYTHONBUFFERED 1
+ENV PYTHONUNBUFFERED 1
 
 RUN apt update && \
     # pg_config is required to build psycopg2 from source
@@ -28,4 +28,4 @@ COPY . /opt
 
 ENV PYTHONPATH /opt
 
-CMD ["gunicorn", "--workers", "6", "--threads", "4", "-b", "0.0.0.0:5000", "app.app:app"]
+CMD ["gunicorn", "--threads", "24", "-b", "0.0.0.0:5000", "app.app:app"]
