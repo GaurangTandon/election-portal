@@ -19,7 +19,7 @@
                 </div>
 
                     <div class="modal-body">
-                        <h5>Choose your {{ word }}</h5>
+                        <h5>Select your {{ word }}</h5>
                         {% if election.election_method | string() == "ElectionMethods.IRV" %}
                             <p>All your choices have equal weight in this election</p>
                         {% endif %}
@@ -29,7 +29,7 @@
                             </div>
                         {% endif %}
                         <div id="error" class="error">
-                            <h6><i class="bi bi-exclamation-circle"></i>Kindly check your {{ choice }} order</h6>
+                            <h6><i class="bi bi-exclamation-circle"></i>Kindly check your {{ word }} order</h6>
                         </div>
                         <form id="PreferenceForm" class="needs-validation" action="{{ url_for('elections.election_info', election_id=election.id) }}"
                             method="POST" novalidate>
@@ -37,7 +37,7 @@
                             <div class="input-group mb-3">
                                 <span class="input-group-text" id="basic-addon{{ i }}">{{ i + 1 }}</span>
                                 <select name="votes" class="form-select" aria-label="Default select example">
-                                    <option selected></option>
+                                    <option selected value="">None</option>
                                     {% for candidate in eligible_candidates %}
                                     <option value="{{ candidate.user.id }}">{{ candidate.user.name }}</option>
                                     {% endfor %}

@@ -25,7 +25,7 @@ if (form) {
     form.addEventListener("change", function check(par) {
         let cur = par.target;
         for (let i = 0; i < count; i += 1) {
-            if (form[i].value === cur.value && form[i] !== cur) {
+            if (form[i].value !== "" && form[i].value === cur.value && form[i] !== cur) {
                 form[i].value = '';
             }
         }
