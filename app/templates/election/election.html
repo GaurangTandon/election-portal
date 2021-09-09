@@ -25,10 +25,15 @@
     {% if voter_consti_desc %}
         <div class="card m-2">
           <div class="card-body">
-              <h3>Your constituency: {{voter_consti_desc}}</h3>
-              All candidates belong to: {{candi_consti_desc}}<br>
-              Number of open seats: {{consti_seats_count}}<br>
-              Number of candidates: {{consti_compete_count}}
+              <div style="float: left;">
+                  <h3>Your constituency: {{voter_consti_desc}}</h3>
+                  All candidates belong to: {{candi_consti_desc}}<br>
+                  Number of open seats: {{consti_seats_count}}<br>
+                  Number of candidates: {{consti_compete_count}}
+              </div>
+              <div style="float: right;">
+                  <a href="/{{election.id}}/manifestos">Link to all manifestos</a>
+              </div>
           </div>
         </div>
     {% else %}
