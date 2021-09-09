@@ -48,13 +48,13 @@ if (submitButton) {
         }
         // console.log(preferences)
 
-        if (preferences[0] === '') {
-            // console.log('empty');
-            // error.classList.add(SHOW_CLS);
-            error.classList.remove("error");
-            error.classList.add("showerror");
-            return false;
-        }
+        // if (preferences[0] === '') {
+        //     // console.log('empty');
+        //     // error.classList.add(SHOW_CLS);
+        //     error.classList.remove("error");
+        //     error.classList.add("showerror");
+        //     return false;
+        // }
 
         for (let i = 0; i < count; i += 1) {
             if (preferences[i] === '') {
@@ -66,20 +66,8 @@ if (submitButton) {
                         return false;
                     }
                 }
-                // return preferences
-                // console.log(preferences);
-                window.localStorage.setItem('preferences', JSON.stringify(preferences));
-                if (checkbox.checked === true) {
-                    form.submit();
-                    window.localStorage.setItem('preferences', JSON.stringify([]));
-                    return true;
-                }
-                checkboxError.classList.remove("error")
-                checkboxError.classList.add("showerror");
             }
         }
-        // return preferences
-        // console.log(preferences);
         window.localStorage.setItem('preferences', JSON.stringify(preferences));
         if (checkbox.checked === true) {
             form.submit();
