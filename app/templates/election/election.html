@@ -49,11 +49,13 @@
       <div class="col">
         <div class="card h-100">
           <img class="img-fluid rounded candidate-photo" src="{{ url_for('static', filename=candidate.photo ) }}" class="card-img-top" onerror="{{ url_for('static', filename='candidates/default.jpg') }}">
-          <div class="card-body">
-            <h4 class="card-title"><b>{{ candidate.user.name }}</b></h4>
-            <p class="card-text"><b>Batch: </b>{{ candidate.user.batch | upper}}</p>
-            <p class="card-text"><b>Roll Number: </b>{{ candidate.user.roll_number }}</p>
-            <a class="btn btn-primary" href="{{ url_for('elections.candidate_info', election_id = election.id, user_id = candidate.user.id) }}" role="button">View Manifesto</a>
+          <div class="card-body" style="display: flex;justify-content: center;align-items: flex-end;">
+              <div>
+                <h4 class="card-title"><b>{{ candidate.user.name }}</b></h4>
+                <p class="card-text"><b>Batch: </b>{{ candidate.user.batch | upper}}</p>
+                <p class="card-text"><b>Roll Number: </b>{{ candidate.user.roll_number }}</p>
+                <a class="btn btn-primary" href="{{ url_for('elections.candidate_info', election_id = election.id, user_id = candidate.user.id) }}" role="button">View Manifesto</a>
+              </div>
           </div>
         </div>
       </div>
