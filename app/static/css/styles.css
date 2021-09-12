@@ -65,6 +65,35 @@ body{
   object-fit: cover;
 }
 
+.details-col {
+  flex-grow: 2;
+  height: 100%;
+}
+
+.no-deco {
+  text-decoration:none;
+  color:black;
+}
+
+.center-align-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.center-align-card-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.card-body-center {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
 .candidate-details {
   height: 250px;
   display: flex;
