@@ -56,6 +56,21 @@ body{
   height: 400px;
   overflow: hidden;
   object-fit: cover;
+  /* object-position: 50% 30%; */
+}
+
+.candidate-details-photo {
+  object-position: 50% 10%;
+  height: 250px;
+  object-fit: cover;
+}
+
+.candidate-details {
+  height: 250px;
+  display: flex;
+  align-content: center;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .showerror{
