@@ -49,7 +49,7 @@
       <div class="col">
         <div class="card h-100">
           <img class="img-fluid rounded candidate-img" src="{{ url_for('static', filename=candidate.photo ) }}" class="card-img-top" onerror="{{ url_for('static', filename='candidates/default.jpg') }}">
-          <div class="card-body center-align-card">
+          <div class="card-body center-align-card" style="display: flex; justify-content: center; align-items: flex-end;">
               <div class="center-align-card-body">
                 <h4 class="card-title"><b>{{ candidate.user.name }}</b></h4>
                 <p class="card-text"><b>Batch: </b>{{ candidate.user.batch | upper}}</p>
@@ -80,7 +80,7 @@
               <div class="col">
                 <div class="card h-100">
                   <img class="img-fluid rounded candidate-photo" src="{{ url_for('static', filename=candidate.photo ) }}" class="card-img-top" onerror="{{ url_for('static', filename='candidates/default.jpg') }}">
-                  <div class="card-body card-body-center">
+                  <div class="card-body card-body-center" style="display: flex; justify-content: center; align-items: flex-end;">
                       <div>
                         <h4 class="card-title"><b>{{ candidate.user.name }}</b></h4>
                         <p class="card-text"><b>Batch: </b>{{ candidate.user.batch | upper}}</p>
