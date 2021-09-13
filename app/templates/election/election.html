@@ -14,7 +14,7 @@
     </div>
 
     {% if has_voted %}
-        <div class="card">
+        <div class="card" id="subheading-card">
           <div class="card-body">
               <h4 style="color: green;">You have voted!</h4>
               We thank you for being an awesome person!
@@ -23,11 +23,11 @@
     {% endif %}
 
     {% if voter_consti_desc %}
-        <div class="card m-2">
+        <div class="card" id="subheading-card">
           <div class="card-body">
               <div style="float: left;">
-                  <h3>Your constituency: {{voter_consti_desc}}</h3>
-                  All candidates belong to: {{candi_consti_desc}}<br>
+                  <h3>Your constituency: {{voter_consti_desc }}</h3>
+                  All candidates belong to: {{candi_consti_desc }}<br>
                   Number of open seats: {{consti_seats_count}}<br>
                   Number of candidates: {{consti_compete_count}}
               </div>
@@ -37,20 +37,20 @@
           </div>
         </div>
     {% else %}
-        <div class="card m-2">
+        <div class="card">
             <div class="card-body">
                 <h3>You do not belong to any voting constituency</h3>
                 Contact EC if you think this is in error
             </div>
         </div>
     {% endif %}
-    <div class="row row-cols-1 row-cols-md-4 g-4">
+    <div class="row row-cols-1 d-flex row-cols-md-4 g-4" id="card-group">
       {% for candidate in eligible_candidates %}
       <div class="col">
         <div class="card h-100">
-          <div style="background: url({{ url_for('static', filename=candidate.photo) }}); height: 400px; background-size: cover;"></div>
-          <div class="card-body" style="display: flex;justify-content: center;align-items: flex-end;">
-              <div>
+          <img class="img-fluid rounded candidate-img" src="{{ url_for('static', filename=candidate.photo ) }}" class="card-img-top" onerror="{{ url_for('static', filename='candidates/default.jpg') }}">
+          <div class="card-body center-align-card" style="display: flex; justify-content: center; align-items: flex-end;">
+              <div class="center-align-card-body">
                 <h4 class="card-title"><b>{{ candidate.user.name }}</b></h4>
                 <p class="card-text"><b>Batch: </b>{{ candidate.user.batch | upper}}</p>
                 <p class="card-text"><b>Roll Number: </b>{{ candidate.user.roll_number }}</p>
@@ -80,7 +80,7 @@
               <div class="col">
                 <div class="card h-100">
                   <img class="img-fluid rounded candidate-photo" src="{{ url_for('static', filename=candidate.photo ) }}" class="card-img-top" onerror="{{ url_for('static', filename='candidates/default.jpg') }}">
-                  <div class="card-body" style="display: flex;justify-content: center;align-items: flex-end;">
+                  <div class="card-body card-body-center" style="display: flex; justify-content: center; align-items: flex-end;">
                       <div>
                         <h4 class="card-title"><b>{{ candidate.user.name }}</b></h4>
                         <p class="card-text"><b>Batch: </b>{{ candidate.user.batch | upper}}</p>
