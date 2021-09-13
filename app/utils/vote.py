@@ -179,7 +179,6 @@ def audit(votecamp_id, return_file=True):
     votecamp = VoteCamp.query.get_or_404(votecamp_id)
 
     if votecamp.has_cast:
-        # ideally auditing should be allowed multiple times, but hard to integrate in the UI anyway
         return "Votes that have been finalized cannot be audited", 401
 
     votecamp.has_audited = True
