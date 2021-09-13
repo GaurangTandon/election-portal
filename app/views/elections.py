@@ -143,7 +143,7 @@ def token_audit(election_id):
 
 @election_routes.route("/<int:election_id>/cast", methods=["POST"])
 @auth_required
-@limiter.limit("5 per minute")
+@limiter.limit("1 per minute")
 def token_cast(election_id):
     votecamp_id = session[VOTEID_SESSION_KEY]
     cast(votecamp_id=votecamp_id)
