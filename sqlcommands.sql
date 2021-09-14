@@ -38,3 +38,10 @@ SELECT key, vote_camp_order, COUNT(*) FROM
 
     GROUP BY hashes.key, hashes.vote_camp_order
     ORDER BY hashes.key, vote_camp_order;
+
+-- Dump all hashes and nonces
+
+SELECT hash_str, nonce FROM
+    ((SELECT cumulative_hash FROM votecamp WHERE has_cast=True and election_id=2) A
+        JOIN cumhashes
+        ON cumulative_hash = cumhashes.id);
