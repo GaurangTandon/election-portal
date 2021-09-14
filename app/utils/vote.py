@@ -44,8 +44,9 @@ def vote(election_id, votes):
     # if not votes:
     #     return "Please provide a list of candidates", 400
 
-    if all(x == '' for x in votes):
-        votes = []
+    # remove trailing list of empty votes
+    while len(votes) > 0 and votes[-1] == '':
+        votes.pop()
 
     # it is allowed to not vote for any candidate
     if len(set(votes)) != len(votes):
