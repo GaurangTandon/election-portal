@@ -44,3 +44,12 @@ Once this is done run the command given on that docker hub frontpage. Note that:
 - `docker exec` needs to be done into the `postgres` container and not the `pgbackups` container
 
 Once this is done the database should successfully restore.
+
+### User management
+
+If you want to create a new user with read only roles, 
+
+- Run `createuser --interactive` in the postgres shell (`su postgres`)
+- Enter the psql shell with the superuser user (`su postgres` and then `psql --user=sqluser --dbname=election`).
+- `alter user <username> with password 'password';` is the next command
+- `grant connect on database election to <username>;` and `grant select on all tables in schema public to <username>;` will set the correct permissions
