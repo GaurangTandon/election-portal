@@ -45,3 +45,10 @@ SELECT hash_str, nonce FROM
     ((SELECT cumulative_hash FROM votecamp WHERE has_cast=True and election_id=2) A
         JOIN cumhashes
         ON cumulative_hash = cumhashes.id);
+
+-- List of all distinct voters
+
+SELECT roll_number FROM
+    ((SELECT user_id, election_id FROM votes WHERE election_id = 2) A 
+        JOIN "user" u 
+        ON A.user_id = u.id);
