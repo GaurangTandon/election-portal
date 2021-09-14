@@ -91,5 +91,5 @@ if (voteButton) {
         // console.log(document.getElementById("flexCheckDefault").checked)
     };
     // document.getElementById("clearButton").onclick = clearall()
-    voteButton.addEventListener("click", getpref);
+    // voteButton.addEventListener("click", getpref);
 }
