@@ -1,3 +1,4 @@
+from flask.templating import render_template
 from app.middlewares.auth import auth_required
 from flask import Blueprint
 
@@ -13,4 +14,4 @@ def security():
 @static_routes.route("/faq")
 @auth_required
 def faq():
-    return "I'll work on this when I get time :sadcat:", 200
+    return render_template("faq.html")
