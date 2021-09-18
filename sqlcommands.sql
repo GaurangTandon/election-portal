@@ -52,3 +52,17 @@ SELECT roll_number FROM
     ((SELECT user_id, election_id FROM votes WHERE election_id = 2) A 
         JOIN "user" u 
         ON A.user_id = u.id);
+
+-- Dumping all hashes for the election ballot
+SELECT id, cumulative_hash INTO relevant_election
+    FROM votecamp
+    WHERE has_cast = True and election_id = 2;
+
+SELECT A.id, B.id as cid, nonce as cnonce, hash_str INTO cumulative_joined4
+    FROM relevant_election A JOIN cumhashes B
+    ON A.cumulative_hash = B.id;
+
+SELECT vote_camp, vote_camp_order, key, nonce, cnonce, cid, hash_str
+    FROM cumulative_joined4 C LEFT JOIN hashes
+    ON C.id = hashes.vote_camp
+    ORDER BY vote_camp, vote_camp_order;
