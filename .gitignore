@@ -8,3 +8,4 @@ app/static/votedata/*
 app/static/pdf/*
 docker-compose.override.yaml
 machine-statistics.csv
+app/static/election

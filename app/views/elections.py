@@ -203,3 +203,12 @@ def past_elections():
             Election.voting_end_date < datetime.datetime.now()
         ).all(),
     )
+
+@election_routes.route("/<int:election_id>/ballot", methods=["GET"])
+@auth_required
+@limiter.limit("5 per minute")
+def get_ballot(election_id: int):
+    return render_template(
+            "election/ballot.html",
+            emails=f'election/{election_id}/{election_id}.emails',
+            tokens=f'election/{election_id}/{election_id}.tokens')
