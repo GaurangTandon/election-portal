@@ -1,7 +1,7 @@
 # election-portal
 minimalistic election portal for universities
 
-**Status:** Work in Progress, expected launch date: 10th September
+**Status:** Stable release on master
 
 ## Installation
 
