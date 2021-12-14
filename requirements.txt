@@ -20,7 +20,7 @@ Jinja2==3.0.1
 jsonschema==3.2.0
 lazy-object-proxy==1.6.0
 limits==1.5.1
-lxml==4.6.3
+lxml==4.6.5
 MarkupSafe==2.0.1
 mccabe==0.6.1
 mypy-extensions==0.4.3
