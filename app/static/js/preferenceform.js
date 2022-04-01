@@ -36,9 +36,22 @@ if (form) {
     });
 }
 
+async function getFingerprint() {
+    // Initialize the agent at application startup.
+    const fpPromise = (await import('https://openfpcdn.io/fingerprintjs/v3')).load();
+
+    // Get the visitor identifier when you need it.
+    const fp = await fpPromise;
+    const result = await fp.get();
+
+    // This is the visitor identifier:
+    const visitorId = result.visitorId
+    return visitorId;
+}
+
 // const SHOW_CLS = "show";
 if (submitButton) {
-    submitButton.addEventListener("click", function submit() {
+    submitButton.addEventListener("click", async function submit() {
         error.classList.add("error");
         error.classList.remove("showerror");
         checkboxError.classList.add("error")
@@ -68,7 +81,11 @@ if (submitButton) {
                 }
             }
         }
+
         window.localStorage.setItem('preferences', JSON.stringify(preferences));
+        const fingerprintInput = document.getElementById('fingerprint_value');
+        fingerprintInput.value = await getFingerprint();
+
         if (checkbox.checked === true) {
             form.submit();
         } else {

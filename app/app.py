@@ -47,6 +47,7 @@ def before_request():
             g.user = None
             return
 
+    print(request.headers.get('X-Forwarded-For', request.remote_addr), request.remote_addr)
     success, msg_or_user = validate_access_token(access_token)
     g.user = msg_or_user if success else None
 

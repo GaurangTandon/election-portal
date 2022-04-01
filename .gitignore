@@ -9,3 +9,7 @@ app/static/pdf/*
 docker-compose.override.yaml
 machine-statistics.csv
 app/static/election
+# stores the local bind mount
+data
+*.pyc
+target

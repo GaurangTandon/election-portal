@@ -98,6 +98,7 @@ def vote_handler(election_id: int, display_vote_modal=False):
     is_post_request = request.method == "POST"
     args = {}
     if is_post_request:
+        print(request.form)
         message, exit_code = vote(election_id, request.form.getlist("votes"))
 
         if exit_code == 200:
