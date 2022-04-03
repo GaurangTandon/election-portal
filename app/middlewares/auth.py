@@ -119,7 +119,7 @@ def cec_only(f):
 
 def polling_booth_only(f):
     """
-    decorator to restrict access onlt to admins
+    decorator to restrict access only to machines on the polling booth
     """
 
     @wraps(f)
@@ -127,11 +127,11 @@ def polling_booth_only(f):
         if RESTRICTED_IP_ADDRS:
             ip_addr = request.headers.get('X-Forwarded-For', request.remote_addr)
             if ip_addr not in RESTRICTED_IP_ADDRS:
-                return abort(403, "Invalid IP: not at polling booth")
+                return "Invalid IP: not at polling booth", 403
         if RESTRICTED_FINGERPRINTS:
             fingerprint_data = request.form.get('fingerprinter')
             if fingerprint_data not in RESTRICTED_FINGERPRINTS:
-                return abort(403, "Invalid browser fingerprint: not at polling booth")
+                return "Invalid browser fingerprint: not at polling booth", 403
 
         return f(*args, **kwargs)
 

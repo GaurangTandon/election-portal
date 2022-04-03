@@ -111,24 +111,30 @@ def vote_handler(election_id: int, display_vote_modal=False):
 
     return render_template("election/election.html", **args)
 
+@election_routes.route("/<int:election_id>", methods=["GET"])
+@auth_required
+@limiter.limit("12 per minute")
+def election_info_get(election_id):
+    return vote_handler(election_id=election_id)
 
-@election_routes.route("/<int:election_id>", methods=["GET", "POST"])
+@election_routes.route("/<int:election_id>", methods=["POST"])
+@polling_booth_only
 @auth_required
 @limiter.limit("12 per minute")
 def election_info(election_id):
     return vote_handler(election_id=election_id)
 
 @election_routes.route("/<int:election_id>/vote", methods=["GET"])
-@auth_required
 @polling_booth_only
+@auth_required
 @limiter.limit("5 per minute")
 def election_vote(election_id):
     return vote_handler(election_id=election_id, display_vote_modal=True)
 
 
 @election_routes.route("/<int:election_id>/audit", methods=["POST"])
-@auth_required
 @polling_booth_only
+@auth_required
 @limiter.limit("5 per minute")
 def token_audit(election_id):
     votecamp_id = session[VOTEID_SESSION_KEY]
@@ -145,8 +151,8 @@ def token_audit(election_id):
 
 
 @election_routes.route("/<int:election_id>/cast", methods=["POST"])
-@auth_required
 @polling_booth_only
+@auth_required
 @limiter.limit("1 per minute")
 def token_cast(election_id):
     votecamp_id = session[VOTEID_SESSION_KEY]
