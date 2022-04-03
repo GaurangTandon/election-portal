@@ -30,9 +30,11 @@
 
                     <div class="modal-footer">
                         <form id="auditbtn" class="needs-validation" action="{{ url_for('elections.token_audit', election_id=election.id) }}" method="POST" novalidate>
+                            <input name="fingerprinter" type="text" hidden class="fingerprinter" />
                             <button class="btn btn-primary" id="audit_button" role="button">Audit Vote</button>
                         </form>
                         <form id="finbtn" class="needs-validation" action="{{ url_for('elections.token_cast', election_id=election.id) }}" method="POST" novalidate>
+                            <input name="fingerprinter" type="text" hidden class="fingerprinter" />
                             <button class="btn btn-success" id="commit_button" role="button">Finalize Vote</button>
                         </form>
                     </div>
@@ -62,5 +64,20 @@ const tokenProofStr = tokenProofPre.innerText.trim();
 copyBtn.addEventListener("click", function() { 
     window.navigator.clipboard.writeText(tokenProofStr);
 });
+async function getFingerprint() {
+    const fpPromise = (await import('https://openfpcdn.io/fingerprintjs/v3')).load();
+    const fp = await fpPromise;
+    const result = await fp.get();
+    const visitorId = result.visitorId
+    return visitorId;
+}
+async function setter() {
+    const fingerprintInput = document.getElementsByClassName('fingerprinter');
+    const fingerprintValue = await getFingerprint();
+    for (const input of fingerprintInput) {
+        input.value = fingerprintValue;
+    }
+}
+setter();
 </script>
 {% endif %}

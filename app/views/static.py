@@ -15,3 +15,8 @@ def security():
 @auth_required
 def faq():
     return render_template("faq.html")
+
+@static_routes.route("/fingerprint")
+@auth_required
+def fingerprint():
+    return render_template("fingerprint.html")

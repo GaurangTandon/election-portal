@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Election Portal | Get fingerprint</title>
+</head>
+<body>
+    
+</body>
+<script>
+async function getFingerprint() {
+    const fpPromise = (await import('https://openfpcdn.io/fingerprintjs/v3')).load();
+    const fp = await fpPromise;
+    const result = await fp.get();
+    const visitorId = result.visitorId
+    return visitorId;
+}
+async function setter() {
+    const fingerprintValue = await getFingerprint();
+    document.body.innerHTML = fingerprintValue;
+}
+setter();
+</script>
+</html>
