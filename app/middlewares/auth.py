@@ -1,6 +1,7 @@
 import datetime
 from functools import wraps
 import json
+import os
 from typing import Any, Tuple, Union
 
 import jwt
@@ -9,6 +10,8 @@ from flask import g, request, redirect, url_for, session
 from flask_restx import abort
 import app
 
+RESTRICTED_IP_ADDRS = os.getenv("RESTRICTED_IP_ADDRS", "").split(',')
+RESTRICTED_FINGERPRINTS = os.getenv("RESTRICTED_FINGERPINTS", "").split(',')
 
 def encode_auth_token(email):
     """
@@ -113,3 +116,23 @@ def cec_only(f):
         return f(*args, **kwargs)
 
     return _admin_only
+
+def polling_booth_only(f):
+    """
+    decorator to restrict access onlt to admins
+    """
+
+    @wraps(f)
+    def _polling_booth_only(*args, **kwargs):
+        if RESTRICTED_IP_ADDRS:
+            ip_addr = request.headers.get('X-Forwarded-For', request.remote_addr)
+            if ip_addr not in RESTRICTED_IP_ADDRS:
+                return abort(403, "Invalid IP: not at polling booth")
+        if RESTRICTED_FINGERPRINTS:
+            fingerprint_data = request.form.get('fingerprinter')
+            if fingerprint_data not in RESTRICTED_FINGERPRINTS:
+                return abort(403, "Invalid browser fingerprint: not at polling booth")
+
+        return f(*args, **kwargs)
+
+    return _polling_booth_only

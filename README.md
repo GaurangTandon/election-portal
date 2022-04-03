@@ -25,6 +25,20 @@ services:
             SECRET_KEY: top_secret_key
 ```
 
+### Polling booth setup
+
+For a polling booth setup, you would intend to restrict the "cast vote" endpoint to a select group of devices. The devices are uniquely identifier using their IP address and their client browser fingerprints. You can specify these values in a comma-separated list as in the docker compose override yaml file:
+
+```yaml
+services:
+    app:
+        environment:
+            RESTRICTED_FINGERPINTS: <fingerprintvalues>
+            RESTRICTED_IP_ADDRS: 172.18.0.1
+```
+
+Note: The [browser fingerprints](https://www.npmjs.com/package/@fingerprintjs/fingerprintjs) are **not** always unique fingerprints across different client devices. It is advisable to have a unique configuration of browser, window size, resolution, etc. that is different from stock default values.
+
 ## Backups and Restore
 
 Backups are taken and rotated regularly. All backups are mounted at `/var/opt/pgbackups` (mounted in `docker-compose.yaml`) in the host machine. The setup for backups is given in the [linked docker hub image frontpage](https://hub.docker.com/r/prodrigestivill/postgres-backup-local). The `chown` command should be run in the host machine.

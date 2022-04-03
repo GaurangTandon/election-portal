@@ -1,5 +1,6 @@
-from app.middlewares.auth import auth_required
 from collections import defaultdict
+
+from app.middlewares.auth import auth_required, polling_booth_only
 
 import datetime
 import random
@@ -98,7 +99,6 @@ def vote_handler(election_id: int, display_vote_modal=False):
     is_post_request = request.method == "POST"
     args = {}
     if is_post_request:
-        print(request.form)
         message, exit_code = vote(election_id, request.form.getlist("votes"))
 
         if exit_code == 200:
@@ -120,6 +120,7 @@ def election_info(election_id):
 
 @election_routes.route("/<int:election_id>/vote", methods=["GET"])
 @auth_required
+@polling_booth_only
 @limiter.limit("5 per minute")
 def election_vote(election_id):
     return vote_handler(election_id=election_id, display_vote_modal=True)
@@ -127,6 +128,7 @@ def election_vote(election_id):
 
 @election_routes.route("/<int:election_id>/audit", methods=["POST"])
 @auth_required
+@polling_booth_only
 @limiter.limit("5 per minute")
 def token_audit(election_id):
     votecamp_id = session[VOTEID_SESSION_KEY]
@@ -144,6 +146,7 @@ def token_audit(election_id):
 
 @election_routes.route("/<int:election_id>/cast", methods=["POST"])
 @auth_required
+@polling_booth_only
 @limiter.limit("1 per minute")
 def token_cast(election_id):
     votecamp_id = session[VOTEID_SESSION_KEY]
