@@ -7,7 +7,8 @@
     <title>Election Portal | Get fingerprint</title>
 </head>
 <body>
-    
+    <div id="ip_address">{{ ip_addr }}</div>
+    <div id="fingerprint_value"></div>
 </body>
 <script>
 async function getFingerprint() {
@@ -19,7 +20,7 @@ async function getFingerprint() {
 }
 async function setter() {
     const fingerprintValue = await getFingerprint();
-    document.body.innerHTML = fingerprintValue;
+    document.getElementById('fingerprint_value').innerHTML = fingerprintValue;
 }
 setter();
 </script>

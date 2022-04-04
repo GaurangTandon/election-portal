@@ -13,3 +13,4 @@ app/static/election
 data
 *.pyc
 target
+venv
