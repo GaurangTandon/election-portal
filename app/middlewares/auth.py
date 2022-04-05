@@ -10,8 +10,10 @@ from flask import g, request, redirect, url_for, session
 from flask_restx import abort
 import app
 
-RESTRICTED_IP_ADDRS = os.getenv("RESTRICTED_IP_ADDRS", "").split(',')
-RESTRICTED_FINGERPRINTS = os.getenv("RESTRICTED_FINGERPINTS", "").split(',')
+RESTRICTED_IP_ADDRS_RAW = os.getenv("RESTRICTED_IP_ADDRS", "")
+RESTRICTED_IP_ADDRS = RESTRICTED_IP_ADDRS_RAW.split(',') if RESTRICTED_IP_ADDRS_RAW else []
+RESTRICTED_FINGERPRINTS_RAW = os.getenv("RESTRICTED_FINGERPINTS", "")
+RESTRICTED_FINGERPRINTS = RESTRICTED_FINGERPRINTS_RAW.split(',') if RESTRICTED_FINGERPRINTS_RAW else []
 
 def encode_auth_token(email):
     """
